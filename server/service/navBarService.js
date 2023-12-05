@@ -16,7 +16,7 @@ module.exports = {
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 avatar: userData.avatar || userData.profileImages[0]?.url,
-                role: userData.role
+                role: userData.role,
             };
 
             // If user is a designer, return designer info

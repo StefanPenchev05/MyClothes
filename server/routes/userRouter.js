@@ -6,7 +6,7 @@ const userController = require("../controllers/userController");
 
 //login user
 router.post('/login', userController.login)
-router.post('/google-login', userController.googleLogin)
+//router.post('/google-login', userController.googleLogin)
 //register
 router.post('/registration', userController.register);
 //logout

@@ -4,6 +4,7 @@
     "OR": "OR",
     "Login": "Log In",
     "Sign up": "Sign Up",
+    "LogOut": "Log Out",
     "Username": "Username",
     "Password": "Password",
     "Next": "Next",   
@@ -66,7 +67,11 @@
         "Sign in":"Sign in",
         "Sign up":"Sign up",
         "Designer":"Designer",
-        "GeneralUser":"General"
+        "GeneralUser":"General",
+        "Designs": "Designs",
+        "PurchasedProducts": "Purchased",
+        "MyProfile": "Profile",
+        "Settings": "Settings"
     },
     "home": {
         

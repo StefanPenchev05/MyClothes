@@ -1,5 +1,5 @@
 // Function to send data to a specified URL
-export async function sendData(URL: string, data: any) {
+export async function sendData(URL: string, data?: any) {
     try {
         // Make a POST request to the specified URL
         const response = await fetch("http://localhost:5500" + URL, {

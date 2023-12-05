@@ -4,6 +4,7 @@
     "OR": "ИЛИ",
     "Login": "Вход",
     "Sign up": "Регистрация",
+    "LogOut": "Изход",
     "Username": "Потребителско име",
     "Password": "Парола",
     "Next": "Напред",   
@@ -64,7 +65,11 @@
         "Sign in": "Вход",
         "Sign up": "Регистрация",
         "Designer": "Дизайнер",
-        "GeneralUser": "Потребител"
+        "GeneralUser": "Потребител",
+        "Designs": "Дизайни",
+        "PurchasedProducts": "Закупени продукти",
+        "MyProfile": "Моят профил",
+        "Settings": "Настройки"
     },
     "home": {
         
