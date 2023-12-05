@@ -1,6 +1,5 @@
 import React, { Suspense, lazy } from 'react';
 import { Grid, Typography, Button, CircularProgress, colors} from '@mui/material';
-import { t } from 'i18next';
 import { useNavigate } from 'react-router-dom';
 import { validUsername, validateEmail, validatePassword, validateField, validateFirstName, validateLastName, validateDateOfBirth } from '../../../utils/validators';
 
