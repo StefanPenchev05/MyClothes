@@ -1,0 +1,7 @@
+{
+    "type": "mongoDB",
+    "driverOptions": {
+        "useNewUrlParser": true,
+        "useUnifiedTopology": true
+    }
+}

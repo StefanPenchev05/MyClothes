@@ -1,25 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { Grid, CircularProgress, CssBaseline } from '@mui/material';
+import { initReactI18next } from 'react-i18next';
+import { Suspense, lazy } from 'react';
+import bg from './locals/bg.json';
+import en from './locals/en.json';
+import i18next from 'i18next';
+import NavBar from './components/NavBar/NavBar';
+
+const Home = lazy(() => import('./page/Home'));
+const UserLogin = lazy(() => import('./page/userLogin'));
+const UserSignup = lazy(() => import('./page/userSignup'));
+
+i18next.use(initReactI18next).init({
+  resources: {
+    en: {translation: en},
+    bg: {translation: bg}
+  },
+  lng: document.querySelector('html')?.lang || 'en',
+  fallbackLng: 'en',
+  interpolation: { escapeValue: false }
+});
 
 function App() {
+  const location = useLocation();
+  const showNavBar = location.pathname === '/home';
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Suspense fallback={
+      <Grid container direction="column" justifyContent="center" alignItems="center" height={'100vh'}>
+        <CircularProgress style={{color: '#696cff'}}/>
+      </Grid>
+    }>
+      {showNavBar && <NavBar/>}
+      <CssBaseline/>
+      <Routes>
+        <Route path='/home' element={<Home/>}></Route>
+        <Route path='/user/login' element={<UserLogin/>}></Route>
+        <Route path='/user/registration' element={<UserSignup/>}></Route>
+      </Routes>
+    </Suspense>
   );
 }
 
