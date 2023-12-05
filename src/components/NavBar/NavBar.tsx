@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { AppBar, Toolbar, Skeleton} from "@mui/material";
+import { AppBar as MuiAppBar, Toolbar, Skeleton } from "@mui/material";
+import { styled, keyframes } from '@mui/system';
 
 import SearchBar from "./UI/SearchBar";
 import SearchResultMenu from "./UI/SearchResultMenu";
@@ -31,6 +32,19 @@ function NavBar() {
     const [userInfo, setUserInfo] = useState<UserInfo>();
     const [searchResult, setSearchResult] = useState<Data[]>();
     const [isLoaded, setIsLoaded] = useState(false);
+
+    const slideDown = keyframes`
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+    `;
+
+    const AppBar = styled(MuiAppBar)({
+        animation: `${slideDown} 0.5s ease-in-out`,
+    });
   
     useEffect(() => {
         const getUserInfo = async() => {
@@ -42,17 +56,14 @@ function NavBar() {
                    setUserInfo(undefined);
                 }
                 setIsLoaded(true);
-                setIsLoaded(true);
             }catch(err){
                 console.log(err);
             }
-            
         }
         getUserInfo();
     }, []);
-
   return (
-    <AppBar position="static" sx={{backgroundColor: '#f8f9fa', height:'80px'}} className="justify-center">
+    <AppBar position="static" sx={{backgroundColor: '#f8f9fa', height:'60px'}} className="justify-center">
         <Toolbar sx={{color: 'black', padding: '0 1rem'}}>
             <div className="flex flex-row justify-between items-center  w-full">
                {isLoaded ? (
@@ -71,8 +82,8 @@ function NavBar() {
                 <div className="flex flex-row justify-between items-center w-1/4">
                     <Skeleton variant="circular" width={56} height={56} />
                     <div className="flex flex-col">
-                        <Skeleton variant="text" width={100} />
-                        <Skeleton variant="text" width={100} />
+                        <Skeleton variant="text" width={180} />
+                        <Skeleton variant="text" width={120} />
                     </div>
                     <Skeleton variant="circular" width={56} height={56} />
                     <Skeleton variant="circular" width={56} height={56} />

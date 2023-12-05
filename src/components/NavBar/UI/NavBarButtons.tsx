@@ -1,8 +1,15 @@
-import React from 'react'
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { Home, Checkroom, Email, Star } from "@mui/icons-material";
-import { IconButton, Tooltip, } from "@mui/material";
+import { IconButton as MuiIconButton, Tooltip } from "@mui/material";
+import { styled } from '@mui/system';
+
+const IconButton = styled(MuiIconButton)({
+  transition: 'transform 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.2)',
+  },
+});
 
 function NavBarButtons() {
     const { t } = useTranslation();

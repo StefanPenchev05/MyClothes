@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import { Button } from "@mui/material";
+import { Button as MuiButton} from "@mui/material";
+import { styled } from '@mui/system';
 
+const Button = styled(MuiButton)({
+    transition: 'transform 0.3s ease-in-out',
+    '&:hover': {
+        transform: 'scale(1.2)',
+    },
+});
 
 function LoginSignupButtons() {
     const { t } = useTranslation();
