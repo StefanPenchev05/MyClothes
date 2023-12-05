@@ -28,25 +28,33 @@ function SearchBar({setSearchResult}:SearchBarType) {
         }
     }
 
+    const [prevSearchTerm, setPrevSearchTerm] = useState<string | null>(null);
+
     useEffect(() => {
+      if (debouncedSearchTerm !== prevSearchTerm) {
         const query = {
-            params: 'username',
-            data: debouncedSearchTerm
-        }
+          params: 'username',
+          data: debouncedSearchTerm
+        };
+    
         const fetchData = async() => {
-            try {
-                const fetchedData = await getData("/navBar/searchBar", query);
-                setSearchResult(fetchedData);
-            } catch (error) {
-                console.error(error);
-            }
+          try {
+            const fetchedData = await getData("/navBar/searchBar", query);
+            setSearchResult(fetchedData);
+          } catch (error) {
+            console.error(error);
+          }
         }
+    
         if(debouncedSearchTerm){
-            fetchData();
-        }else{
-            setSearchResult(undefined);
+          fetchData();
+        } else {
+          setSearchResult(undefined);
         }
-    },[debouncedSearchTerm])
+    
+        setPrevSearchTerm(debouncedSearchTerm);
+      }
+    }, [debouncedSearchTerm, prevSearchTerm]);
 
     return (
         <div className='flex flex-nowrap items-center p-2 border-2 border-gray-300 rounded-2xl w-full'>

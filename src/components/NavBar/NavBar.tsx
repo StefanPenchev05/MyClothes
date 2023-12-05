@@ -26,34 +26,37 @@ interface UserInfo {
     purchasedProducts: number,
     products?: number,
     sales?: number
+
 }
+const slideDown = keyframes`
+0% {
+    transform: translateY(-100%);
+}
+100% {
+    transform: translateY(0);
+}
+`;
+
+const AppBar = styled(MuiAppBar)({
+    animation: `${slideDown} 0.5s ease-in-out`,
+});
 
 function NavBar() {
     const [userInfo, setUserInfo] = useState<UserInfo>();
     const [searchResult, setSearchResult] = useState<Data[]>();
     const [isLoaded, setIsLoaded] = useState(false);
+    const [isFirstRender, setIsFirstRender] = useState(false);
 
-    const slideDown = keyframes`
-    0% {
-        transform: translateY(-100%);
-    }
-    100% {
-        transform: translateY(0);
-    }
-    `;
-
-    const AppBar = styled(MuiAppBar)({
-        animation: `${slideDown} 0.5s ease-in-out`,
-    });
   
     useEffect(() => {
+        console.log(isFirstRender)
         const getUserInfo = async() => {
             try{
                 const data = await getData('/navBar/userInfo');
                 if(!data.message){
                     setUserInfo(data);
                 }else{
-                   setUserInfo(undefined);
+                    setUserInfo(undefined);
                 }
                 setIsLoaded(true);
             }catch(err){
@@ -63,7 +66,7 @@ function NavBar() {
         getUserInfo();
     }, []);
   return (
-    <AppBar position="static" sx={{backgroundColor: '#f8f9fa', height:'60px'}} className="justify-center">
+    <AppBar position="static" sx={{backgroundColor: '#f8f9fa', height:'70px'}} className="justify-center">
         <Toolbar sx={{color: 'black', padding: '0 1rem'}}>
             <div className="flex flex-row justify-between items-center  w-full">
                {isLoaded ? (
