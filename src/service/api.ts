@@ -13,6 +13,7 @@ export async function sendData(URL: string, data?: any) {
 
         // Parse the response data as JSON
         const responseData = await response.json();
+        console.log(responseData);
 
         // Return the response status, success status, and data
         return {
@@ -43,6 +44,7 @@ export async function getData(URL: string, query? : {[key:string]:string}){
 
         // Parse the response data as JSON
         const data = await response.json();
+        console.log(data);
 
         // If the request is successful or returns a 400 status, return the response data
         if(response.ok || response.status === 400){

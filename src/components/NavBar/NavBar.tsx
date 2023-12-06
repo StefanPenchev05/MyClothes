@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { AppBar as MuiAppBar, Toolbar, Skeleton } from "@mui/material";
 import { styled, keyframes } from '@mui/system';
 
-import SearchBar from "./UI/SearchBar";
-import SearchResultMenu from "./UI/SearchResultMenu";
+import SearchBar from "../GlobalUI/SearchBar";
+import SearchResultMenu from "../GlobalUI/SearchResultMenu";
 import { getData } from "../../service/api";
 import ProfileMenu from "./UI/ProfileMenu";
 import UserDetails from "./UI/UserDetails";
@@ -45,11 +45,9 @@ function NavBar() {
     const [userInfo, setUserInfo] = useState<UserInfo>();
     const [searchResult, setSearchResult] = useState<Data[]>();
     const [isLoaded, setIsLoaded] = useState(false);
-    const [isFirstRender, setIsFirstRender] = useState(false);
 
   
     useEffect(() => {
-        console.log(isFirstRender)
         const getUserInfo = async() => {
             try{
                 const data = await getData('/navBar/userInfo');
