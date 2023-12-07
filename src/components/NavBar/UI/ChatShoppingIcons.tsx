@@ -1,4 +1,4 @@
-import React from 'react'
+import { Link } from "react-router-dom";
 import {ChatBubble, ShoppingCart } from "@mui/icons-material";
 import { IconButton, Badge, Tooltip, } from "@mui/material";
 
@@ -16,7 +16,9 @@ function ChatShoppingIcons() {
                 }}
             >
                 <IconButton sx={{padding:'0px'}}>
-                    <ChatBubble fontSize="large" color="action"/>
+                    <Link to={'user/messages'}>
+                        <ChatBubble fontSize="large" color="action"/>
+                    </Link>
                 </IconButton>
             </Badge>
         </Tooltip>

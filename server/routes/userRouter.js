@@ -4,8 +4,10 @@ const router = express.Router();
 //controllers
 const userController = require("../controllers/userController");
 
+//get info of us
+router.get('/:username', userController.getUsersData);
 //login user
-router.post('/login', userController.login)
+router.post('/login', userController.login);
 //router.post('/google-login', userController.googleLogin)
 //register
 router.post('/registration', userController.register);

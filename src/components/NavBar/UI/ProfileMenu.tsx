@@ -35,6 +35,7 @@ function ProfileMenu({userInfo}: ProfileMenuProps) {
     const handleLogOut = async(event:React.MouseEvent) => {
         event.preventDefault();
         try{
+            console.log('logout');
             await sendData('/user/logout');
             window.location.reload();
         }catch(err){

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
-import { getData } from "../../../service/api"
+import { getData } from "../../service/api"
 import { Search } from "@mui/icons-material"
-import useDebounce  from '../../../utils/useDebounce';
+import useDebounce  from '../../utils/useDebounce';
 
 interface Data {
     message? : string,
@@ -10,10 +10,11 @@ interface Data {
 }
 
 interface SearchBarType{
-    setSearchResult: React.Dispatch<React.SetStateAction<Data[] | undefined>>
+    setSearchResult: React.Dispatch<React.SetStateAction<Data[] | undefined>>,
+    onClick?: () => void
 }
 
-function SearchBar({setSearchResult}:SearchBarType) {
+function SearchBar({setSearchResult, onClick}:SearchBarType) {
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [search, setSearch] = useState('');
     const debouncedSearchTerm = useDebounce(search, 300);
@@ -57,7 +58,7 @@ function SearchBar({setSearchResult}:SearchBarType) {
     }, [debouncedSearchTerm, prevSearchTerm]);
 
     return (
-        <div className='flex flex-nowrap items-center p-2 border-2 border-gray-300 rounded-2xl w-full'>
+        <div className='flex flex-nowrap items-center p-2 border-2 border-gray-300 rounded-2xl w-full' onClick={onClick}>
             <div className="mr-4 cursor-pointer hover:text-gray-500 transition-colors duration-200">
                 <Search fontSize="medium" onClick={handleOnClick}/>
             </div>

@@ -7,6 +7,7 @@ const UserModel = require("../model/User");
 const Address = require("../model/Address");
 const Image = require("../model/ProfileImages");
 const OAuth2Client = require("google-auth-library");
+const { redirect } = require("react-router-dom");
 
 require('dotenv').config();
 
@@ -19,6 +20,44 @@ class CustomError extends Error {
 }
 
 module.exports = {
+    getUsersData: async (username) => {
+        try {
+            // Fetch user data and populate profileImages
+            const userData = await UserModel.findOne({username:username}).populate("profileImages");
+
+            // If user data is not found, return a message
+            if (!userData) {
+                return { message: 'User not found!' };
+            }
+
+            // Common data for all users
+            const commonData = {
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                avatar: userData.avatar || userData.profileImages[0]?.url,
+                role: userData.role,
+            };
+
+            // If user is a designer, return designer info
+            if (userData.role === 'designer') {
+                return {
+                    ...commonData,
+                    designerInfo: userData.designerInfo
+                };
+            }
+
+            // If user is not a designer, return purchased products count
+            return {
+                ...commonData,
+                purchasedProducts: userData.purchasedProducts.length
+            };
+        } catch (err) {
+            throw new Error(err.message);
+        }
+    },
+      
+      
+
     loginUser: async (emailOrUsername, password) => {
         // Find the user based on email or username
         const existingUser = await UserModel.findOne({

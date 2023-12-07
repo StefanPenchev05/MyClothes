@@ -1,4 +1,7 @@
+const { profile } = require("console");
 const userService = require("../service/userService");
+
+
 
 function handleControllerError(err, res) {
     if (!(err instanceof Object)) {
@@ -18,6 +21,28 @@ function handleControllerError(err, res) {
 }
 
 module.exports = {
+    getUsersData: async (req, res) => {
+        try {
+            // Get the user ID from the session
+            const {username} = req.params;
+
+           
+
+            // Get the user data from the navBarService
+            const userData = await userService.getUsersData(username);
+
+            // If the user data is not found, return an error
+            if (!userData) {
+                return res.status(404).json({ message: "User data not found" });
+            }
+
+            // If everything is OK, return the user data
+            return res.status(200).json(userData);
+        } catch (err) {
+            // If there's an error, return it
+            return res.status(500).json({ message: err.message });
+        }
+    },
     login: async (req, res) => {
         try {
             const { emailOrUsername, password, rememberMe } = req.body;
