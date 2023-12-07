@@ -10,6 +10,8 @@ import NavBar from './components/NavBar/NavBar';
 const Home = lazy(() => import('./page/Home'));
 const UserLogin = lazy(() => import('./page/userLogin'));
 const UserSignup = lazy(() => import('./page/userSignup'));
+const ChatMenu = lazy(() => import('./page/ChatMenu'));
+const ProfilePage = lazy(() => import('./page/userProfile'));
 
 i18next.use(initReactI18next).init({
   resources: {
@@ -23,7 +25,7 @@ i18next.use(initReactI18next).init({
 
 function App() {
   const location = useLocation();
-  const showNavBar = location.pathname === '/home';
+  const showNavBar = location.pathname !== '/user/login' && location.pathname !== '/user/registration';
 
   return (
     <Suspense fallback={
@@ -37,6 +39,8 @@ function App() {
         <Route path='/home' element={<Home/>}></Route>
         <Route path='/user/login' element={<UserLogin/>}></Route>
         <Route path='/user/registration' element={<UserSignup/>}></Route>
+        <Route path='/user/profile/:username' element={<ProfilePage/>}></Route>
+        <Route path='/user/messages' element={<ChatMenu/>}></Route>
       </Routes>
     </Suspense>
   );
