@@ -1,7 +1,9 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Grid, CircularProgress, CssBaseline } from '@mui/material';
 import { initReactI18next } from 'react-i18next';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
+import io from 'socket.io-client';
+
 import bg from './locals/bg.json';
 import en from './locals/en.json';
 import i18next from 'i18next';
@@ -12,6 +14,7 @@ const UserLogin = lazy(() => import('./page/userLogin'));
 const UserSignup = lazy(() => import('./page/userSignup'));
 const ChatMenu = lazy(() => import('./page/ChatMenu'));
 const ProfilePage = lazy(() => import('./page/userProfile'));
+const socket = io('http://localhost:5500/', {withCredentials: true});
 
 i18next.use(initReactI18next).init({
   resources: {
@@ -26,6 +29,12 @@ i18next.use(initReactI18next).init({
 function App() {
   const location = useLocation();
   const showNavBar = location.pathname !== '/user/login' && location.pathname !== '/user/registration';
+
+  useEffect(() => {
+    socket.on('connection', () => {
+      console.log('connected to server');
+    });
+  }, [])
 
   return (
     <Suspense fallback={

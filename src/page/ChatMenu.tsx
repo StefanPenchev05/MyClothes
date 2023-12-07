@@ -15,13 +15,14 @@ function ChatMenu() {
     const [searchResult, setSearchResult] = useState<Data[]>();
     const [searchMenu,setSearchMenu] = useState<boolean>(false);
     const [messageHistory, setMessageHistory] = useState<Data[] | undefined>(undefined);
+    const [chatHistory, setChatHistory] = useState<Data[] | undefined>([]);
 
     const handleOnSearchClick = () => {
         setSearchMenu(true);
     }
 
   return (
-    <div className="w-full flex flex-row p-4" style={{height: 'calc(100vh - 60px)'}}>
+    <div className="w-full flex flex-row p-4" style={{height: 'calc(100vh - 70px)'}}>
         <div className='flex justify-center w-1/4 bg-gray-200 rounded-lg p-4'>
             <div className='relative w-full'>
                 {searchMenu ? (
@@ -39,6 +40,7 @@ function ChatMenu() {
                                         <div 
                                             className='flex flex-row items-center m-2 hover:bg-gray-200 rounded cursor-pointer' 
                                             key={index}
+                                            onClick={() => {console.log('clicked');}}
                                         >
                                             <Avatar 
                                                 src={item.avatar} 
@@ -50,29 +52,37 @@ function ChatMenu() {
                                     ))}
                                 </div>
                             ) : (
-                                <div></div>
+                               null
                             )}
                         </div>
                     </div>
                 ) : (
                     <div className='flex flex-col space-y-4'>
                         <SearchBar setSearchResult={setSearchResult} onClick={handleOnSearchClick}/>
-                        <div className='flex flex-row items-center space-x-4'>
-                            <div className='flex flex-row'>
-                                <Avatar className='w-16 h-16'>
-                                    <Person2/>
-                                </Avatar>
-                            </div>
-                            <div className='flex flex-row'>
-                                <div>
-                                    <Typography variant="body1" className='text-lg font-semibold'>Name</Typography>
+                        {chatHistory ? (
+                            <div>
+                                <div className='flex flex-row items-center space-x-4'>
                                     <div className='flex flex-row'>
-                                        <Typography variant="body2" className='text-md font-semibold mr-2'>Message</Typography>
-                                        <Typography variant="body2" className='text-md font-semibold'>Time</Typography>
+                                        <Avatar className='w-16 h-16'>
+                                            <Person2/>
+                                        </Avatar>
+                                    </div>
+                                    <div className='flex flex-row'>
+                                        <div>
+                                            <Typography variant="body1" className='text-lg font-semibold'>Name</Typography>
+                                            <div className='flex flex-row'>
+                                                <Typography variant="body2" className='text-md font-semibold mr-2'>Message</Typography>
+                                                <Typography variant="body2" className='text-md font-semibold'>Time</Typography>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className='flex justify-center'>
+                                <Typography variant="body1" className='text-lg font-semibold'>No messages</Typography>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

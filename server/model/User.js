@@ -43,6 +43,14 @@ const userSchema = new Schema({
         required: true,
         default: 'standardUser'
     },
+    isActive: {
+        type: Boolean,
+        default: false
+    },
+    lastSeen: {
+        type: Date,
+        default: Date.now
+    },
     designerInfo: {
         type: Schema.Types.ObjectId,
         ref: 'Designer'
@@ -62,7 +70,6 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Product'
     }],
-
     comments: [{
         type: Schema.Types.ObjectId,
         ref: 'Comment'
@@ -71,6 +78,10 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Avatar'
     },
+    conversations: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Conversation'
+    }],
     profileImages: [{
         type: Schema.Types.ObjectId,
         ref: 'images'
