@@ -13,6 +13,7 @@ module.exports = {
 
             // Common data for all users
             const commonData = {
+                username:userData.username,
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 avatar: userData.avatar || userData.profileImages[0]?.url,

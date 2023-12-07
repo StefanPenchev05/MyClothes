@@ -20,6 +20,7 @@ interface Data {
 }
 
 interface UserInfo {
+    username:string,
     firstName: string,
     lastName: string,
     avatar: string,
