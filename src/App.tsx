@@ -10,11 +10,6 @@ import NavBar from './components/NavBar/NavBar';
 const Home = lazy(() => import('./page/Home'));
 const UserLogin = lazy(() => import('./page/userLogin'));
 const UserSignup = lazy(() => import('./page/userSignup'));
-<<<<<<< HEAD
-const UserProfile = lazy(()=>import('./page/userProfile'));
-=======
-const ChatMenu = lazy(() => import('./page/ChatMenu'));
->>>>>>> 534859b770ce26affb8428419f6448632dd794eb
 
 i18next.use(initReactI18next).init({
   resources: {
@@ -28,12 +23,7 @@ i18next.use(initReactI18next).init({
 
 function App() {
   const location = useLocation();
-<<<<<<< HEAD
-  const toShowNav =['/home','/user/q']
-  const showNavBar =  toShowNav.includes(location.pathname);
-=======
-  const showNavBar = location.pathname !== '/user/login' && location.pathname !== '/user/registration';
->>>>>>> 534859b770ce26affb8428419f6448632dd794eb
+  const showNavBar = location.pathname === '/home';
 
   return (
     <Suspense fallback={
@@ -47,12 +37,6 @@ function App() {
         <Route path='/home' element={<Home/>}></Route>
         <Route path='/user/login' element={<UserLogin/>}></Route>
         <Route path='/user/registration' element={<UserSignup/>}></Route>
-<<<<<<< HEAD
-        <Route path='/user/profile/:username' element={<UserProfile/>}></Route>
-=======
-        <Route path='/user/messages' element={<ChatMenu/>}></Route>
-        <Route path='*' element={<Home/>}></Route>
->>>>>>> 534859b770ce26affb8428419f6448632dd794eb
       </Routes>
     </Suspense>
   );
