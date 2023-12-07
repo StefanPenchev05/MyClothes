@@ -41,7 +41,10 @@ module.exports = {
         try {
             // Fetch users matching the search query and populate profileImages
             const searchData = await UserModel.find({
-                username: { $regex: new RegExp(searchQuery), $options: 'i' }
+                $or: [
+                    { firstName: { $regex: new RegExp(searchQuery), $options: 'i' } },
+                    { lastName: { $regex: new RegExp(searchQuery), $options: 'i' } }
+                ]
             }).populate('profileImages');
 
             // If no users are found, return a message
@@ -52,6 +55,8 @@ module.exports = {
             // Map over the search data and return the required fields
             return searchData.map(user => ({
                 username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 avatar: user.avatar || user.profileImages[0]?.url
             }));
         } catch (err) {

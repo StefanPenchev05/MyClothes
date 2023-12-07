@@ -2,7 +2,8 @@ import { Card, CardContent, Avatar, Typography } from "@mui/material";
 
 interface Data {
     message? : string,
-    username: string,
+    firstName: string,
+    lastName: string,
     avatar: string
 }
 
@@ -17,8 +18,8 @@ function SearchResultMenu({searchResult}:SearchBarType) {
              searchResult.map((item, index) => (
                 <Card key={index} className="mb-4">
                     <CardContent className="flex flex-row items-center">
-                        <Avatar src={item.avatar} alt={`Avatar of ${item.username}`} className="mr-2" />
-                        <Typography variant="body1">{item.username}</Typography>
+                        <Avatar src={item.avatar} alt={`Avatar of ${item.firstName} ${item.lastName}`} className="mr-2" />
+                        <Typography variant="body1">{item.firstName} {item.lastName}</Typography>
                     </CardContent>
                 </Card>
              ))
