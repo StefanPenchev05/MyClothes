@@ -5,7 +5,8 @@ import useDebounce  from '../../utils/useDebounce';
 
 interface Data {
     message? : string,
-    username: string,
+    firstName: string,
+    lastName: string,
     avatar: string
 }
 

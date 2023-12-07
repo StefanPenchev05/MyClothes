@@ -14,7 +14,8 @@ import LanguageMenu from "./UI/LanguageMenu";
 
 interface Data {
     message? : string,
-    username: string,
+    firstName: string,
+    lastName: string,
     avatar: string,
 }
 
