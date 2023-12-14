@@ -34,7 +34,10 @@ module.exports = {
             const commonData = {
                 firstName: userData.firstName,
                 lastName: userData.lastName,
+                username:userData.username,
+                gender:userData.gender,
                 avatar: userData.avatar || userData.profileImages[0]?.url,
+                profileImages:userData.profileImages,
                 role: userData.role,
             };
 
