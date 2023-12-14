@@ -1,6 +1,6 @@
 const mongo = require('mongoose');
 const Schema = mongo.Schema;
-const bcrypt = require("bcrypt");
+const Designer = require('./Designer.js');
 
 const userSchema = new Schema({
     username: {
@@ -43,6 +43,14 @@ const userSchema = new Schema({
         required: true,
         default: 'standardUser'
     },
+    isActive: {
+        type: Boolean,
+        default: false
+    },
+    lastSeen: {
+        type: Date,
+        default: Date.now
+    },
     designerInfo: {
         type: Schema.Types.ObjectId,
         ref: 'Designer'
@@ -62,7 +70,6 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Product'
     }],
-
     comments: [{
         type: Schema.Types.ObjectId,
         ref: 'Comment'
@@ -71,6 +78,10 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Avatar'
     },
+    conversations: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Conversation'
+    }],
     profileImages: [{
         type: Schema.Types.ObjectId,
         ref: 'images'
@@ -81,25 +92,6 @@ const userSchema = new Schema({
     }
 }, {
     timestamps: true
-});
-
-userSchema.pre('save', (next) => {
-    const user = this;
-    if (user.role === 'standardUser') {
-        user.designerInfo = null;
-    };
-    console.log('here')
-    next();
-})
-
-userSchema.pre('findOneAndUpdate', async function (next) {
-    const user = this;
-    if (user._update.password) {
-        const bcrypt = require('bcryptjs');
-        user._update.password = await bcrypt.hash(user._update.password, 8);
-    }
-    console.log('here')
-    next();
 });
 
 

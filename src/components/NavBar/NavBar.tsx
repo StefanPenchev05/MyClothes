@@ -14,13 +14,14 @@ import LanguageMenu from "./UI/LanguageMenu";
 
 interface Data {
     message? : string,
+    id:string,
     firstName: string,
     lastName: string,
     avatar: string,
 }
 
 interface UserInfo {
-    username:string,
+    id: string,
     firstName: string,
     lastName: string,
     avatar: string,

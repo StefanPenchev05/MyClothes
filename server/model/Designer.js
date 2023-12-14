@@ -52,4 +52,5 @@ const designerSchema = new Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model('designers', designerSchema);
+const Designer = mongoose.model('Designer', designerSchema);
+module.exports = Designer;

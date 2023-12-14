@@ -21,10 +21,12 @@
     "google-auth-library": "^9.2.0",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^4.17.2",
     "node-cron": "^3.0.2",
     "nodemailer": "^6.9.6",
     "passport": "^0.6.0",
     "passport-google-oauth2": "^0.2.0",
+    "socket.io": "^4.7.2",
     "url-encode-decode": "^1.0.0"
   },
   "devDependencies": {

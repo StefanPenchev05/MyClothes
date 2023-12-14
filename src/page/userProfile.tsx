@@ -1,8 +1,8 @@
 import React ,{lazy} from 'react'
 import { useState,useEffect } from 'react'
-import { Navigate, useParams, Route } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { getData } from "../service/api"
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
@@ -10,11 +10,8 @@ import UserDetails from '../components/NavBar/UI/UserDetails';
 import Stack from '@mui/material/Stack';
 import {  Html } from '@mui/icons-material';
 import AspectRatio from '@mui/joy/AspectRatio';
-import Typography from '@mui/joy/Typography';
-import ProfileButtons from '../UserProfilePage/ProfileButtons';
-import DisplayUserImages from '../UserProfilePage/DisplayUserImages';
-
 interface UserInfo {
+    id:string,
     firstName: string,
     lastName: string,
     username:string,
@@ -27,10 +24,6 @@ interface UserInfo {
     sales?: number
 
 }
-interface ProfileImage{
-    
-    url:string,
-}
 function UserProfile() {
   
     const [userInfo, setUserInfo] = useState<UserInfo>();
@@ -38,89 +31,81 @@ function UserProfile() {
     
     const [isLoaded, setIsLoaded] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
-    const [isOwner,setIsOwner] = useState(false);
+    const [pfpWidth,setPfpWidth] = useState(0);
     useEffect(() => {
         const currentHour = new Date().getHours();
         setDarkMode(currentHour < 6 || currentHour >= 20);
     }, []);
    
-    const {username}= useParams();
     useEffect(() => {
-        
         const getUserInfo = async() => {
             try{
-                const user = await getData(`/user/${username}`);
-                const visitor = await getData('/navBar/userInfo')
-                if(!user.message&&!visitor.message){
-                    setUserInfo(user);
-                    setVisitorInfo(visitor);
+                const data = await getData(`/user/${username}`);
+                if(!data.message){
+                    setUserInfo(data);
                 }else{
                     setUserInfo(undefined);
                 }
                 setIsLoaded(true);
-                if(user.username===visitor.username)
-                    setIsOwner(true);
-                
             }catch(err){
                 console.log(err);
             }
         }
+
         getUserInfo();
     }, []);
     
-    
-    
-    
     return (
         
-        isLoaded?(
-        <div className={`w-full min-h-screen	 ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+            
+        <Grid container className={`min-h-screen ${darkMode ? 'bg-gray-800' : 'bg-gray-100'} p-4`}>
 
-            <div className={` flex  flex-col gap-2 w-[60%] ml-[20%] justify-center`}>
-                <div className={`mt-[5%] flex flex-row w-full rounded-lg text-center ${darkMode ? 'bg-gray-900' : 'bg-gray-200'}` }>
-                    <div className='pt-[5%] pb-[5%] ml-[5%] w-[150px] '>
-                        <AspectRatio ratio={1/1} variant='plain'>
+            <Grid container spacing={2} columns={16} className='flex justify-center align-center bg-white'>
+            
+            <Grid item xs={4} id='container' className='bg-gray-300 flex   justify-center align-center bg-white'>
+                <div className='flex flex-col w-full justify-center align-center'>
+                <div>
+                <AspectRatio className='w-3/5 flex justify-center align-center ml-[20%]'
+                variant="outlined"
+                ratio="1/1"
+                sx={{
+                    
+                    bgcolor: 'background.level2',
+                    borderRadius: 'md',
+                }}
+                >
+                 <Avatar alt="Profile Picture" src={userInfo?.avatar}    variant="rounded" />
+                    
+                </AspectRatio>
+                
+               
+                </div>
+                <div>
+                <Stack spacing={1} divider={<Divider orientation="horizontal" flexItem />}>
+                <Stack spacing={0.1} divider={<Divider orientation="horizontal" flexItem />}>
+                <p className='text-center text-l'>{userInfo?.firstName}</p>
+                <p className='text-center text-2xl'>{userInfo?.firstName}</p>
+                </Stack>
+                <Stack spacing={0.1} divider={<Divider orientation="horizontal" flexItem />}>
+                <p className='text-center text-l'>{userInfo?.lastName}</p>
+                <p className='text-center text-2xl'>{userInfo?.lastName}</p>
+                </Stack>
+                
+                <div>
 
-                            <Avatar className='  ' alt='Profile Picture' src={userInfo?.avatar}></Avatar>
-                        </AspectRatio>
-                        <Typography className='w-[70%] ml-[15%] align-self-center' color="neutral"
-                    level="h4"
-                    noWrap={false}
-                    variant="plain">{userInfo?.firstName} { userInfo?.lastName}</Typography>
-                    </div>
-                    <div className='mt-[5%] ml-[5%]'>
-                    <Typography className='w-[70%] ml-[15%] flex flex-wrap align-self-center' color="neutral"
-                    level="h4"
-                    noWrap={false}
-                    variant="plain">{userInfo?.username} </Typography>
-                    <Typography className='w-[70%] ml-[15%] flex flex-wrap align-self-center' color="neutral"
-                    level="body-lg"
-                    noWrap={false}
-                    variant="plain"
-                    component='p'>{userInfo?.gender.charAt(0).toUpperCase()}{userInfo?.gender.slice(1)} </Typography>
-                    </div>
-                    <div className='mt-[5%] ml-[5%]'>
-                        <ProfileButtons isOwner={isOwner}/>
-                    </div>
-                   
+                <p className='text-center'>{userInfo?.purchasedProducts}</p>
+                </div>
+                </Stack></div>
 
                 </div>
-                <div className={`w-[100%]  h-[500px]   ${darkMode ? 'bg-gray-900' : 'bg-gray-200'}` }>
-                                    
-                
-                 <DisplayUserImages userInfo={userInfo}/>
-                
-                                    
-                </div>
+            </Grid>
+            <Grid item xs={8} className='bg-black text-sky-400'>
+                {userInfo?.purchasedProducts}
+            </Grid>
+            </Grid>
 
-            </div>
-        </div>    
-        ):
-        (
-            <div>
-                <p>Nema bache</p>
-            </div>
-        )
+        </Grid>
+
         
                                 
     

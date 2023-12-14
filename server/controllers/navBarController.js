@@ -1,12 +1,13 @@
 // Import the navBarService
 const navBarService = require('../service/navBarService')
+const { resolveToken } = require("../utils/tokenUserIdUtils");
 
 module.exports = {
     // Function to send user data
     sendUserData: async (req, res) => {
         try {
             // Get the user ID from the session
-            const userId = req.session.user;
+            const userId = resolveToken(req.session.user);
 
             // If the user ID is not found, return an error
             if (!userId) {

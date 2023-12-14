@@ -1,13 +1,11 @@
 const bcrypt = require("bcrypt");
 
-const { generateToken, verifyToken } = require("../utils/tokenUtils");
+const { generateToken, verifyToken } = require("../utils/tokenEmailUtils");
 const { SendPassResetMail } = require("../utils/mailUtils");
 
 const UserModel = require("../model/User");
 const Address = require("../model/Address");
 const Image = require("../model/ProfileImages");
-const OAuth2Client = require("google-auth-library");
-const { redirect } = require("react-router-dom");
 
 require('dotenv').config();
 
@@ -20,10 +18,10 @@ class CustomError extends Error {
 }
 
 module.exports = {
-    getUsersData: async (username) => {
+    getUsersData: async (sessionID) => {
         try {
             // Fetch user data and populate profileImages
-            const userData = await UserModel.findOne({username:username}).populate("profileImages");
+            const userData = await UserModel.findOne({ _id: sessionID }).populate("profileImages");
 
             // If user data is not found, return a message
             if (!userData) {
@@ -58,8 +56,8 @@ module.exports = {
             throw new Error(err.message);
         }
     },
-      
-      
+
+
 
     loginUser: async (emailOrUsername, password) => {
         // Find the user based on email or username
