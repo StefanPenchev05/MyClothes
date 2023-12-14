@@ -4,8 +4,6 @@ const router = express.Router();
 //controllers
 const userController = require("../controllers/userController");
 
-//get info of us
-router.get('/:username', userController.getUsersData);
 //login user
 router.post('/login', userController.login);
 //router.post('/google-login', userController.googleLogin)
@@ -17,5 +15,7 @@ router.post('/logout', userController.logout);
 router.post('/reset-password', userController.requestPasswordReset);
 //reset password
 router.get('/reset-password/:token', userController.resetPassword);
+//get information of the selected user
+router.get('/profile/:token', userController.getUsersData);
 
 module.exports = router;

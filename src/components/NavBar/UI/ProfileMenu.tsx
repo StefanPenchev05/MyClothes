@@ -7,10 +7,9 @@ import {IconButton, Menu, MenuItem, Tooltip, Avatar, ListItemIcon, ListItemText}
 
 
 interface UserInfo {
-    username:string,
+    id:string,
     firstName: string,
     lastName: string,
-    
     avatar: string,
     role: string,
     purchasedProducts: number,
@@ -70,7 +69,7 @@ function ProfileMenu({userInfo}: ProfileMenuProps) {
                 <Person2 fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-                <Link to={`/user/profile/${userInfo.username}`}>
+                <Link to={`/user/profile/${userInfo.id}`}>
                     {t('navbar.MyProfile')}
                 </Link>
             </ListItemText>

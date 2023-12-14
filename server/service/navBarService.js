@@ -1,4 +1,5 @@
 const UserModel = require('../model/User')
+const { generateToken } = require('../utils/tokenUserIdUtils');
 
 module.exports = {
     getUsersData: async (userId) => {
@@ -13,7 +14,7 @@ module.exports = {
 
             // Common data for all users
             const commonData = {
-                username:userData.username,
+                id: generateToken(userData._id),
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 avatar: userData.avatar || userData.profileImages[0]?.url,
@@ -54,7 +55,7 @@ module.exports = {
 
             // Map over the search data and return the required fields
             return searchData.map(user => ({
-                username: user.username,
+                id: generateToken(user._id),
                 firstName: user.firstName,
                 lastName: user.lastName,
                 avatar: user.avatar || user.profileImages[0]?.url

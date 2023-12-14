@@ -48,7 +48,7 @@ function App() {
         <Route path='/home' element={<Home/>}></Route>
         <Route path='/user/login' element={<UserLogin/>}></Route>
         <Route path='/user/registration' element={<UserSignup/>}></Route>
-        <Route path='/user/profile/:username' element={<ProfilePage/>}></Route>
+        <Route path='/user/profile/:token' element={<ProfilePage/>}></Route>
         <Route path='/user/messages' element={<ChatMenu/>}></Route>
       </Routes>
     </Suspense>

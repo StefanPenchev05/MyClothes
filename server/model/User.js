@@ -1,6 +1,6 @@
 const mongo = require('mongoose');
 const Schema = mongo.Schema;
-const bcrypt = require("bcrypt");
+const Designer = require('./Designer.js');
 
 const userSchema = new Schema({
     username: {
@@ -92,25 +92,6 @@ const userSchema = new Schema({
     }
 }, {
     timestamps: true
-});
-
-userSchema.pre('save', (next) => {
-    const user = this;
-    if (user.role === 'standardUser') {
-        user.designerInfo = null;
-    };
-    console.log('here')
-    next();
-})
-
-userSchema.pre('findOneAndUpdate', async function (next) {
-    const user = this;
-    if (user._update.password) {
-        const bcrypt = require('bcryptjs');
-        user._update.password = await bcrypt.hash(user._update.password, 8);
-    }
-    console.log('here')
-    next();
 });
 
 

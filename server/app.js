@@ -4,7 +4,7 @@ const indexRouter = require("./routes/indexRouter");
 const { dbConnect } = require("./config/dbConfig");
 const { sessionMiddleware } = require("./config/sessionConfig");
 const checkSession = require('./middleware/checkAuth');
-const { clearExpiredTokens } = require("./utils/tokenUtils");
+const { clearExpiredTokens } = require("./utils/tokenEmailUtils");
 
 const express = require("express");
 const http = require("http");
@@ -47,6 +47,7 @@ app.use(cors({
 
 //Handles the sessions
 app.use(sessionMiddleware);
+io.engine.use(sessionMiddleware);
 
 //Checks for session
 //app.use(checkSession.checkSession);
