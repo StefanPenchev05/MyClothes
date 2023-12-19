@@ -79,21 +79,6 @@ function UserProfile() {
         getUserInfo();
     }, [token]);
 
-    const StyledTab = styled((props: StyledTabsProps) => (
-        <Tab disableRipple {...props} />
-      ))(({ theme }) => ({
-        textTransform: 'none',
-        fontWeight: theme.typography.fontWeightRegular,
-        fontSize: theme.typography.pxToRem(15),
-        marginRight: theme.spacing(1),
-        color: 'rgba(255, 255, 255, 0.7)',
-        '&.Mui-selected': {
-          color: '#fff',
-        },
-        '&.Mui-focusVisible': {
-          backgroundColor: 'rgba(100, 95, 228, 0.32)',
-        },
-      }));
     
     
     
@@ -113,9 +98,9 @@ function UserProfile() {
                 <Tabs className={`w-full`} defaultValue={0} selectionFollowsFocus>
                     <TabsList
                     className={`flex flex-row gap-1  justify-center`}>
-                        <Tab className={`justify-center`}value={0}>Images</Tab>
-                        <Tab className={`justify-center`}value={0}>Images</Tab>
-                        <Tab className={`justify-center`}value={0}>Images</Tab>
+                        <Tab value={0}>Images</Tab>
+                        <Tab value={0}>Images</Tab>
+                        <Tab value={0}>Images</Tab>
                         {userInfo?.role==='Designer'&&<Tab value={1}>Projects</Tab>}
                        
                     </TabsList>
