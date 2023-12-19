@@ -21,44 +21,30 @@ interface ProfileImage{
     url:string,
 }
 
-function DisplayUserImages({userInfo}:{userInfo:any}){
+function DisplayUserImages({Images}:{Images:ProfileImage[]}){
 
-    const [arr, setArr] = useState<ProfileImage[]>(userInfo.profileImages);
-    const [isLoaded,setIsLoaded] = useState<boolean>(false);
-    useEffect(()=>{
-          const GetImages =()=>{
-              setArr(userInfo.profileImages);
-              setIsLoaded(true);
-              console.log(arr)
-
-          }
-          GetImages();
-        },[]);
+    
+    
+   
     
     return(
-    isLoaded?(
-    <div className="w-[] flex flex-row gap-1">
-        {arr.map((x:ProfileImage)=>{
+    
+    <div className="w-[100%] h-full flex flex-row gap-1">
+        {Images?.filter((x:ProfileImage) => x).map((x:ProfileImage)=>{
+            console.log(x.url)
 
             return(
                 <div key={x.url}>
                     <AspectRatio ratio={1/1}>
-                        <Avatar alt='Photo' src={x.url}></Avatar>
+                        <img src={x.url} alt="Photo" />
                     </AspectRatio>
                 </div>
             )
 
         })}
-    </div>):(
-        <div className="align-self-center justify-self-center w-full h-full">
-            <Typography className='w-[70%] ml-[15%] flex flex-wrap align-self-center' color="neutral"
-                    level="body-lg"
-                    noWrap={false}
-                    variant="plain"
-                    component='p'>No photos available</Typography>
-        </div>
-    ))
+    </div>
     
 
+    )
 }
 export default DisplayUserImages;
