@@ -3,27 +3,26 @@ import { Dispatch, SetStateAction } from 'react';
 import {Socket} from 'socket.io-client'
 
 interface Data {
-    message? : string,
     id: string,
     firstName: string,
     lastName: string,
     avatar: string,
 }
 
+interface Message extends Data {
+    message: string[],
+    lastMessage: string,
+    timesnap: Date
+}
+
 interface SearchResultType{
     searchResult: Data[] | undefined,
     setSearchMenu : Dispatch<SetStateAction<boolean>>,
-    setSelectedUser: Dispatch<SetStateAction<Data | undefined>>
-    updateMessageMenuAndChatHistory: (conversationID: string) => void,
+    setSelectedUser: Dispatch<SetStateAction<Data | undefined>>,
     socket: Socket
 }
 
-function SearchResultList({searchResult, updateMessageMenuAndChatHistory, setSelectedUser, setSearchMenu, socket}:SearchResultType) {
-
-    const handleNewChat = (idOfSelectedUser: string) => {
-        setSearchMenu(false);
-        socket.emit('newChat',idOfSelectedUser, updateMessageMenuAndChatHistory);
-    }
+function SearchResultList({searchResult, setSelectedUser}:SearchResultType) {
 
   return (
     <div className='flex justify-start items-center w-full mt-4'>
@@ -35,7 +34,6 @@ function SearchResultList({searchResult, updateMessageMenuAndChatHistory, setSel
                         key={index}
                         onClick={() => {
                             setSelectedUser(item);
-                            handleNewChat(item.id)
                         }}
                     >
                         <Avatar 
@@ -43,7 +41,9 @@ function SearchResultList({searchResult, updateMessageMenuAndChatHistory, setSel
                             alt={`Avatar of ${item.firstName} ${item.lastName}`} 
                             className="mr-2 w-16 h-16" 
                         />
-                        <Typography variant="body1" className='text-lg font-semibold'>{item.firstName} {item.lastName}</Typography>
+                        <Typography variant="body1" className='text-lg font-semibold'>
+                            {item.firstName} {item.lastName}
+                        </Typography>
                     </div>
                 ))}
             </div>

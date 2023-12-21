@@ -10,7 +10,7 @@ router.post('/login', userController.login);
 //register
 router.post('/registration', userController.register);
 //logout
-router.post('/logout', userController.logout);
+router.get('/logout', userController.logout);
 //sent reset password mail
 router.post('/reset-password', userController.requestPasswordReset);
 //reset password

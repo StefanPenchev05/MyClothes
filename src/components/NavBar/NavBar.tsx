@@ -13,8 +13,7 @@ import NavBarButtons from "./UI/NavBarButtons";
 import LanguageMenu from "./UI/LanguageMenu";
 
 interface Data {
-    message? : string,
-    id:string,
+    id: string,
     firstName: string,
     lastName: string,
     avatar: string,
@@ -74,7 +73,10 @@ function NavBar() {
                  userInfo ? (
                     <div className="flex flex-row justify-between items-center w-1/4">
                         <div className="flex flex-row items-center">
-                            <ProfileMenu userInfo={userInfo}/>
+                            <ProfileMenu 
+                                userInfo={userInfo}
+                                setUserInfo={setUserInfo}
+                            />
                             <UserDetails userInfo={userInfo}/>
                         </div>
                         <ChatShoppingIcons />

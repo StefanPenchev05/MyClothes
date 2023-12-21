@@ -4,16 +4,20 @@ import { Search } from "@mui/icons-material"
 import useDebounce  from '../../utils/useDebounce';
 
 interface Data {
-    message? : string,
-    id: string,
-    firstName: string,
-    lastName: string,
-    avatar: string
+  id: string,
+  firstName: string,
+  lastName: string,
+  avatar: string,
+}
+
+interface Message extends Data {
+  lastMessage: string,
+  timesnap: Date
 }
 
 interface SearchBarType{
     setSearchResult: React.Dispatch<React.SetStateAction<Data[] | undefined>>,
-    onClick?: () => void
+    onClick?: () => void,
 }
 
 function SearchBar({setSearchResult, onClick}:SearchBarType) {
@@ -67,7 +71,7 @@ function SearchBar({setSearchResult, onClick}:SearchBarType) {
             <div className="w-full border-none">
                 <label htmlFor="search" className="sr-only">Search</label>
                 <input 
-                    id="search" 
+                    id="search"
                     placeholder="Search..." 
                     className="w-full outline-none py-1 bg-transparent" 
                     onChange={(e) => handleInputChange(e)}

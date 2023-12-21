@@ -103,8 +103,9 @@ module.exports = {
         try {
             // Clear the user session to log them out
             req.session.destroy();
-            return res.status(200).redirect('/login');
+            return res.status(200).json({ success: true, msg: "Successfully logged out user!" });
         } catch (err) {
+            console.log(err);
             handleControllerError(err, res);
         }
     }

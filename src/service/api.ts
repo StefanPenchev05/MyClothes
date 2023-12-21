@@ -45,7 +45,7 @@ export async function getData(URL: string, query? : {[key:string]:string}){
         // Parse the response data as JSON
         const data = await response.json();
         console.log(data);
-
+        
         // If the request is successful or returns a 400 status, return the response data
         if(response.ok || response.status === 400){
             return data;

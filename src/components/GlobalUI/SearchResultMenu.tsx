@@ -1,10 +1,10 @@
 import { Card, CardContent, Avatar, Typography } from "@mui/material";
 
 interface Data {
-    message? : string,
+    id: string,
     firstName: string,
     lastName: string,
-    avatar: string
+    avatar: string,
 }
 
 interface SearchBarType{

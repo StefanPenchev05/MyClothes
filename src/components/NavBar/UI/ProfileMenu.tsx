@@ -1,13 +1,12 @@
-import React from 'react'
-import { Link } from "react-router-dom";
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Person2, Settings, Logout } from "@mui/icons-material";
-import { sendData } from '../../../service/api';
-import {IconButton, Menu, MenuItem, Tooltip, Avatar, ListItemIcon, ListItemText} from "@mui/material";
-
+import { Link, useNavigate } from 'react-router-dom';
+import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip, Avatar } from '@mui/material';
+import { Settings, Logout, Person } from '@mui/icons-material';
+import { getData } from '../../../service/api';
 
 interface UserInfo {
-    id:string,
+    id: string,
     firstName: string,
     lastName: string,
     avatar: string,
@@ -18,85 +17,82 @@ interface UserInfo {
 }
 
 interface ProfileMenuProps {
-    userInfo: UserInfo
+    userInfo: UserInfo,
+    setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | undefined>>
 }
 
-function ProfileMenu({userInfo}: ProfileMenuProps) {
+function ProfileMenu({userInfo, setUserInfo}: ProfileMenuProps) {
     const [anchorElProfile, setAnchorElProfile] = React.useState<null | HTMLElement>(null);
+    const navigate = useNavigate();
     const { t } = useTranslation();
 
-    const handleClickProfile = (event: React.MouseEvent<HTMLElement>) => {
+    const handleClickProfile = useCallback((event: React.MouseEvent<HTMLElement>) => {
         setAnchorElProfile(event.currentTarget);
-    }
+    }, []);
 
-    const handleCloseProfile = () => {
+    const handleCloseProfile = useCallback(() => {
         setAnchorElProfile(null);
-    }
+    }, []);
 
-    const handleLogOut = async(event:React.MouseEvent) => {
+    const handleLogOut = useCallback(async(event:React.MouseEvent) => {
         event.preventDefault();
+        handleCloseProfile();
         try{
-            console.log('logout');
-            await sendData('/user/logout');
+            const data = await getData('/user/logout');
             window.location.reload();
         }catch(err){
-            console.log(err);
+            console.log("Error " + err);
         }
-    }
-
-  return (
-    <div className="inline">
-        <Tooltip title={t('navbar.MyProfile')}>
-            <IconButton
-                size="small"
-                sx={{ width: 56, height: 56 }}
-                onClick={handleClickProfile}
+    }, []);
+    return (
+        <div className="inline">
+            <Tooltip title={t('navbar.MyProfile')}>
+                <IconButton
+                    size="small"
+                    sx={{ width: 56, height: 56 }}
+                    onClick={handleClickProfile}
+                >
+                    <Avatar src={userInfo.avatar} alt="user" sx={{ width: 56, height: 56 }} />
+                </IconButton>
+            </Tooltip>
+            <Menu
+                anchorEl={anchorElProfile}
+                open={Boolean(anchorElProfile)}
+                onClose={handleCloseProfile}
             >
-                <Avatar src={userInfo.avatar} alt="user" sx={{ width: 56, height: 56 }} />
-            </IconButton>
-        </Tooltip>
-        <Menu
-        id="basic-menu"
-        anchorEl={anchorElProfile}
-        open={Boolean(anchorElProfile)}
-        onClose={handleCloseProfile}
-        MenuListProps={{
-            'aria-labelledby': 'basic-button',
-        }}
-        >
-        <MenuItem onClick={handleCloseProfile}>
-            <ListItemIcon>
-                <Person2 fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>
-                <Link to={`/user/profile/${userInfo.id}`}>
-                    {t('navbar.MyProfile')}
-                </Link>
-            </ListItemText>
-        </MenuItem>
-        <MenuItem>
-            <ListItemIcon>
-                <Settings fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>
-                <Link to={'/user/settings'}>
-                    {t('navbar.Settings')}
-                </Link>
-            </ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleCloseProfile}>
-            <ListItemIcon>
-                <Logout fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>
-                <Link to={'/home'} onClick={handleLogOut}>
-                    {t('LogOut')}
-                </Link>
-            </ListItemText>
-        </MenuItem>
-        </Menu>
-    </div>
-  )
+                <MenuItem>
+                    <ListItemIcon>
+                        <Person fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>
+                        <div onClick={() => { handleCloseProfile(); navigate(`/user/${userInfo.id}`); }}>
+                            {t('navbar.MyProfile')}
+                        </div>
+                    </ListItemText>
+                </MenuItem>
+                <MenuItem>
+                    <ListItemIcon>
+                        <Settings fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>
+                        <div onClick={() => { handleCloseProfile(); navigate('/user/settings'); }}>
+                            {t('navbar.Settings')}
+                        </div>
+                    </ListItemText>
+                </MenuItem>
+                <MenuItem>
+                    <ListItemIcon>
+                        <Logout fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>
+                        <div onClick={(e) => {handleLogOut(e)}}>
+                            {t('Logout')}
+                        </div>
+                    </ListItemText>
+                </MenuItem>
+            </Menu>
+        </div>
+    );
 }
 
-export default ProfileMenu
+export default ProfileMenu;

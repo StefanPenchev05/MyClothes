@@ -55,12 +55,11 @@ function StepperContent() {
             const validEmail = validateField(email, setEmail, validateEmail, t('registration.Email is required'), t('registration.Invalid email address'));
             const validUser = validateField(username, setUsername, validUsername, t('registration.Username is required'), t('registration.Username must be and between 4 and 15 characters long'));
             const validPassword = validateField(password, setPassword, validatePassword, t('registration.Password is required'), t('registration.Password must be at least 8 characters long'));
-            console.log(validPassword);
             
             const validConfirmPassword = validateField(confirmPassword, setConfirmPassword, (confirmPassword:string) => password.value === confirmPassword, t('registration.Confirm Password is required'), t('registration.Passwords do not match'));
             isValid = validEmail && validUser && validPassword && validConfirmPassword;
             break;
-            case 1: // Personal Details
+          case 1: // Personal Details
             const validFirstName = validateField(firstName, setFirstName, validateFirstName, t('registration.First name is required'), t('registration.Invalid First name'));
             const validLastName = validateField(lastName, setLastName, validateLastName, t('registration.Last name is required'), t('registration.Invalid Last name'));
             const validGender = validateField(gender, setGender, (value: string) => value !== '' , t('registration.Gender is required'), '' );

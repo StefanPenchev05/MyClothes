@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {IconButton } from '@mui/material'
 import {ArrowBack } from '@mui/icons-material'
 import io from 'socket.io-client'
@@ -11,43 +11,71 @@ import MessageMenu from '../components/ChatMenu/MessageMenu'
 const socket = io('http://localhost:5500/user/messages', {withCredentials: true});
 
 interface Data {
-    message? : string,
     id: string,
     firstName: string,
     lastName: string,
     avatar: string,
 }
 
+interface Message extends Data {
+    lastMessage: string,
+    timesnap: Date | null
+}
+
 function ChatMenu() {
-    const [searchResult, setSearchResult] = useState<Data[]>();
-    const [selectedUser, setSelectedUser] = useState<Data | undefined>(undefined);
+    const [searchResult, setSearchResult] = useState<Data[] | undefined>(undefined);
     const [searchMenu,setSearchMenu] = useState<boolean>(false);
+    const [selectedUser, setSelectedUser] = useState<Data | undefined>(undefined);
     const [messageHistory, setMessageHistory] = useState<Data[] | undefined>(undefined);
-    const [chatList, setChatList] = useState<Data[] | undefined>(undefined);
+    const [chatList, setChatList] = useState<Message[] | undefined>(undefined);
+    const searchRef = useRef<HTMLInputElement>(null);
 
+    
+    const handleOnSearchClick = () => {
+        setSearchMenu(true);
+
+    }
+    
+    const updateMessageMenuAndChatHistory = () => {
+        if (selectedUser) {
+           const addUser : Message = {
+                id: selectedUser.id,
+                firstName: selectedUser.firstName,
+                lastName: selectedUser.lastName,
+                avatar: selectedUser.avatar,
+                lastMessage: "",
+                timesnap: null, 
+            };
+            if(chatList){
+                setChatList([addUser, ...chatList]);
+            } else {
+                setChatList([addUser]);
+           }
+        }
+    }
+    
+    const handleNewChat = (idOfSelectedUser: string) => {
+        setSearchMenu(false);
+        socket.emit('newChat',idOfSelectedUser, updateMessageMenuAndChatHistory);
+    }
+    
     useEffect(() => {
-        socket.emit('getChatList');
+        const handleGetChatList = (chatList: any) => {
+            setChatList(chatList);
+        };
 
-        socket.on('chatList', (data: Data[]) => {
-            setChatList(data);
-        });
+        socket.emit('getChatList', handleGetChatList);
 
         return () => {
-            socket.off('chatList');
+            socket.off('getChatList', handleGetChatList);
         };
     }, []);
 
-    const handleOnSearchClick = () => {
-        setSearchMenu(true);
-    }
-
-    const updateMessageMenuAndChatHistory = () => {
-        if (selectedUser) {
-            console.log(selectedUser);
-            setChatList(prevChatHistory => [...(prevChatHistory || []), selectedUser]);
-            
+    useEffect(() => {
+        if(selectedUser){
+            handleNewChat(selectedUser.id);
         }
-    }
+    }, [selectedUser])
 
   return (
     <div className="w-full flex flex-row p-4" style={{height: 'calc(100vh - 70px)'}}>
@@ -65,7 +93,6 @@ function ChatMenu() {
                             searchResult={searchResult}
                             setSearchMenu={setSearchMenu}
                             setSelectedUser={setSelectedUser}
-                            updateMessageMenuAndChatHistory={updateMessageMenuAndChatHistory}
                             socket={socket}
                         />
                     </div>
@@ -81,7 +108,7 @@ function ChatMenu() {
             </div>
         </div>
         <div className='flex flex-grow justify-center items-center w-3/4 bg-white border-2 border-gray-200 rounded-lg p-6 ml-4 shadow-lg'>
-            <MessageMenu messageHistory={messageHistory}/>
+            <MessageMenu messageHistory={messageHistory} socket={socket}/>
         </div>
     </div>
   )

@@ -1,5 +1,6 @@
 import { Typography, Avatar} from '@mui/material'
 import { Chat } from '@mui/icons-material'
+import {Socket} from 'socket.io-client'
 
 interface Data {
     message? : string,
@@ -11,9 +12,15 @@ interface Data {
 
 interface MessageMenuType{
     messageHistory: Data[] | undefined,
+    socket: Socket
 }
 
-function MessageMenu({messageHistory}:MessageMenuType) {
+function MessageMenu({messageHistory, socket}:MessageMenuType) {
+
+    socket.on('handleDisplayMessages', () => {
+        
+    })
+
   return (
     <>
         {messageHistory ? (

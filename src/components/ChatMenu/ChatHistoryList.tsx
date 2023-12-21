@@ -5,15 +5,19 @@ import { Socket } from 'socket.io-client'
 
 
 interface Data {
-    message? : string,
     id: string,
     firstName: string,
     lastName: string,
     avatar: string,
 }
 
+interface Message extends Data {
+    lastMessage: string,
+    timesnap: Date | null
+}
+
 interface ChatHistoryType{
-    chatList: Data[] | undefined,
+    chatList: Message[] | undefined,
     setSearchResult : React.Dispatch<React.SetStateAction<Data[] | undefined>>,
     setMessageHistory: React.Dispatch<React.SetStateAction<Data[] | undefined>>,
     onClick: () => void,
@@ -23,7 +27,6 @@ interface ChatHistoryType{
 function ChatHistoryList({chatList, setSearchResult, socket , setMessageHistory ,onClick: handleOnSearchClick}:ChatHistoryType) {
 
     const handleDisplayMessages = (idOfSelectedUser:string) => {
-        console.log(idOfSelectedUser);
         socket.emit('dispalayMessages', idOfSelectedUser, setMessageHistory );
     }
 
@@ -32,7 +35,7 @@ function ChatHistoryList({chatList, setSearchResult, socket , setMessageHistory 
         <SearchBar setSearchResult={setSearchResult} onClick={handleOnSearchClick}/>
         {chatList ? (
            chatList.map((item, index) => (
-                <div className='flex flex-row items-center space-x-4' key={index} onClick={() => handleDisplayMessages(item.id)}>
+                <div className='flex flex-row items-center space-x-4 hover:cursor-pointer' key={index} onClick={() => handleDisplayMessages(item.id)}>
                     <div className='flex flex-row'>
                         <Avatar 
                             src={item.avatar} 
@@ -44,8 +47,8 @@ function ChatHistoryList({chatList, setSearchResult, socket , setMessageHistory 
                         <div>
                             <Typography variant="body1" className='text-lg font-semibold'>{item.firstName} {item.lastName}</Typography>
                             <div className='flex flex-row'>
-                                <Typography variant="body2" className='text-md font-semibold mr-2'>Message</Typography>
-                                <Typography variant="body2" className='text-md font-semibold'>Time</Typography>
+                                <Typography variant="body2" className='text-md font-semibold mr-2'> {item.lastMessage} </Typography>
+                                <Typography variant="body2" className='text-md font-semibold'> {item.timesnap ? item.timesnap.toLocaleString() : '' } </Typography>
                             </div>
                         </div>
                     </div>
