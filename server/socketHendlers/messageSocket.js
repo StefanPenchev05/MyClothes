@@ -37,6 +37,16 @@ module.exports = function (io) {
             }
         });
 
+        socket.io('dispalayMessages', async (chatID, cb) => {
+            try {
+                const chat = await Conversation.findById(chatID);
+                cb({ success: true, messages: chat.messages });
+            } catch (error) {
+                console.error('Error getting messages:', error);
+                cb({ success: false });
+            }
+        });
+
         socket.on('disconnect', () => {
             console.log('messageNamespace disconnect');
         });

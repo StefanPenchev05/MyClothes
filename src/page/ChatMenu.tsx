@@ -45,6 +45,7 @@ function ChatMenu() {
         if (selectedUser) {
             console.log(selectedUser);
             setChatList(prevChatHistory => [...(prevChatHistory || []), selectedUser]);
+            
         }
     }
 
