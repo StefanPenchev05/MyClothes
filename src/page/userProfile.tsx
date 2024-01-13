@@ -2,26 +2,35 @@ import React ,{lazy} from 'react'
 import { useState,useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { getData } from "../service/api"
-import { Box, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid';
-import Avatar from '@mui/material/Avatar';
-import Divider from '@mui/material/Divider';
-import UserDetails from '../components/NavBar/UI/UserDetails';
-import Stack from '@mui/material/Stack';
-import {  Html } from '@mui/icons-material';
-import AspectRatio from '@mui/joy/AspectRatio';
+import { Box, Icon, SvgIcon, Typography } from '@mui/material';
+import { Tabs } from '@mui/base/Tabs';
+import { Tab } from '@mui/base/Tab';
+import { TabsList } from '@mui/base/TabsList';
+import { TabPanel } from '@mui/base/TabPanel';
+import ImageIcon from '@mui/icons-material/Image';
+import BusinessCenterRoundedIcon from '@mui/icons-material/BusinessCenterRounded';
+import DisplayUserImages from '../UserProfilePage/DisplayUserImages';
+import UnstyledTabsCustomized from '../UserProfilePage/tabs';
+import UserPanel from '../UserProfilePage/UserPanel';
 interface UserInfo {
     id:string,
     firstName: string,
     lastName: string,
+    username:string,
     avatar: string,
+    gender:string,
+    profileImages:ProfileImage[],
     role: string,
     purchasedProducts: number,
     products?: number,
     sales?: number
-    
+
 }
-function UserProfile() {
+interface ProfileImage{
+    
+    url:string,
+}
+function ProfilePage() {
   
     const [userInfo, setUserInfo] = useState<UserInfo>();
     const [visitorInfo,setVisitorInfo] = useState<UserInfo>();
@@ -45,72 +54,74 @@ function UserProfile() {
                     setUserInfo(data);
                 }else{
                     setUserInfo(undefined);
-                    redirect('/home')
                 }
             } catch (error) {
                 console.error('Error getting user info: ', error);
             }
             
         }
-
+        
         getUserInfo();
     }, []);
+    const [activeTab,setActiveTab]= useState<number>(0);
+    useEffect(() => {
+        console.log('activeTab:', activeTab);
+    }, [activeTab]);
+    const handleTabChange = (tabIndex:number) => {
+        setActiveTab(tabIndex);
+    }
+    
+    
     
     return (
         
             
-        <Grid container className={`min-h-screen ${darkMode ? 'bg-gray-800' : 'bg-gray-100'} p-4`}>
 
-            <Grid container spacing={2} columns={16} className='flex justify-center align-center bg-white'>
-            
-            <Grid item xs={4} id='container' className='bg-gray-300 flex   justify-center align-center bg-white'>
-                <div className='flex flex-col w-full justify-center align-center'>
-                <div>
-                <AspectRatio className='w-3/5 flex justify-center align-center ml-[20%]'
-                variant="outlined"
-                ratio="1/1"
-                sx={{
-                    
-                    bgcolor: 'background.level2',
-                    borderRadius: 'md',
-                }}
-                >
-                 <Avatar alt="Profile Picture" src={userInfo?.avatar}    variant="rounded" />
-                    
-                </AspectRatio>
-                
-               
-                </div>
-                <div>
-                <Stack spacing={1} divider={<Divider orientation="horizontal" flexItem />}>
-                <Stack spacing={0.1} divider={<Divider orientation="horizontal" flexItem />}>
-                <p className='text-center text-l'>{userInfo?.firstName}</p>
-                <p className='text-center text-2xl'>{userInfo?.firstName}</p>
-                </Stack>
-                <Stack spacing={0.1} divider={<Divider orientation="horizontal" flexItem />}>
-                <p className='text-center text-l'>{userInfo?.lastName}</p>
-                <p className='text-center text-2xl'>{userInfo?.lastName}</p>
-                </Stack>
-                
-                <div>
-
-                <p className='text-center'>{userInfo?.purchasedProducts}</p>
-                </div>
-                </Stack></div>
-
-                </div>
-            </Grid>
-            <Grid item xs={8} className='bg-black text-sky-400'>
-                {userInfo?.purchasedProducts}
-            </Grid>
-            </Grid>
-
-        </Grid>
+       
 
         
+            <div className={`w-full min-h-screen	 ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+    
+                <div className={` flex  flex-col gap-2 w-[60%] ml-[20%] justify-center`}>
+                   {userInfo&& <UserPanel userInfo={userInfo}/> }
+                    <div className={`w-[100%]  h-[400px]   ${darkMode ? 'bg-gray-900' : 'bg-gray-200'} rounded-lg` }>
+                                        
+                    
+                    
+                    <Tabs  className={`w-full mt-1`}    defaultValue={0} selectionFollowsFocus  >
+                        <TabsList 
+                        className={`flex flex-row space-x-4  justify-center`}>
+                            <Tab  className={`transform p-2  rounded-lg transition text-center bg-transparent uppercase focus:underline active:bg-gray-200 hover:scale-[1.1] hover:bg-gray-300 `} value={0}  ><SvgIcon component={ImageIcon} inheritViewBox/>Images</Tab>
+                            
+                            
+
+                            {userInfo?.role==='designer'&&<Tab className={`transform p-2  rounded-lg transition uppercase text-center bg-transparent active:bg-gray-300 focus:underline hover:scale-[1.1] hover:bg-gray-300  `} value={1}><SvgIcon component={BusinessCenterRoundedIcon} inheritViewBox/>Projects</Tab>}
+                           
+                        </TabsList>
+                        <TabPanel value={0}>{userInfo && userInfo?.profileImages.length>0  ? <DisplayUserImages Images={userInfo?.profileImages}/>:<Typography>Nqma</Typography>}</TabPanel>
+                        <TabPanel value={1}>Profile page</TabPanel>
+                       
+                    </Tabs>
+      
+                    
+                                        
+                    </div>
+    
+                </div>
+            </div>   
+            
+            
+                                    
+        
+       
+           
+        
+    
+        
                                 
+    
     
     )
 }
 
-export default UserProfile;
+export default ProfilePage;

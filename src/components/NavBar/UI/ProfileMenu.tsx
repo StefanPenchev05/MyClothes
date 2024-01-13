@@ -65,7 +65,7 @@ function ProfileMenu({userInfo, setUserInfo}: ProfileMenuProps) {
                         <Person fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>
-                        <div onClick={() => { handleCloseProfile(); navigate(`/user/${userInfo.id}`); }}>
+                        <div onClick={() => { handleCloseProfile(); navigate(`/user/profile/${userInfo.id}`); }}>
                             {t('navbar.MyProfile')}
                         </div>
                     </ListItemText>
