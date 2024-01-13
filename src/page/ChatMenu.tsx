@@ -1,14 +1,16 @@
-import { useEffect, useRef, useState } from 'react'
-import {IconButton } from '@mui/material'
-import {ArrowBack } from '@mui/icons-material'
+import { useEffect, useState } from 'react'
+import { IconButton } from '@mui/material'
+import { ArrowBack } from '@mui/icons-material'
+import { getData } from '../service/api'
 import io from 'socket.io-client'
 
 import SearchBar from "../components/GlobalUI/SearchBar"
-import SearchResultList from "../components/ChatMenu/SearchResultList"
-import ChatHistoryList from '../components/ChatMenu/ChatHistoryList'
-import MessageMenu from '../components/ChatMenu/MessageMenu'
+import SearchResultList from "../features/Chat/SearchResultList"
+import ChatHistoryList from '../features/Chat/ChatHistoryList'
+import MessageMenu from '../features/Chat/MessageMenu'
 
-const socket = io('http://localhost:5500/user/messages', {withCredentials: true});
+//this is for the message window
+const socket = io('http://localhost:5500/user/messages/:ID', {withCredentials: true});
 
 interface Data {
     id: string,
@@ -17,65 +19,36 @@ interface Data {
     avatar: string,
 }
 
-interface Message extends Data {
+interface ChatList{
+    chat_id: string,
+    user: Data,
     lastMessage: string,
-    timesnap: Date | null
+    timesnap: Date | null,
 }
 
 function ChatMenu() {
     const [searchResult, setSearchResult] = useState<Data[] | undefined>(undefined);
     const [searchMenu,setSearchMenu] = useState<boolean>(false);
-    const [selectedUser, setSelectedUser] = useState<Data | undefined>(undefined);
-    const [messageHistory, setMessageHistory] = useState<Data[] | undefined>(undefined);
-    const [chatList, setChatList] = useState<Message[] | undefined>(undefined);
-    const searchRef = useRef<HTMLInputElement>(null);
-
+    const [chatList, setChatList] = useState<ChatList[] | undefined>(undefined);
+    const [selectedChat, setSelectedChat] = useState<string | undefined>(undefined);
+    const [currentUser, setCurrentUser] = useState<Data | undefined>(undefined);
     
     const handleOnSearchClick = () => {
         setSearchMenu(true);
-
-    }
-    
-    const updateMessageMenuAndChatHistory = () => {
-        if (selectedUser) {
-           const addUser : Message = {
-                id: selectedUser.id,
-                firstName: selectedUser.firstName,
-                lastName: selectedUser.lastName,
-                avatar: selectedUser.avatar,
-                lastMessage: "",
-                timesnap: null, 
-            };
-            if(chatList){
-                setChatList([addUser, ...chatList]);
-            } else {
-                setChatList([addUser]);
-           }
-        }
-    }
-    
-    const handleNewChat = (idOfSelectedUser: string) => {
-        setSearchMenu(false);
-        socket.emit('newChat',idOfSelectedUser, updateMessageMenuAndChatHistory);
-    }
-    
-    useEffect(() => {
-        const handleGetChatList = (chatList: any) => {
-            setChatList(chatList);
-        };
-
-        socket.emit('getChatList', handleGetChatList);
-
-        return () => {
-            socket.off('getChatList', handleGetChatList);
-        };
-    }, []);
+    }    
 
     useEffect(() => {
-        if(selectedUser){
-            handleNewChat(selectedUser.id);
-        }
-    }, [selectedUser])
+        const fetchData = async() => {
+            try {
+                const chatList = await getData('/user/message/getChatList')
+                setChatList(chatList || undefined);
+            } catch (err) {
+                console.error(err);
+            }
+        } 
+        fetchData();
+    }, [])
+
 
   return (
     <div className="w-full flex flex-row p-4" style={{height: 'calc(100vh - 70px)'}}>
@@ -87,28 +60,34 @@ function ChatMenu() {
                             <IconButton onClick={() => setSearchMenu(false)} className='mr-4'>
                                 <ArrowBack/>
                             </IconButton>
-                            <SearchBar setSearchResult={setSearchResult} onClick={handleOnSearchClick}/>
+                            <SearchBar 
+                                setSearchResult={setSearchResult} 
+                                onClick={handleOnSearchClick}
+                                autoFocus={true}
+                            />
                         </div>
                         <SearchResultList 
                             searchResult={searchResult}
                             setSearchMenu={setSearchMenu}
-                            setSelectedUser={setSelectedUser}
+                            setChatList={setChatList}
                             socket={socket}
                         />
                     </div>
                 ) : (
                     <ChatHistoryList
                         chatList={chatList}
+                        setChatList={setChatList}
+                        setSelectedChat={setSelectedChat}
                         setSearchResult={setSearchResult}
-                        setMessageHistory={setMessageHistory}
-                        socket={socket}
                         onClick={handleOnSearchClick}
                     />
                 )}
             </div>
         </div>
         <div className='flex flex-grow justify-center items-center w-3/4 bg-white border-2 border-gray-200 rounded-lg p-6 ml-4 shadow-lg'>
-            <MessageMenu messageHistory={messageHistory} socket={socket}/>
+            <MessageMenu
+                selectedChat={selectedChat}
+            />
         </div>
     </div>
   )

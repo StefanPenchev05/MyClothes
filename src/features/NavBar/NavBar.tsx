@@ -1,16 +1,18 @@
+import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { AppBar as MuiAppBar, Toolbar, Skeleton } from "@mui/material";
 import { styled, keyframes } from '@mui/system';
+import { useDispatch, useSelector } from "react-redux";
+import { AppBar as MuiAppBar, Toolbar, Skeleton } from "@mui/material";
 
-import SearchBar from "../GlobalUI/SearchBar";
-import SearchResultMenu from "../GlobalUI/SearchResultMenu";
-import { getData } from "../../service/api";
-import ProfileMenu from "./UI/ProfileMenu";
-import UserDetails from "./UI/UserDetails";
-import ChatShoppingIcons from "./UI/ChatShoppingIcons";
-import LoginSignupButtons from "./UI/LoginSignupButtons";
-import NavBarButtons from "./UI/NavBarButtons";
-import LanguageMenu from "./UI/LanguageMenu";
+import SearchBar from "../../components/GlobalUI/SearchBar";
+import SearchResultMenu from "../../components/GlobalUI/SearchResultMenu";
+import ProfileMenu from "./ProfileMenu";
+import UserDetails from "./UserDetails";
+import ChatShoppingIcons from "./ChatShoppingIcons";
+import LoginSignupButtons from "./LoginSignupButtons";
+import NavBarButtons from "./NavBarButtons";
+import LanguageMenu from "./LanguageMenu";
+import { fetchUserInfo } from "../users/userNavBarSlice";
 
 interface Data {
     id: string,
@@ -19,17 +21,6 @@ interface Data {
     avatar: string,
 }
 
-interface UserInfo {
-    id: string,
-    firstName: string,
-    lastName: string,
-    avatar: string,
-    role: string,
-    purchasedProducts: number,
-    products?: number,
-    sales?: number
-
-}
 const slideDown = keyframes`
 0% {
     transform: translateY(-100%);
@@ -44,27 +35,30 @@ const AppBar = styled(MuiAppBar)({
 });
 
 function NavBar() {
-    const [userInfo, setUserInfo] = useState<UserInfo>();
+    
     const [searchResult, setSearchResult] = useState<Data[]>();
     const [isLoaded, setIsLoaded] = useState(false);
+    
+    const dispatch = useDispatch();
+    const { enqueueSnackbar } = useSnackbar();
+
+    const userInfo = useSelector((state: any) => {
+        return state.userNavBar.id ? state.userNavBar : null;
+    });
+    const snackbar = useSelector((state: any) => {
+        return state.snackbar
+    });
 
   
     useEffect(() => {
-        const getUserInfo = async() => {
-            try{
-                const data = await getData('/navBar/userInfo');
-                if(!data.message){
-                    setUserInfo(data);
-                }else{
-                    setUserInfo(undefined);
-                }
-                setIsLoaded(true);
-            }catch(err){
-                console.log(err);
-            }
+        //@ts-ignore
+        dispatch(fetchUserInfo());
+        if(snackbar.open) {
+            enqueueSnackbar(snackbar.message, {variant: snackbar.variant, autoDuration:snackbar.duration});
         }
-        getUserInfo();
-    }, []);
+        setIsLoaded(true);
+    }, [dispatch, snackbar]);
+
   return (
     <AppBar position="static" sx={{backgroundColor: '#f8f9fa', height:'70px'}} className="justify-center">
         <Toolbar sx={{color: 'black', padding: '0 1rem'}}>
@@ -73,11 +67,8 @@ function NavBar() {
                  userInfo ? (
                     <div className="flex flex-row justify-between items-center w-1/4">
                         <div className="flex flex-row items-center">
-                            <ProfileMenu 
-                                userInfo={userInfo}
-                                setUserInfo={setUserInfo}
-                            />
-                            <UserDetails userInfo={userInfo}/>
+                            <ProfileMenu />
+                            <UserDetails />
                         </div>
                         <ChatShoppingIcons />
                     </div>

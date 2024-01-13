@@ -15,6 +15,11 @@ export async function sendData(URL: string, data?: any) {
         const responseData = await response.json();
         console.log(responseData);
 
+        // Making sure that the server returns data
+        if(responseData === null || responseData === undefined){
+            throw new Error('Response data is null or undefined');
+        }
+
         // Return the response status, success status, and data
         return {
             status: response.status,

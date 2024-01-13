@@ -10,17 +10,13 @@ interface Data {
   avatar: string,
 }
 
-interface Message extends Data {
-  lastMessage: string,
-  timesnap: Date
-}
-
 interface SearchBarType{
     setSearchResult: React.Dispatch<React.SetStateAction<Data[] | undefined>>,
+    autoFocus?: boolean,
     onClick?: () => void,
 }
 
-function SearchBar({setSearchResult, onClick}:SearchBarType) {
+function SearchBar({setSearchResult, onClick, autoFocus}:SearchBarType) {
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [search, setSearch] = useState('');
     const debouncedSearchTerm = useDebounce(search, 300);
@@ -73,6 +69,7 @@ function SearchBar({setSearchResult, onClick}:SearchBarType) {
                 <input 
                     id="search"
                     placeholder="Search..." 
+                    autoFocus={autoFocus}
                     className="w-full outline-none py-1 bg-transparent" 
                     onChange={(e) => handleInputChange(e)}
                     ref={inputRef}

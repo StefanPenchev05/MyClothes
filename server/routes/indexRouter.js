@@ -11,6 +11,8 @@ const navBarRouter = require("./navBarRouter");
 const countriesRouter = require("./countryRouter");
 //cities
 const citiesRouter = require("./cityRouter");
+//messages
+const messagesRouter = require("./messageRouter")
 
 //user Routers
 router.use("/user", userRouter);
@@ -22,5 +24,7 @@ router.use("/navBar", navBarRouter)
 router.use("/countries", countriesRouter);
 //cities Router
 router.use("/cities", citiesRouter);
+//messages Router
+router.use("/user/message", messagesRouter);
 
 module.exports = router
