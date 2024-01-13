@@ -1,30 +1,21 @@
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip, Avatar } from '@mui/material';
 import { Settings, Logout, Person } from '@mui/icons-material';
-import { getData } from '../../../service/api';
 
-interface UserInfo {
-    id: string,
-    firstName: string,
-    lastName: string,
-    avatar: string,
-    role: string,
-    purchasedProducts: number,
-    products?: number,
-    sales?: number
-}
 
-interface ProfileMenuProps {
-    userInfo: UserInfo,
-    setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | undefined>>
-}
+import { getData } from '../../service/api';
+import { setUser ,clearUser } from '../users/userNavBarSlice';
 
-function ProfileMenu({userInfo, setUserInfo}: ProfileMenuProps) {
+function ProfileMenu() {
     const [anchorElProfile, setAnchorElProfile] = React.useState<null | HTMLElement>(null);
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const avatar = useSelector((state: any) => state.userNavBar.avatar);
+    const id = useSelector((state: any) => state.userNavBar.id);
 
     const handleClickProfile = useCallback((event: React.MouseEvent<HTMLElement>) => {
         setAnchorElProfile(event.currentTarget);
@@ -38,12 +29,14 @@ function ProfileMenu({userInfo, setUserInfo}: ProfileMenuProps) {
         event.preventDefault();
         handleCloseProfile();
         try{
-            const data = await getData('/user/logout');
+            await getData('/user/logout');
+            dispatch(clearUser());
             window.location.reload();
         }catch(err){
             console.log("Error " + err);
         }
-    }, []);
+    }, [dispatch]);
+
     return (
         <div className="inline">
             <Tooltip title={t('navbar.MyProfile')}>
@@ -52,7 +45,7 @@ function ProfileMenu({userInfo, setUserInfo}: ProfileMenuProps) {
                     sx={{ width: 56, height: 56 }}
                     onClick={handleClickProfile}
                 >
-                    <Avatar src={userInfo.avatar} alt="user" sx={{ width: 56, height: 56 }} />
+                    <Avatar src={avatar} alt="user" sx={{ width: 56, height: 56 }} />
                 </IconButton>
             </Tooltip>
             <Menu
@@ -60,34 +53,28 @@ function ProfileMenu({userInfo, setUserInfo}: ProfileMenuProps) {
                 open={Boolean(anchorElProfile)}
                 onClose={handleCloseProfile}
             >
-                <MenuItem>
+                <MenuItem onClick={() => { handleCloseProfile(); navigate(`/user/profile/${id}`); }}>
                     <ListItemIcon>
                         <Person fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>
-                        <div onClick={() => { handleCloseProfile(); navigate(`/user/${userInfo.id}`); }}>
                             {t('navbar.MyProfile')}
-                        </div>
                     </ListItemText>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem onClick={() => { handleCloseProfile(); navigate('/user/settings'); }}>
                     <ListItemIcon>
                         <Settings fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>
-                        <div onClick={() => { handleCloseProfile(); navigate('/user/settings'); }}>
                             {t('navbar.Settings')}
-                        </div>
                     </ListItemText>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem onClick={(e) => {handleLogOut(e)}}>
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>
-                        <div onClick={(e) => {handleLogOut(e)}}>
                             {t('Logout')}
-                        </div>
                     </ListItemText>
                 </MenuItem>
             </Menu>

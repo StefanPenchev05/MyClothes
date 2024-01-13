@@ -31,8 +31,6 @@ function DisplayUserImages({Images}:{Images:ProfileImage[]}){
     
     <div className="w-[100%] h-full flex flex-row gap-1">
         {Images?.filter((x:ProfileImage) => x).map((x:ProfileImage)=>{
-            console.log(x.url)
-
             return(
                 <div key={x.url}>
                     <AspectRatio ratio={1/1}>

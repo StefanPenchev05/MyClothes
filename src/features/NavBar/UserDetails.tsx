@@ -1,23 +1,10 @@
-import React from 'react'
+import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Typography, Box} from "@mui/material";
 
-interface UserInfo {
-    firstName: string,
-    lastName: string,
-    avatar: string,
-    role: string,
-    purchasedProducts: number,
-    products?: number,
-    sales?: number
-}
-
-interface UserDetailsProps {
-    userInfo: UserInfo
-}
-
-function UserDetails({userInfo}: UserDetailsProps) {
+function UserDetails() {
     const { t } = useTranslation();
+    const userInfo = useSelector((state: any) => state.userNavBar);
 
   return (
     <Box sx={{ ml: 2 }}>

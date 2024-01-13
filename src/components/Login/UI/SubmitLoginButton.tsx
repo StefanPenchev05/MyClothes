@@ -1,8 +1,10 @@
-import React, {useContext} from 'react'
+import React from 'react'
 import {Button} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { sendData } from '../../../service/api';
 import { useTheme } from '../ThemeContext';
+import { useSnackbar } from 'notistack';
+
 
 function SubmitLogin() {
 
@@ -14,6 +16,7 @@ function SubmitLogin() {
       setPasswordError
     } = useTheme();
     const navigate = useNavigate();
+    const { enqueueSnackbar } = useSnackbar();
 
     const onSubmit = async(event:React.FormEvent):Promise<boolean> => {
         event.preventDefault();
@@ -26,6 +29,12 @@ function SubmitLogin() {
         }
     
         const response = await sendData('/user/login', {emailOrUsername, password, rememberMe});
+
+        if (response.ok === false){
+          console.log(response);
+          enqueueSnackbar('Server error. Please try again later.', {variant: 'error', autoHideDuration: 3000});
+          return false;
+        }
     
         if(response.status < 500){
           const data = response.data;
@@ -41,9 +50,9 @@ function SubmitLogin() {
           }
     
           navigate("/home");
+          enqueueSnackbar('Login successful', {variant: 'success', autoHideDuration: 3000});
           return true;
         }
-    
         return true;
       }
 

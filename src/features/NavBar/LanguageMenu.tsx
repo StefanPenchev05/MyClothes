@@ -3,8 +3,8 @@ import { Menu, MenuItem, Button, Badge } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import { ArrowDropDown } from "@mui/icons-material";
 
-import EnglishFlag from "../../../assets/images/EnglishFlag.png";
-import BulgarianFlag from "../../../assets/images/BulgarianFlag.png";
+import EnglishFlag from "../../assets/images/EnglishFlag.png"
+import BulgarianFlag from "../../assets/images/BulgarianFlag.png"
 
 function LanguageMenu() {
     const [anchorElLang, setAnchorElLang] = React.useState<null | HTMLElement>(null);
@@ -43,12 +43,12 @@ function LanguageMenu() {
             </Badge>
         </Button>
         <Menu
-        id="basic-menu"
-        anchorEl={anchorElLang}
-        open={Boolean(anchorElLang)}
-        onClose={handleCloseLang}
-        MenuListProps={{
-        'aria-labelledby': 'basic-button',
+            id="basic-menu"
+            anchorEl={anchorElLang}
+            open={Boolean(anchorElLang)}
+            onClose={handleCloseLang}
+            MenuListProps={{
+            'aria-labelledby': 'basic-button',
         }}
         >
             <MenuItem onClick={() => setCountryFlag(EnglishFlag)}>

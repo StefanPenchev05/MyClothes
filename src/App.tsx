@@ -7,7 +7,7 @@ import io from 'socket.io-client';
 import bg from './locals/bg.json';
 import en from './locals/en.json';
 import i18next from 'i18next';
-import NavBar from './components/NavBar/NavBar';
+import NavBar from './features/NavBar/NavBar';
 
 const Home = lazy(() => import('./page/Home'));
 const UserLogin = lazy(() => import('./page/userLogin'));
@@ -44,13 +44,13 @@ function App() {
     }>
       {showNavBar && <NavBar/>}
       <CssBaseline/>
-        <Routes>
-          <Route path='/home' element={<Home/>}></Route>
-          <Route path='/user/login' element={<UserLogin/>}></Route>
-          <Route path='/user/registration' element={<UserSignup/>}></Route>
-          <Route path='/user/profile/:token' element={<ProfilePage/>}></Route>
-          <Route path='/user/messages' element={<ChatMenu/>}></Route>
-        </Routes>
+          <Routes>
+            <Route path='/home' element={<Home/>}></Route>
+            <Route path='/user/login' element={<UserLogin/>}></Route>
+            <Route path='/user/registration' element={<UserSignup/>}></Route>
+            <Route path='/user/profile/:token' element={<ProfilePage/>}></Route>
+            <Route path='/user/messages' element={<ChatMenu/>}></Route>
+          </Routes>
     </Suspense>
   );
 }

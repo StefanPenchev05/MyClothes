@@ -1,4 +1,4 @@
-import {forwardRef} from 'react'
+import { forwardRef } from 'react'
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Snackbar } from '@mui/material';
 
