@@ -22,14 +22,15 @@ function ProfileButtons({isOwner}:{isOwner:boolean}){
     return(
     
         isOwner?(
-            <div className='flex gap-1'>
+            <div className='flex gap-2'>
                 <Button variant="outlined">Settings</Button>
-                <Button variant="outlined">Outlined</Button>
+                <Button variant="outlined">Message</Button>
                 
             </div>
         ):(
-            <div>
-
+            <div className='flex space-x-4'>
+                <Button variant="outlined">Follow</Button>
+                <Button variant="outlined">Messages</Button>
             </div>
         )
 
