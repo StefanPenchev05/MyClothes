@@ -1,74 +1,128 @@
-import { useEffect, useState } from 'react';
-import { Typography, Avatar, Divider, CircularProgress } from '@mui/material'
-import { Chat } from '@mui/icons-material'
-import { io } from 'socket.io-client';
+import { addUser } from './otherUser';
 import { Socket } from 'socket.io-client';
+import { Chat } from '@mui/icons-material'
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addChat, clearChat, addMessage } from './messageSlice';
+import { Typography, Avatar, Divider, CircularProgress } from '@mui/material'
+
+import { updateLastMessage } from './chatListSlice'
+
+import SocketManager from '../Sockets/socketActions';
 
 
-interface Data {
+
+interface User {
     id: string,
     firstName: string,
     lastName: string,
     avatar: string,
+    socket_id: string | null,
 }
 
 interface Message{
-    id: string,
+    conversation_id?: string,
+    message_id: string,
+    sender: string,
     message: string,
-    timesnap: Date,
-    sender: Data,
+    timestamp: string,
+    reacted: string | null,
+    seen: boolean,
+}
+
+interface ConversationType{
+    conversation_id: string,
+    user: User,
+    messages: Message[],
 }
 
 interface MessageMenuType{
     selectedChat: string | undefined,
+    socketManager: SocketManager,
 }
 
-function MessageMenu({selectedChat}:MessageMenuType) {
+function MessageMenu({selectedChat, socketManager}:MessageMenuType) {
     const [message, setMessage] = useState<string | null>(null);
-    const [socket, SetSocket] = useState<Socket | undefined>(undefined);
-    const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const dispatch = useDispatch();
+    const socket = socketManager.getSocket as Socket;
+
+    const messageList:Message[] = useSelector((state: any) => {
+        return state.message;
+    });
+
+    const otherUser:User = useSelector((state: any) => {
+        return state.otherUsers;
+    });
+
+    const user:User = useSelector((state: any) => {
+        return state.userNavBar;
+    });
+
+    useEffect(() => {
+        window.addEventListener('focus', () => {
+            console.log('seen');
+            socketManager.seenMessage(messageList[messageList.length - 1]?.message_id, otherUser.id);
+        });
+    }, [])
 
     useEffect(() => {
         if(selectedChat){
-            const socket = io(`http://localhost:5500/user/messages`, {withCredentials: true});
-            SetSocket(socket);
             setIsLoading(true);
-            
-            socket.on('connect', () => {
-                socket.emit('joinRoom', selectedChat);
-            });
-    
-            socket.on('get_messages', (message: Message[]) => {
-                setMessages(message);
-                setIsLoading(false);
-            })
-    
-            socket.on('connect_error', (err) => {
-                console.log(`connect_error due to ${err.message}`);
+            dispatch(clearChat());
+
+            socket.emit('joinRoom', selectedChat);
+
+            socketManager.getConversation()
+            .then((conversation: ConversationType | false) => {
+                if(conversation){
+                    dispatch(addUser(conversation.user));
+                    dispatch(addChat(conversation.messages));
+                    setIsLoading(false);
+                }else{
+                    console.log('Unable to fetch conversation');
+                }
             });
     
             return () => {
+                socket.emit('leaveRoom', selectedChat);
                 socket.off('message');
-                socket.off('connect_error');
             }
         }
-    }, [selectedChat])
+    }, [selectedChat]);
 
-    socket?.on('new_message', (message: Message) => {
-        setMessages([...messages, message]);
-    });
+    useEffect(() => {
+        if(socket){
+            socket.on('receive_message', (message: Message) => {
+                dispatch(addMessage(message));
+                dispatch(updateLastMessage({chat_id: message.conversation_id, message: message.message, timestamp: message.timestamp}));
+            });
+            socket.on('sended_message', (message: Message) => {
+                dispatch(addMessage(message));
+                dispatch(updateLastMessage({chat_id: message.conversation_id, message: message.message, timestamp: message.timestamp}));
+            });
+            socket.on('seen_message', (message: Message) => {
+                dispatch(updateLastMessage({chat_id: message.conversation_id, seen: true}));
+            })
+        }
+    
+        return () => {
+            socket?.off('receive_message');
+            socket?.off('sended_message');
+        }
+    }, [socket]);
 
-    const handleSendMessage = () => {
-        if(socket && message && selectedChat){
-           setMessages([...messages, {id:'', message: message, timesnap: new Date(), sender: {id: '', firstName: '', lastName: '', avatar: ''}}]);
-            socket.emit('send_message', {message: message, chat_id: selectedChat});
+    const handleSendMessage = (event: React.FormEvent) => {
+        event.preventDefault();
+        if(socket && message && otherUser.socket_id){
+            socketManager.sendMessage(message, otherUser.id);
             setMessage(null);
         }
     }
   return (
     <>
-        {/* {selectedChat ? (
+        {selectedChat ? (
              isLoading ? (
                 <div className='flex flex-col justify-center items-center'>
                     <Chat className='w-28 h-28'/>
@@ -77,19 +131,34 @@ function MessageMenu({selectedChat}:MessageMenuType) {
              ) : (
                 <div className='flex flex-col h-full w-full justify-between'>
                     <div className='flex flex-row items-center p-4'>
-                        <Avatar className='w-30 h-30'/>
-                        <Typography variant="body1" className='text-lg font-semibold ml-4'>{}</Typography>
+                        <Avatar className='w-30 h-30' src={otherUser.avatar}/>
+                        <Typography variant="body1" className='text-lg font-semibold ml-4'>{otherUser.firstName} {otherUser.lastName}</Typography>
                     </div>
                     <Divider orientation='horizontal'/>
                     <div className='flex-grow overflow-auto p-4'>
-                        {messages.map((msg, index) => (
-                            <div key={index} className='mb-4'>
-                                <Avatar className='w-30 h-30' src={msg.sender.avatar}/>
-                                <Typography variant="body1">{msg.message ? msg.message : 'No messages yet'}</Typography>
-                            </div>
+                        {messageList.map((msg, index) => (
+                            msg.sender === otherUser.id ? (
+                                <div key={index} className='flex flex-row items-center justify-start mb-4 space-x-4'>
+                                    <Avatar className='w-30 h-30' src={otherUser.avatar}/>
+                                    <Typography variant="body1" className='text-start text-wrap text-base font-normal text-white border-2 border-blue-500 rounded-lg bg-blue-500 p-2 ml-4 overflow-wrap break-words max-w-[190px]'>
+                                        {msg.message}
+                                    </Typography>                                
+                                </div>
+                            ) : (
+                                <div key={index} className='flex flex-row items-center justify-end mb-4 space-x-4'>
+                                   <Typography variant="body1" className='text-start text-wrap text-base font-normal text-white border-2 border-blue-500 rounded-lg bg-blue-500 p-2 ml-4 overflow-wrap break-words max-w-[190px]'>
+                                        {msg.message}
+                                    </Typography>   
+                                    <Avatar className='w-30 h-30' src={user.avatar}/>
+                                </div>
+                            )
                         ))}
                     </div>
                     <div className='flex flex-row items-center p-4'>
+                    <form 
+                        className='flex-grow flex flex-row items-center'
+                        onSubmit={handleSendMessage}
+                    >
                         <input 
                             type="text" 
                             className='flex-grow mr-4 border-2 border-gray-300 rounded-2xl p-2' 
@@ -98,11 +167,12 @@ function MessageMenu({selectedChat}:MessageMenuType) {
                             onChange={(e) => setMessage(e.target.value)} 
                         />
                         <button 
-                            onClick={handleSendMessage} 
+                            type="submit"
                             className='px-4 py-2 bg-blue-500 text-white rounded'
                         >
                             Send
                         </button>
+                    </form>
                     </div>
                 </div>
              )
@@ -111,7 +181,7 @@ function MessageMenu({selectedChat}:MessageMenuType) {
                     <Chat className='w-28 h-28'/>
                     <Typography variant="body1" className='text-lg font-semibold'>Please select a chat</Typography>
                 </div>
-        )} */}
+        )}
     </>
   )
 }

@@ -2,24 +2,6 @@ const MessageService = require('../service/messageService')
 const { resolveToken } = require('../utils/tokenUserIdUtils')
 
 module.exports = {
-    // Function to get the chat list of a user
-    getChatList: async(req,res) => {
-      try{
-        // Resolve the user ID from the session token
-        const userID = resolveToken(req.session.user);
-
-        // Get the chat list of the user
-        const chatList = await MessageService.getChatList(userID);
-
-        // Return the chat list
-        return res.status(200).json(chatList);
-
-      }catch(err){
-        // If an error occurs, return a 500 status code with the error message
-        return res.status(500).json({success: false, msg:err});
-      }
-    },
-
     // Function to delete a chat
     deleteChat: async(req,res) => {
       try{

@@ -56,7 +56,10 @@ function NavBar() {
         if(snackbar.open) {
             enqueueSnackbar(snackbar.message, {variant: snackbar.variant, autoDuration:snackbar.duration});
         }
-        setIsLoaded(true);
+        setTimeout(() => {
+            setIsLoaded(true);
+        }
+        , 1000);
     }, [dispatch, snackbar]);
 
   return (

@@ -31,7 +31,6 @@ function SubmitLogin() {
         const response = await sendData('/user/login', {emailOrUsername, password, rememberMe});
 
         if (response.ok === false){
-          console.log(response);
           enqueueSnackbar('Server error. Please try again later.', {variant: 'error', autoHideDuration: 3000});
           return false;
         }

@@ -7,7 +7,7 @@ import { Settings, Logout, Person } from '@mui/icons-material';
 
 
 import { getData } from '../../service/api';
-import { setUser ,clearUser } from '../users/userNavBarSlice';
+import { clearUser } from '../users/userNavBarSlice';
 
 function ProfileMenu() {
     const [anchorElProfile, setAnchorElProfile] = React.useState<null | HTMLElement>(null);

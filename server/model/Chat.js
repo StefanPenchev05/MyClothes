@@ -15,6 +15,14 @@ const MessageSchema = new Schema({
     timestamp: {
         type: Date,
         default: Date.now
+    },
+    reacted: {
+        type: String,
+        default: ''
+    },
+    seen: {
+        type: Boolean,
+        default: false
     }
 });
 

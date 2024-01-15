@@ -1,15 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from '../features/users/userNavBarSlice'
 import snackbarReducer from '../features/snackbars/snackbarSlice'
-import chatListReducer from '../features/Chat/chatUserSlice'
+import chatListReducer from '../features/Chat/chatListSlice'
+import messageReducer from '../features/Chat/messageSlice'
+import otherUserReducer from '../features/Chat/otherUser'
 
 export const store = configureStore({
     reducer:{
         userNavBar: userReducer,
         snackbar: snackbarReducer,
-        chatList: chatListReducer
+        chatList: chatListReducer,
+        message: messageReducer,
+        otherUsers: otherUserReducer,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware()
 });
 
 export default store;

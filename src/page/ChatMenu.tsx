@@ -1,54 +1,62 @@
-import { useEffect, useState } from 'react'
-import { IconButton } from '@mui/material'
-import { ArrowBack } from '@mui/icons-material'
-import { getData } from '../service/api'
-import io from 'socket.io-client'
+import { useSnackbar } from 'notistack'
+import { useDispatch } from 'react-redux';
+import { IconButton } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { ArrowBack } from '@mui/icons-material';
+import { addChat } from '../features/Chat/chatListSlice'
 
-import SearchBar from "../components/GlobalUI/SearchBar"
-import SearchResultList from "../features/Chat/SearchResultList"
-import ChatHistoryList from '../features/Chat/ChatHistoryList'
 import MessageMenu from '../features/Chat/MessageMenu'
+import SearchBar from "../components/GlobalUI/SearchBar"
+import ChatHistoryList from '../features/Chat/ChatHistoryList'
+import SearchResultList from "../features/Chat/SearchResultList"
 
-//this is for the message window
-const socket = io('http://localhost:5500/user/messages/:ID', {withCredentials: true});
+import SocketManager from '../features/Sockets/socketActions'
 
-interface Data {
+interface User {
     id: string,
     firstName: string,
     lastName: string,
     avatar: string,
+    socket_id?: string | null,
 }
 
-interface ChatList{
-    chat_id: string,
-    user: Data,
-    lastMessage: string,
-    timesnap: Date | null,
+interface Message{
+    message_id: string,
+    sender: string,
+    message: string,
+    timestamp: string,
+    reacted: string | null,
+    seen: boolean,
 }
+
+const socketManager = new SocketManager(undefined);
 
 function ChatMenu() {
-    const [searchResult, setSearchResult] = useState<Data[] | undefined>(undefined);
+
+    const [searchResult, setSearchResult] = useState<User[] | undefined>(undefined);
     const [searchMenu,setSearchMenu] = useState<boolean>(false);
-    const [chatList, setChatList] = useState<ChatList[] | undefined>(undefined);
     const [selectedChat, setSelectedChat] = useState<string | undefined>(undefined);
-    const [currentUser, setCurrentUser] = useState<Data | undefined>(undefined);
+
+    const dispatch = useDispatch();
+    const { enqueueSnackbar } = useSnackbar();
     
     const handleOnSearchClick = () => {
         setSearchMenu(true);
     }    
-
+    
     useEffect(() => {
-        const fetchData = async() => {
-            try {
-                const chatList = await getData('/user/message/getChatList')
-                setChatList(chatList || undefined);
-            } catch (err) {
-                console.error(err);
-            }
-        } 
-        fetchData();
-    }, [])
-
+        socketManager.getChatList()
+        .then(chatList => {
+          if (chatList) {
+            dispatch(addChat(chatList));
+          } else {
+            enqueueSnackbar('Unable to fetch chat list', {variant: 'error', autoHideDuration: 5000});
+          }
+        })
+        .catch(error => {
+          enqueueSnackbar('Error fetching chat list: ' + error.message, {variant: 'error', autoHideDuration: 5000});
+        });
+    },[])
 
   return (
     <div className="w-full flex flex-row p-4" style={{height: 'calc(100vh - 70px)'}}>
@@ -69,24 +77,20 @@ function ChatMenu() {
                         <SearchResultList 
                             searchResult={searchResult}
                             setSearchMenu={setSearchMenu}
-                            setChatList={setChatList}
-                            socket={socket}
                         />
                     </div>
                 ) : (
-                    <ChatHistoryList
-                        chatList={chatList}
-                        setChatList={setChatList}
-                        setSelectedChat={setSelectedChat}
-                        setSearchResult={setSearchResult}
-                        onClick={handleOnSearchClick}
-                    />
+                    <div className='flex flex-col space-y-4 justify-center'>
+                        <SearchBar setSearchResult={setSearchResult} onClick={handleOnSearchClick}/>
+                        <ChatHistoryList setSelectedChat={setSelectedChat}/>
+                    </div>
                 )}
             </div>
         </div>
         <div className='flex flex-grow justify-center items-center w-3/4 bg-white border-2 border-gray-200 rounded-lg p-6 ml-4 shadow-lg'>
             <MessageMenu
                 selectedChat={selectedChat}
+                socketManager={socketManager}
             />
         </div>
     </div>

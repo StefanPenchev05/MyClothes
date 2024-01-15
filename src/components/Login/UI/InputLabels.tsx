@@ -15,6 +15,7 @@ function InputLabels() {
         event.preventDefault();
         setShowPassword((showPassword) => !showPassword);
     }, []);
+    
     const {setEmailOrUsername, emailOrUsernameError, setPassword, passwordError} = useTheme();
 
     useEffect(() => {

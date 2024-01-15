@@ -3,62 +3,6 @@ const User = require('../model/User')
 const { generateToken } = require('../utils/tokenUserIdUtils')
 
 module.exports = {
-    getChatList: async (currentUserID) => {
-        try {
-            // Fetch all conversations for the current user and populate the messages for each conversation
-            const list = await Conversation.find({ users: currentUserID }).populate('messages');
-
-            // Create a new Map to store user data
-            const userMap = new Map();
-
-            // Function to create a user object with specific fields
-            const createUserObject = (user, userData) => ({
-                id: generateToken(user._id),
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                avatar: userData.avatar || userData.profileImages[0]?.url,
-            });
-
-            // Map over each conversation
-            const dataList = list.map(async chat => {
-                // Find the other user in the conversation
-                const otherUser = chat.users.find(user => user._id.toString() !== currentUserID);
-
-                // If the other user's data is not in the userMap, fetch it and add it to the userMap
-                if (!userMap.has(otherUser._id.toString())) {
-                    const userData = await User.findById(otherUser._id).populate('profileImages');
-                    userMap.set(otherUser._id.toString(), userData);
-                }
-
-                // Get the other user's data from the userMap
-                const otherUserData = userMap.get(otherUser._id.toString());
-
-                // Create a user object for the other user
-                const userObject = createUserObject(otherUser, otherUserData);
-
-                // Create a chat object with the chat ID, the other user, the last message, and the timestamp of the last message
-                const chatObject = {
-                    chat_id: chat._id,
-                    user: userObject,
-                    lastMessage: chat.messages.length ? chat.messages[chat.messages.length - 1].message : 'No messages yet',
-                    timesnap: chat.messages.length ? chat.messages[chat.messages.length - 1].timestamp : '',
-                };
-
-                // Return the chat object
-                return chatObject;
-            });
-
-            // Wait for all promises in the dataList array to resolve
-            const finalDataList = await Promise.all(dataList);
-
-            // Return the final data list
-            return finalDataList;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    },
-
     deleteChat: async(userID, chatID) => {
         try{
             // Attempt to find and delete the conversation with the given chatID and userID

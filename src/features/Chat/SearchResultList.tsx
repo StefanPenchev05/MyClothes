@@ -1,6 +1,8 @@
-import { Avatar, Typography} from '@mui/material'
+import { Socket } from 'socket.io-client'
+import { useDispatch } from 'react-redux';
+import { addChat } from './chatListSlice';
+import { Avatar, Typography } from '@mui/material'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import {Socket} from 'socket.io-client'
 
 import { sendData } from '../../service/api';
 
@@ -20,35 +22,17 @@ interface ChatList{
 
 interface SearchResultType{
     searchResult: Data[] | undefined,
-    setChatList : Dispatch<SetStateAction<ChatList[] | undefined>>,
     setSearchMenu : Dispatch<SetStateAction<boolean>>,
-    socket: Socket
 }
 
-function SearchResultList({searchResult, setSearchMenu ,setChatList ,socket}:SearchResultType) {
+function SearchResultList({searchResult, setSearchMenu}:SearchResultType) {
 
     const [personNewChat, setPersonNewChat] = useState<Data | undefined>(undefined);
-
-
-    socket.on('recieveNewChat', (data: ChatList) => {
-        setChatList((chatList) => {
-            if(chatList){
-                return [...chatList, data];
-            }else{
-                return [data];
-            }
-        });
-    });
+    const dispatch = useDispatch();
 
     const handleNewChat = (data: ChatList | null) => {
         if(data){
-            setChatList((chatList) => {
-                if(chatList){
-                    return [...chatList, data];
-                }else{
-                    return [data];
-                }
-            });
+            dispatch(addChat(data));
         }
         setSearchMenu(false);
         setPersonNewChat(undefined);

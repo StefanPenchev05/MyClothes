@@ -1,10 +1,12 @@
-import { Avatar, Typography, Menu, MenuItem, IconButton } from '@mui/material'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import SearchBar from "../../components/GlobalUI/SearchBar"
 import dayjs from 'dayjs';
+import { useSnackbar } from 'notistack';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { Avatar, Typography, Menu, MenuItem, IconButton } from '@mui/material'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { useSelector ,useDispatch } from 'react-redux';
+import { deleteChat } from './chatListSlice'; 
 
 interface Data {
     id: string,
@@ -20,20 +22,25 @@ interface ChatList{
     timesnap: Date | null,
 }
 
-
 interface ChatHistoryType{
-    chatList: ChatList[] | undefined,
-    setSearchResult : React.Dispatch<React.SetStateAction<Data[] | undefined>>,
-    setChatList: React.Dispatch<React.SetStateAction<ChatList[] | undefined>>,
     setSelectedChat: React.Dispatch<React.SetStateAction<string | undefined>>,
-    onClick: () => void,
 }
 
-function ChatHistoryList({chatList, setChatList, setSelectedChat, setSearchResult, onClick: handleOnSearchClick}:ChatHistoryType) {
-
+function ChatHistoryList({setSelectedChat}:ChatHistoryType) {
     const [hoveredUser, setHoveredUser] = useState<string | null>(null);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { enqueueSnackbar } = useSnackbar();
+
+    const list:ChatList[] = useSelector((state:any) => {
+        return state.chatList;
+    });
+
+    const snackbar = useSelector((state:any) => {
+        return state.snackbar;
+    });
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -43,32 +50,30 @@ function ChatHistoryList({chatList, setChatList, setSelectedChat, setSearchResul
         setAnchorEl(null);
     };
 
-    const handleDeleteChat = async(item: ChatList) => {
-        try{
-            const chat_id = item.chat_id
-            const response = await fetch(`http://localhost:5500/user/message/delete/${chat_id}`, {
-                method: 'DELETE',
-                credentials: 'include'
-            })
-            if(response.ok){
-                setChatList(prevChatList => prevChatList?.filter(list => list.chat_id !== chat_id));
-            }
-        }catch(err){
-            console.log(err)
-        }
+    const handleDeleteChat = async(chat_id: string) => {
+        dispatch(deleteChat(chat_id) as any);
+        handleClose();
     }
 
+    useEffect(() => {
+        if(snackbar.message){
+            enqueueSnackbar(snackbar.message, {variant: snackbar.variant, autoDuration:snackbar.duration});
+        }
+    }, [])
 
   return (
     <div className='flex flex-col space-y-4'>
-        {/* <SearchBar setSearchResult={setSearchResult} onClick={handleOnSearchClick}/>
-        {chatList?.length ? (
-           chatList.map((item) => (
+        {list?.length ? (
+           list.map((item,index) => (
                 <div className='flex flex-row items-center justify-between hover:cursor-pointer'
-                
                     onMouseEnter={() => setHoveredUser(item.chat_id)}
                     onMouseLeave={() => setHoveredUser(null)}
-                    onClick={() => {setSelectedChat(item.chat_id)}}
+                    onClick={() => {
+                        console.log('here')
+                        console.log(item.chat_id)
+                        setSelectedChat(item.chat_id)
+                    }}
+                    key={index}
                 >
                     <div className='flex flex-row items-center space-x-4' key={item.chat_id} onClick={() => {}}>
                         <div className='flex flex-row'>
@@ -82,8 +87,19 @@ function ChatHistoryList({chatList, setChatList, setSelectedChat, setSearchResul
                             <div>
                                 <Typography variant="body1" className='text-lg font-semibold'>{item.user.firstName} {item.user.lastName}</Typography>
                                 <div className='flex flex-row'>
-                                    <Typography variant="body2" className='text-md font-semibold mr-2'> {item.lastMessage} </Typography>
-                                    <Typography variant="body2" className='text-md font-semibold'> { dayjs(item.timesnap).isSame(dayjs(), 'day')?  dayjs(item.timesnap).format('HH:mm') : dayjs().diff(dayjs(item.timesnap), 'day') + ' day ago' } </Typography>
+                                <Typography variant="body2" className='text-md font-semibold mr-2 overflow-hidden overflow-ellipsis whitespace-nowrap w-1/2'> 
+                                    {item.lastMessage.substring(0, 20)}
+                                </Typography>                                    
+                                <Typography variant="body2" className='text-md font-semibold'> 
+                                        { item.timesnap ?
+                                            dayjs(item.timesnap).isSame(dayjs(), 'day') ?  
+                                                dayjs(item.timesnap).format('HH:mm') 
+                                                    : 
+                                                dayjs().diff(dayjs(item.timesnap), 'day') + ' day ago' 
+                                            :
+                                            null
+                                        }
+                                    </Typography>
                                 </div>
                             </div>
                         </div>
@@ -103,7 +119,7 @@ function ChatHistoryList({chatList, setChatList, setSelectedChat, setSearchResul
                                     onClose={handleClose}
                                 >
                                 <MenuItem onClick={() => {handleClose(); navigate(`/user/message/settings/${item.chat_id}`)}}>Settings</MenuItem>
-                                <MenuItem onClick={() => {handleClose(); handleDeleteChat(item)}}>Delete Chat</MenuItem>
+                                <MenuItem onClick={() => {handleClose(); handleDeleteChat(item.chat_id)}}>Delete Chat</MenuItem>
                             </Menu>
                         </div>
                     )}
@@ -113,7 +129,7 @@ function ChatHistoryList({chatList, setChatList, setSelectedChat, setSearchResul
             <div className='flex justify-center'>
                 <Typography variant="body1" className='text-lg font-semibold'>No messages</Typography>
             </div>
-        )} */}
+        )}
     </div>
   )
 }
