@@ -1,7 +1,3 @@
-Certainly! Here's a template for the README file for your "FreeClaser Clothes Design" application:
-
----
-
 # MyClothes Design
 
 ![App Logo](link-to-your-logo.png)
@@ -47,7 +43,7 @@ Welcome to FreeClaser Clothes Design, where creativity meets fashion! This appli
 
 3. **Run the Application:**
    - Start the development server: `npm start`
-   - Open the application in your browser: `http://localhost:5500`
+   - Open the application in your browser: `http://localhost:30000`
 
 4. **Explore and Enjoy:**
    - Create an account, upload designs, engage with the community, and unlock the full potential of FreeClaser!
@@ -59,7 +55,3 @@ Welcome to FreeClaser Clothes Design, where creativity meets fashion! This appli
 - Database: MongoDB
 - Real-time Communication: Socket.io
 - PDF Generation: [pdf-lib](https://github.com/Hopding/pdf-lib)
-
----
-
-Feel free to customize this template based on your specific project structure, technologies used, and additional details you want to highlight. Replace placeholder links and names with your actual information.
