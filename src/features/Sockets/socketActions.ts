@@ -34,6 +34,7 @@ class SocketManager {
     private _socket: Socket | null = null;
 
     constructor(private url: string | undefined) {
+        console.log(this.url);
         this._socket = io(this.url ? this.url : 'http://localhost:5500/user/messages', {
             transports: ['websocket'],
             autoConnect: false,
@@ -56,8 +57,7 @@ class SocketManager {
         return new Promise((resolve, reject) => {
             if (this._socket) {
                 this._socket.emit('get_chat_list');
-
-                this._socket.on('get_chat_list', (User: ChatList[]) => { 
+                this._socket.on('get_chat_list', (User: ChatList[]) => {
                     if (User) {
                         resolve(User);
                     } else {
@@ -65,7 +65,6 @@ class SocketManager {
                     }
                 });
             } else {
-                console.log('here');
                 resolve(false);
             }
         });
@@ -75,9 +74,7 @@ class SocketManager {
         return new Promise((resolve, reject) => {
             if (this._socket) {
                 this._socket.on('get_conversation', (conversation: ConversationType) => {
-                    console.log(conversation)
                     if (conversation) {
-                        console.log('here');
                         resolve(conversation);
                     } else {
                         reject(new Error('No User received from server'));

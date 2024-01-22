@@ -62,7 +62,6 @@ function MessageMenu({selectedChat, socketManager}:MessageMenuType) {
 
     useEffect(() => {
         window.addEventListener('focus', () => {
-            console.log('seen');
             socketManager.seenMessage(messageList[messageList.length - 1]?.message_id, otherUser.id);
         });
     }, [])
@@ -115,7 +114,7 @@ function MessageMenu({selectedChat, socketManager}:MessageMenuType) {
 
     const handleSendMessage = (event: React.FormEvent) => {
         event.preventDefault();
-        if(socket && message && otherUser.socket_id){
+        if(socket && message){
             socketManager.sendMessage(message, otherUser.id);
             setMessage(null);
         }

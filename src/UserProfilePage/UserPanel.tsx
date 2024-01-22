@@ -9,7 +9,7 @@ import Avatar from '@mui/material/Avatar';
 import AspectRatio from '@mui/joy/AspectRatio';
 import Typography from '@mui/joy/Typography';
 import ProfileButtons from '../UserProfilePage/ProfileButtons';
-import DisplayUserImages from '../UserProfilePage/DisplayUserImages';
+//import DisplayUserImages from '../UserProfilePage/DisplayUserImages';
 import { Session } from 'inspector';
 
 

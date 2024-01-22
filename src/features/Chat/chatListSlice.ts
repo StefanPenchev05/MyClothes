@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { openSnackbar } from "../snackbars/snackbarSlice";
 
 import { getData } from "../../service/api";
@@ -16,8 +16,13 @@ const chatListSlice = createSlice({
     name: 'chatList',
     initialState: initialChatListState,
     reducers: {
-        addChat: (state, action) => {
-            Object.assign(state, action.payload);
+        addChat: (state, action: PayloadAction<ChatList[]>) => {
+            const pushChat = action.payload.map(chat => {
+                const existingChat = state.find(stateChat => stateChat.chat_id === chat.chat_id);
+                if(!existingChat){
+                    state.push(chat);
+                }
+            });
         },
         updateChat: (state, action) => {
             const chatIndex = state.findIndex(chat => chat.chat_id === action.payload.chat_id);
@@ -29,6 +34,11 @@ const chatListSlice = createSlice({
             state[chatIndex].lastMessageTime = action.payload.timestamp;
 
         }
+    }, 
+    extraReducers(builder){
+        builder.addCase(deleteChat.fulfilled, (state, action) => {
+            return state.filter(chat => chat.chat_id !== action.payload);
+        });
     }
 });
 
@@ -44,6 +54,7 @@ export const deleteChat = createAsyncThunk('chatList/deleteChat', async(chatId: 
             credentials: 'include'
         })
             .then(res => res.json());
+
         if(Object.keys(response)[0] === 'message'){
             thunkAPI.rejectWithValue(response);
             return thunkAPI.dispatch(

@@ -15,9 +15,10 @@ interface Data {
 
 interface ChatList{
     chat_id: string,
-    user: Data,
+    user_id: string,
     lastMessage: string,
     timesnap: Date | null,
+    lastMessageTime: string
 }
 
 interface SearchResultType{
@@ -32,7 +33,7 @@ function SearchResultList({searchResult, setSearchMenu}:SearchResultType) {
 
     const handleNewChat = (data: ChatList | null) => {
         if(data){
-            dispatch(addChat(data));
+            dispatch(addChat(data as any));
         }
         setSearchMenu(false);
         setPersonNewChat(undefined);
@@ -68,7 +69,7 @@ function SearchResultList({searchResult, setSearchMenu}:SearchResultType) {
                         }}
                     >
                         <Avatar 
-                            src={item.avatar} 
+                            src={item.avatar ? item.avatar : '/broken-image.jpg'} 
                             alt={`Avatar of ${item.firstName} ${item.lastName}`} 
                             className="mr-2 w-16 h-16" 
                         />

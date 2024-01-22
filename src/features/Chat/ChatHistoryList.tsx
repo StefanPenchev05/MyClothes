@@ -68,17 +68,17 @@ function ChatHistoryList({setSelectedChat}:ChatHistoryType) {
                 <div className='flex flex-row items-center justify-between hover:cursor-pointer'
                     onMouseEnter={() => setHoveredUser(item.chat_id)}
                     onMouseLeave={() => setHoveredUser(null)}
-                    onClick={() => {
-                        console.log('here')
-                        console.log(item.chat_id)
-                        setSelectedChat(item.chat_id)
-                    }}
                     key={index}
                 >
-                    <div className='flex flex-row items-center space-x-4' key={item.chat_id} onClick={() => {}}>
+                    <div className='flex flex-row items-center space-x-4' 
+                            key={item.chat_id} 
+                            onClick={() => {
+                                setSelectedChat(item.chat_id)
+                            }}
+                        >
                         <div className='flex flex-row'>
                             <Avatar
-                                src={item.user.avatar}
+                                src={item.user.avatar ? item.user.avatar : '/broken-image.jpg'}
                                 alt={`Avatar of ${item.user.firstName} ${item.user.lastName}`}
                                 className="mr-2 w-16 h-16"
                             />

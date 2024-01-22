@@ -33,6 +33,7 @@ const socketManager = new SocketManager(undefined);
 
 function ChatMenu() {
 
+
     const [searchResult, setSearchResult] = useState<User[] | undefined>(undefined);
     const [searchMenu,setSearchMenu] = useState<boolean>(false);
     const [selectedChat, setSelectedChat] = useState<string | undefined>(undefined);
@@ -45,17 +46,20 @@ function ChatMenu() {
     }    
     
     useEffect(() => {
-        socketManager.getChatList()
-        .then(chatList => {
-          if (chatList) {
-            dispatch(addChat(chatList));
-          } else {
-            enqueueSnackbar('Unable to fetch chat list', {variant: 'error', autoHideDuration: 5000});
-          }
-        })
-        .catch(error => {
-          enqueueSnackbar('Error fetching chat list: ' + error.message, {variant: 'error', autoHideDuration: 5000});
-        });
+        const fetchChatList = async () => {
+            await socketManager.getChatList()
+                .then(chatList => {
+                if (chatList) {
+                    dispatch(addChat(chatList as any));
+                } else {
+                    enqueueSnackbar('Unable to fetch chat list', {variant: 'error', autoHideDuration: 5000});
+                }
+                })
+                .catch(error => {
+                enqueueSnackbar('Error fetching chat list: ' + error.message, {variant: 'error', autoHideDuration: 5000});
+                });
+    }
+    fetchChatList();
     },[])
 
   return (

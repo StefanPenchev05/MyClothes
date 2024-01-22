@@ -31,7 +31,7 @@ function ProfileMenu() {
         try{
             await getData('/user/logout');
             dispatch(clearUser());
-            window.location.reload();
+            window.location.href = '/user/login';
         }catch(err){
             console.log("Error " + err);
         }
