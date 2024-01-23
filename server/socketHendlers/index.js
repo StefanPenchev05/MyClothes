@@ -151,6 +151,7 @@ module.exports = function (io) {
                 await message.save();
                 //add message to conversation
                 socket.conversation.messages.push(message._id);
+                socket.conversation.markModified('messages');
                 //save conversation to db
                 await socket.conversation.save();
                 //emit message to all users in conversation
@@ -177,30 +178,6 @@ module.exports = function (io) {
                 console.log(err);
             }
         });
-
-        // socket.on('seen_message', async (data) => {
-        //     try {
-        //         console.log(socket.conversation)
-        //         //get conversation from db
-        //         const message = socket.conversation.messages.find(message => {
-        //             console.log(message._id.toString(), data.message_id.toString());
-        //             return message._id.toString() === data.message_id.toString();
-        //         });
-        //         //update message
-        //         message.seen = true;
-        //         //save conversation to db
-        //         await socket.conversation.save();
-        //         //emit message to all users in conversation
-        //         socket.to(userSocketMap.get(data.otherUser_id.toString())).emit('seen_message', {
-        //             conversation_id: socket.conversation._id.toString(),
-        //             message_id: message._id.toString(),
-        //             seen: true
-        //         });
-        //         console.log('seen_message');
-        //     } catch (err) {
-        //         console.log(err);
-        //     }
-        // });
 
         socket.on('leaveRoom', (data) => {
             socket.leave(data);

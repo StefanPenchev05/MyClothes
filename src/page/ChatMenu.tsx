@@ -47,19 +47,24 @@ function ChatMenu() {
     
     useEffect(() => {
         const fetchChatList = async () => {
+            let chatList;
             await socketManager.getChatList()
-                .then(chatList => {
-                if (chatList) {
-                    dispatch(addChat(chatList as any));
-                } else {
-                    enqueueSnackbar('Unable to fetch chat list', {variant: 'error', autoHideDuration: 5000});
-                }
-                })
-                .catch(error => {
+            .then(data => {
+                chatList = data;
+            })
+            .catch(error => {
+                console.log(error);
                 enqueueSnackbar('Error fetching chat list: ' + error.message, {variant: 'error', autoHideDuration: 5000});
-                });
-    }
-    fetchChatList();
+            });
+
+            if (chatList) {
+                dispatch(addChat(chatList as any));
+            } else {
+                enqueueSnackbar('Unable to fetch chat list', {variant: 'error', autoHideDuration: 5000});
+            }
+        }
+        fetchChatList();
+
     },[])
 
   return (

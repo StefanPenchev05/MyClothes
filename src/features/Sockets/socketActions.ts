@@ -34,7 +34,6 @@ class SocketManager {
     private _socket: Socket | null = null;
 
     constructor(private url: string | undefined) {
-        console.log(this.url);
         this._socket = io(this.url ? this.url : 'http://localhost:5500/user/messages', {
             transports: ['websocket'],
             autoConnect: false,

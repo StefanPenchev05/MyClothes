@@ -1,12 +1,18 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { openSnackbar } from "../snackbars/snackbarSlice";
 
-import { getData } from "../../service/api";
-
 interface ChatList {
     chat_id: string,
     user_id: string,
-    lastMessage: string,
+    lastMessage: {
+        message_id: string,
+        sender: string,
+        message: string,
+        timestamp: string,
+        reacted: string | null,
+        seen: boolean,
+    
+    },
     lastMessageTime: string,
 }
 
@@ -16,23 +22,24 @@ const chatListSlice = createSlice({
     name: 'chatList',
     initialState: initialChatListState,
     reducers: {
-        addChat: (state, action: PayloadAction<ChatList[]>) => {
-            const pushChat = action.payload.map(chat => {
-                const existingChat = state.find(stateChat => stateChat.chat_id === chat.chat_id);
-                if(!existingChat){
-                    state.push(chat);
-                }
-            });
+        addChat: (state, action: PayloadAction<ChatList[] | ChatList>) => {
+           if(action.payload instanceof Array){
+               return action.payload;
+           }else{
+                return [...state, action.payload];
+              }
         },
         updateChat: (state, action) => {
             const chatIndex = state.findIndex(chat => chat.chat_id === action.payload.chat_id);
             state[chatIndex] = action.payload;
         },
         updateLastMessage: (state, action) => {
-            const chatIndex = state.findIndex(chat => {return chat.chat_id === action.payload.chat_id});
-            state[chatIndex].lastMessage = action.payload.message;
-            state[chatIndex].lastMessageTime = action.payload.timestamp;
-
+            console.log(action.payload);
+            const chatIndex = state.findIndex(chat => chat.chat_id === action.payload.chat_id);
+            if (chatIndex !== -1) {
+                state[chatIndex].lastMessage = action.payload.message;
+                state[chatIndex].lastMessageTime = action.payload.timestamp;
+            }
         }
     }, 
     extraReducers(builder){

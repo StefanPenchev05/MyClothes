@@ -61,12 +61,6 @@ function MessageMenu({selectedChat, socketManager}:MessageMenuType) {
     });
 
     useEffect(() => {
-        window.addEventListener('focus', () => {
-            socketManager.seenMessage(messageList[messageList.length - 1]?.message_id, otherUser.id);
-        });
-    }, [])
-
-    useEffect(() => {
         if(selectedChat){
             setIsLoading(true);
             dispatch(clearChat());
@@ -101,9 +95,6 @@ function MessageMenu({selectedChat, socketManager}:MessageMenuType) {
                 dispatch(addMessage(message));
                 dispatch(updateLastMessage({chat_id: message.conversation_id, message: message.message, timestamp: message.timestamp}));
             });
-            socket.on('seen_message', (message: Message) => {
-                dispatch(updateLastMessage({chat_id: message.conversation_id, seen: true}));
-            })
         }
     
         return () => {
@@ -136,6 +127,7 @@ function MessageMenu({selectedChat, socketManager}:MessageMenuType) {
                     <Divider orientation='horizontal'/>
                     <div className='flex-grow overflow-auto p-4'>
                         {messageList.map((msg, index) => (
+                            console.log(msg),
                             msg.sender === otherUser.id ? (
                                 <div key={index} className='flex flex-row items-center justify-start mb-4 space-x-4'>
                                     <Avatar className='w-30 h-30' src={otherUser.avatar}/>
@@ -147,7 +139,10 @@ function MessageMenu({selectedChat, socketManager}:MessageMenuType) {
                                 <div key={index} className='flex flex-row items-center justify-end mb-4 space-x-4'>
                                    <Typography variant="body1" className='text-start text-wrap text-base font-normal text-white border-2 border-blue-500 rounded-lg bg-blue-500 p-2 ml-4 overflow-wrap break-words max-w-[190px]'>
                                         {msg.message}
-                                    </Typography>   
+                                    </Typography>
+                                    {messageList.length - 1 === index && msg.seen === true && (
+                                        <Typography>seen</Typography>
+                                    )}
                                     <Avatar className='w-30 h-30' src={user.avatar}/>
                                 </div>
                             )
