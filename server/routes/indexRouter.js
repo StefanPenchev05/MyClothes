@@ -12,7 +12,9 @@ const countriesRouter = require("./countryRouter");
 //cities
 const citiesRouter = require("./cityRouter");
 //messages
-const messagesRouter = require("./messageRouter")
+const messagesRouter = require("./messageRouter");
+//products
+const productsRouter = require("./productRouter");
 
 //user Routers
 router.use("/user", userRouter);
@@ -26,5 +28,7 @@ router.use("/countries", countriesRouter);
 router.use("/cities", citiesRouter);
 //messages Router
 router.use("/user/message", messagesRouter);
+//products Router
+router.use("/products", productsRouter);
 
 module.exports = router

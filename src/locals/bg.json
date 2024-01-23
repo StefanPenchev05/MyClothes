@@ -72,6 +72,11 @@
         "Settings": "Настройки"
     },
     "home": {
-        
+        "Welcome to DesignerZone": "Добре дошли в DesignerZone",
+        "We are a team of passionate individuals dedicated to providing the best service possible. Our goal is to exceed your expectations and ensure your satisfaction.": "Ние сме екип от страстни хора, посветени на предоставянето на най-доброто обслужване. Нашата цел е да надминем очакванията ви и да гарантираме вашето удовлетворение.",
+        "About Us": "За нас",
+        "Products": "Продукти",
+        "Our products are crafted with precision and love. We offer a wide range of solutions tailored to your needs.":
+        "Нашите продукти са изработени с прецизност и любов. Предлагаме широка гама от решения, персонализирани специално за вашите нужди."
     }
 }

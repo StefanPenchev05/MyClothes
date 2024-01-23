@@ -48,7 +48,7 @@ function SubmitLogin() {
             }
           }
     
-          navigate("/home");
+          navigate("/");
           enqueueSnackbar('Login successful', {variant: 'success', autoHideDuration: 3000});
           return true;
         }

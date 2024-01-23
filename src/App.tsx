@@ -45,7 +45,7 @@ function App() {
       {showNavBar && <NavBar/>}
       <CssBaseline/>
           <Routes>
-            <Route path='/home' element={<Home/>}></Route>
+            <Route path='/' element={<Home/>}></Route>
             <Route path='/user/login' element={<UserLogin/>}></Route>
             <Route path='/user/registration' element={<UserSignup/>}></Route>
             {/* <Route path='/user/profile/:token' element={<ProfilePage/>}></Route> */}

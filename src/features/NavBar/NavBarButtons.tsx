@@ -18,7 +18,7 @@ function NavBarButtons() {
     <div className="flex justify-center w-1/2 space-x-8">
         <IconButton color="primary">
             <Tooltip title={t('navbar.Home page')}>
-                <Link to={'/home'}>
+                <Link to={'/'}>
                     <Home sx={{width:'40px', height:'40px'}}/>
                 </Link>
             </Tooltip>

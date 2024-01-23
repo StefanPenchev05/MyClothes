@@ -2,7 +2,7 @@
 export async function sendData(URL: string, data?: any) {
     try {
         // Make a POST request to the specified URL
-        const response = await fetch("http://localhost:5500" + URL, {
+        const response = await fetch("http://192.168.0.29:5500" + URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export async function sendData(URL: string, data?: any) {
 export async function getData(URL: string, query? : {[key:string]:string}){
     try {
         // Make a GET request to the specified URL
-        const response = await fetch(query ? `http://localhost:5500${URL}/${query.data}` : `http://localhost:5500${URL}`, 
+        const response = await fetch(query ? `http://192.168.0.29:5500${URL}/${query.data}` : `http://192.168.0.29:5500${URL}`, 
         {
             method: 'GET', 
             credentials: 'include',
