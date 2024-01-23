@@ -12,6 +12,7 @@ import NavBar from './features/NavBar/NavBar';
 const Home = lazy(() => import('./page/Home'));
 const UserLogin = lazy(() => import('./page/userLogin'));
 const UserSignup = lazy(() => import('./page/userSignup'));
+const UserSettings = lazy(() => import('./page/UserSettings'));
 const ChatMenu = lazy(() => import('./page/ChatMenu'));
 //const ProfilePage = lazy(() => import('./page/userProfile'));
 const socket = io('http://localhost:5500/', {withCredentials: true});
@@ -49,6 +50,7 @@ function App() {
             <Route path='/user/login' element={<UserLogin/>}></Route>
             <Route path='/user/registration' element={<UserSignup/>}></Route>
             {/* <Route path='/user/profile/:token' element={<ProfilePage/>}></Route> */}
+            <Route path='/user/settings/' element={<UserSettings/>}></Route>
             <Route path='/user/messages' element={<ChatMenu/>}></Route>
           </Routes>
     </Suspense>

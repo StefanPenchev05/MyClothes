@@ -9,7 +9,7 @@ import DanielAvatar from '../assets/images/DanielGeorgiev.jpg'
 import homeWallpaper from '../assets/images/homeWallpaper.jpg'
 
 import Card from '../components/Home/UI/Card';
-import PostCard from '../features/Products/PostCard';
+import PostCard from '../features/Products/ProductCard';
 
 function Home() {
 
