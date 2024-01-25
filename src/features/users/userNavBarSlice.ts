@@ -37,6 +37,9 @@ const userNavBarSlice = createSlice({
         },
         clearUser: (state) => {
             state = initialState
+        },
+        updateData: (state, action) => {
+            Object.assign(state, action.payload);
         }
     },
     extraReducers: (builder) => {
@@ -79,6 +82,3 @@ export const fetchUserInfo:any = createAsyncThunk('user/fetchUserInfo', async (_
 });
 
 export default userNavBarSlice.reducer;
-
-
-// Зад. 7. Напишете заявка, която извежда име на клиент, номер и тип на стая, дата и престой, за резервациите, които е направил клиент с ID 5

@@ -23,6 +23,7 @@ module.exports = {
         try {
             // Fetch user data and populate profileImages
             const userData = await UserModel.findOne({ _id: sessionID }).populate("profileImages");
+
             // If user data is not found, return a message
             if (!userData) {
                 return { message: 'User not found!' };
@@ -30,7 +31,6 @@ module.exports = {
 
             // Common data for all users
             const commonData = {
-                id:userData._id,
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 username:userData.username,
@@ -42,11 +42,9 @@ module.exports = {
 
             // If user is a designer, return designer info
             if (userData.role === 'designer') {
-                const designerInfo = await DesignerMOdel.findOne({user:userData._id})
-                console.log(designerInfo)
                 return {
                     ...commonData,
-                   designerInfo
+                    designerInfo: userData.designerInfo
                 };
             }
 
@@ -198,5 +196,95 @@ module.exports = {
             throw new CustomError("An error occurred while updating the new password. Please try again later.", "MailError");
         }
         return { msg: "Password successfully changed!" }
+    },
+
+    getUsersData: async (sessionID) => {
+        try {
+            // Fetch user data and populate profileImages
+            const userData = await UserModel.findOne({ _id: sessionID }).populate("profileImages");
+
+            // If user data is not found, return a message
+            if (!userData) {
+                return { message: 'User not found!' };
+            }
+
+            // Common data for all users
+            const commonData = {
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                username:userData.username,
+                gender:userData.gender,
+                avatar: userData.avatar || userData.profileImages[0]?.url,
+                profileImages:userData.profileImages,
+                role: userData.role,
+            };
+
+            // If user is a designer, return designer info
+            if (userData.role === 'designer') {
+                return {
+                    ...commonData,
+                    designerInfo: userData.designerInfo
+                };
+            }
+
+            // If user is not a designer, return purchased products count
+            return {
+                ...commonData,
+                purchasedProducts: userData.purchasedProducts.length
+            };
+        } catch (err) {
+            throw new Error(err.message);
+        }
+    },
+
+    getUserSettingsData: async (sessionID) => {
+        if (!sessionID) {
+            throw new CustomError("No session ID provided!", "NoSessionID");
+        }
+
+        const userData = await UserModel.findOne({ _id: sessionID })
+            .select("username email dateOfBirth gender phone")
+            .populate("profileImages")
+            .populate("address")
+            .populate("purchasedProducts");
+
+        if (!userData) {
+            throw new CustomError("User not found!", "UserNotFound");
+        }
+
+        return userData;
+    },
+
+    /**
+     * 
+     * @param {string} sessionID
+     * @throws {CustomError} 
+     * @returns {Object}
+     */
+
+    getUserSettingsData: async(sessionID) => {
+        // Validate input
+        if (!sessionID) {
+            throw new CustomError("No session ID provided!", "NoSessionID");
+        }
+    
+        // Define the fields to be fetched
+        const fieldsToSelect = "username email dateOfBirth gender phone";
+    
+        // Fetch user data
+        const userData = await UserModel
+            .findOne({ _id: sessionID })
+            .select(fieldsToSelect)
+            .populate("profileImages")
+            .populate("address")
+            .populate("purchasedProducts")
+            .lean();
+    
+        // Validate result
+        if (!userData) {
+            throw new CustomError("User not found!", "UserNotFound");
+        }
+    
+        return userData;
     }
 };

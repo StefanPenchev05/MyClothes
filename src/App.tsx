@@ -47,7 +47,9 @@ function App() {
     }>
       {showNavBar && <NavBar/>}
       <CssBaseline/>
-          <Routes>
+          
+          <div style={{paddingTop: showNavBar ? '70px': '0px'}}>
+            <Routes>
             <Route path='/' element={<Home/>}></Route>
             <Route path='/user/login' element={<UserLogin/>}></Route>
             <Route path='/user/registration' element={<UserSignup/>}></Route>
@@ -55,7 +57,8 @@ function App() {
             <Route path='/user/settings/' element={<UserSettings/>}></Route>
             <Route path='/user/messages' element={<ChatMenu/>}></Route>
             <Route path='/product/create' element={<CreateProductPage/>}></Route>
-          </Routes>
+            </Routes>
+          </div>
     </Suspense>
   );
 }
