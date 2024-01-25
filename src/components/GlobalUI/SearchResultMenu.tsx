@@ -21,7 +21,6 @@ function SearchResultMenu({searchResult}:SearchBarType) {
         <div className="absolute border-2 border-gray-300 w-full rounded-xl p-4 bg-gray-50">
            {Array.isArray(searchResult) ? (
              searchResult.map((item, index) => (
-                console.log(item),
                 <Card key={index} className="mb-4" onClick={() => visitProfilePage(item.id)}>
                     <CardContent className="flex flex-row items-center">
                         <Avatar src={item.avatar} alt={`Avatar of ${item.firstName} ${item.lastName}`} className="mr-2" />

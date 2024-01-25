@@ -24,7 +24,6 @@ function ProfilePage() {
     const token = location.pathname.split('/')[3];
 
     useEffect(() => {
-        console.log(token);
         dispatch(fetchProfileInfo(token));
         if(snackbar.open) {
             enqueueSnackbar(snackbar.message, {variant: snackbar.variant, autoDuration:snackbar.duration});

@@ -54,7 +54,6 @@ export const {setUser,clearUser} = ProfileSlice.actions;
 
 export const fetchProfileInfo:any = createAsyncThunk('profile/fetchProfileInfo', async (token: string,thunkAPI)=>{
     try{
-        console.log(token)
         const response = await getData(`/user/profile/${token}`)
         if(Object.keys(response)[0]==='message'){
             thunkAPI.rejectWithValue(initialState);
@@ -66,8 +65,6 @@ export const fetchProfileInfo:any = createAsyncThunk('profile/fetchProfileInfo',
                 })
             );
         }
-        console.log(response)
-        console.log(response.profileImages)
         return response;
         
     }
