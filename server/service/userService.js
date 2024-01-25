@@ -18,47 +18,6 @@ class CustomError extends Error {
 }
 
 module.exports = {
-    getUsersData: async (sessionID) => {
-        try {
-            // Fetch user data and populate profileImages
-            const userData = await UserModel.findOne({ _id: sessionID }).populate("profileImages");
-
-            // If user data is not found, return a message
-            if (!userData) {
-                return { message: 'User not found!' };
-            }
-
-            // Common data for all users
-            const commonData = {
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                username:userData.username,
-                gender:userData.gender,
-                avatar: userData.avatar || userData.profileImages[0]?.url,
-                profileImages:userData.profileImages,
-                role: userData.role,
-            };
-
-            // If user is a designer, return designer info
-            if (userData.role === 'designer') {
-                return {
-                    ...commonData,
-                    designerInfo: userData.designerInfo
-                };
-            }
-
-            // If user is not a designer, return purchased products count
-            return {
-                ...commonData,
-                purchasedProducts: userData.purchasedProducts.length
-            };
-        } catch (err) {
-            throw new Error(err.message);
-        }
-    },
-
-
-
     loginUser: async (emailOrUsername, password) => {
         // Find the user based on email or username
         const existingUser = await UserModel.findOne({
@@ -191,5 +150,68 @@ module.exports = {
             throw new CustomError("An error occurred while updating the new password. Please try again later.", "MailError");
         }
         return { msg: "Password successfully changed!" }
+    },
+
+    getUsersData: async (sessionID) => {
+        try {
+            // Fetch user data and populate profileImages
+            const userData = await UserModel.findOne({ _id: sessionID }).populate("profileImages");
+
+            // If user data is not found, return a message
+            if (!userData) {
+                return { message: 'User not found!' };
+            }
+
+            // Common data for all users
+            const commonData = {
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                username:userData.username,
+                gender:userData.gender,
+                avatar: userData.avatar || userData.profileImages[0]?.url,
+                profileImages:userData.profileImages,
+                role: userData.role,
+            };
+
+            // If user is a designer, return designer info
+            if (userData.role === 'designer') {
+                return {
+                    ...commonData,
+                    designerInfo: userData.designerInfo
+                };
+            }
+
+            // If user is not a designer, return purchased products count
+            return {
+                ...commonData,
+                purchasedProducts: userData.purchasedProducts.length
+            };
+        } catch (err) {
+            throw new Error(err.message);
+        }
+    },
+
+    getUserSettingsData: async (sessionID) => {
+       try{
+
+        console.log('i am here x2')
+        const userData = await UserModel.findOne({ _id: sessionID })
+            .select("username email dateOfBirth gender phone")
+            .populate("profileImages")
+            .populate("address")
+            .populate("purchasedProducts");
+
+            console.log(userData);
+
+        if(!userData){
+            throw new CustomError("User not found!", "UserNotFound");
+        }
+
+        return userData;
+
+       }catch(err){
+            console.log(err);
+           throw new Error(err.message);
+       }
     }
 };

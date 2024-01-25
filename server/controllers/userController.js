@@ -108,5 +108,27 @@ module.exports = {
             console.log(err);
             handleControllerError(err, res);
         }
-    }
+    },
+
+    getUserSettingsData: async (req, res) => {
+        try {
+            console.log('i am here')
+            // Get the user ID from the session
+            const sessionID = resolveToken(req.session.user);
+
+            // Get the user data from the navBarService
+            const userData = await userService.getUserSettingsData(sessionID);
+
+            // If the user data is not found, return an error
+            if (!userData) {
+                return res.status(404).json({ message: "User data not found" });
+            }
+
+            // If everything is OK, return the user data
+            return res.status(200).json(userData);
+        } catch (err) {
+            // If there's an error, return it
+            return res.status(500).json({ message: err.message });
+        }
+    },
 };

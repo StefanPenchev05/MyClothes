@@ -8,5 +8,5 @@ const addressSchema = new mongo.Schema({
     country: String
 });
 
-const Address = mongo.model('addresses', addressSchema);
+const Address = mongo.model('Address', addressSchema);
 module.exports = Address;

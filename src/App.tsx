@@ -45,14 +45,16 @@ function App() {
     }>
       {showNavBar && <NavBar/>}
       <CssBaseline/>
-          <Routes>
-            <Route path='/' element={<Home/>}></Route>
-            <Route path='/user/login' element={<UserLogin/>}></Route>
-            <Route path='/user/registration' element={<UserSignup/>}></Route>
-            {/* <Route path='/user/profile/:token' element={<ProfilePage/>}></Route> */}
-            <Route path='/user/settings/' element={<UserSettings/>}></Route>
-            <Route path='/user/messages' element={<ChatMenu/>}></Route>
-          </Routes>
+          <div style={{paddingTop: showNavBar ? '70px': '0px'}}>
+            <Routes>
+              <Route path='/' element={<Home/>}></Route>
+              <Route path='/user/login' element={<UserLogin/>}></Route>
+              <Route path='/user/registration' element={<UserSignup/>}></Route>
+              {/* <Route path='/user/profile/:token' element={<ProfilePage/>}></Route> */}
+              <Route path='/user/settings/' element={<UserSettings/>}></Route>
+              <Route path='/user/messages' element={<ChatMenu/>}></Route>
+            </Routes>
+          </div>
     </Suspense>
   );
 }

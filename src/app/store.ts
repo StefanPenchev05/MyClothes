@@ -5,6 +5,7 @@ import chatListReducer from '../features/Chat/chatListSlice'
 import messageReducer from '../features/Chat/messageSlice'
 import otherUserReducer from '../features/Chat/otherUser'
 import productReducer from '../features/Products/productSlice'
+import UserSettingsReducer from '../features/users/userSettingsSlice'
 
 export const store = configureStore({
     reducer:{
@@ -14,6 +15,7 @@ export const store = configureStore({
         message: messageReducer,
         otherUsers: otherUserReducer,
         product: productReducer,
+        userSettings: UserSettingsReducer
     },
 });
 
