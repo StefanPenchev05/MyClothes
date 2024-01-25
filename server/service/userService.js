@@ -192,26 +192,53 @@ module.exports = {
     },
 
     getUserSettingsData: async (sessionID) => {
-       try{
+        if (!sessionID) {
+            throw new CustomError("No session ID provided!", "NoSessionID");
+        }
 
-        console.log('i am here x2')
         const userData = await UserModel.findOne({ _id: sessionID })
             .select("username email dateOfBirth gender phone")
             .populate("profileImages")
             .populate("address")
             .populate("purchasedProducts");
 
-            console.log(userData);
-
-        if(!userData){
+        if (!userData) {
             throw new CustomError("User not found!", "UserNotFound");
         }
 
         return userData;
+    },
 
-       }catch(err){
-            console.log(err);
-           throw new Error(err.message);
-       }
+    /**
+     * 
+     * @param {string} sessionID
+     * @throws {CustomError} 
+     * @returns {Object}
+     */
+
+    getUserSettingsData: async(sessionID) => {
+        // Validate input
+        if (!sessionID) {
+            throw new CustomError("No session ID provided!", "NoSessionID");
+        }
+    
+        // Define the fields to be fetched
+        const fieldsToSelect = "username email dateOfBirth gender phone";
+    
+        // Fetch user data
+        const userData = await UserModel
+            .findOne({ _id: sessionID })
+            .select(fieldsToSelect)
+            .populate("profileImages")
+            .populate("address")
+            .populate("purchasedProducts")
+            .lean();
+    
+        // Validate result
+        if (!userData) {
+            throw new CustomError("User not found!", "UserNotFound");
+        }
+    
+        return userData;
     }
 };

@@ -110,9 +110,14 @@ module.exports = {
         }
     },
 
+    /**
+     * @param {Request} req 
+     * @param {Response} res 
+     * @returns 
+     */
+
     getUserSettingsData: async (req, res) => {
         try {
-            console.log('i am here')
             // Get the user ID from the session
             const sessionID = resolveToken(req.session.user);
 

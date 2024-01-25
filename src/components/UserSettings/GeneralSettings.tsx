@@ -1,36 +1,33 @@
-import React from 'react'
-import { Avatar, Typography } from '@mui/material'
+import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Avatar, Typography, Chip } from '@mui/material'
 import { fetchUserSettings } from '../../features/users/userSettingsSlice'
 
 export default function GeneralSettings() {
-  const userCradential = useSelector((state: any) => state.userNavBar)
-  console.log(Object.keys(userCradential))
-  
-  const useDispatchHook = useDispatch()
-  React.useEffect(() => {
-    useDispatchHook(fetchUserSettings() as any)
-  }, [useDispatchHook])
+  const dispatch = useDispatch();
 
-  const test = useSelector((state: any) => state.userSettings)
-  console.log(Object.keys(test.user))
+  useEffect(() => {
+    dispatch(fetchUserSettings() as any);
+  }, [dispatch]);
+
+  const userData = useSelector((state: any) => state.userSettings);
+  const navBarData = useSelector((state: any) => state.userNavBar);
+
+  const userCredentials = { ...userData, ...navBarData };
+
+  console.log(userCredentials);
 
   return (
   <div className='w-full p-4' style={{height: 'calc(100vh - 70px)'}}>
-    <div className='h-full p-4 bg-gray-200 rounded-xl'>
-      <div className='flex space-x-4 items-center'>
+    <div className='h-full p-12 bg-gray-200 rounded-xl'>
+      <div className='flex items-start space-x-6'>
         <Avatar
           alt="Remy Sharp"
-          src={userCradential.avatar}
-          sx={{ width: 200, height: 200 }}
+          src={userCredentials.avatar}
+          sx={{ width: 270, height: 300, borderRadius: '15%'}}
         />
         <div className='flex flex-col'>
-          <Typography variant="h6" className='mt-5'>
-              Name: {userCradential.firstName}
-          </Typography>
-          <Typography variant="h6" className='mt-5'>
-              Last Name: {userCradential.lastName}
-          </Typography>
+          <text>Information</text>
         </div>
       </div>
     </div>
