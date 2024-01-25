@@ -31,10 +31,10 @@ const productScheme = new mongoose.Schema({
         required: true,
         enum: ['Shirts', 'Pants', 'Dresses', 'Shoes', 'Accessories']
     },
-    image: {
+    image: [{
         type: String,
         required: true
-    },
+    }],
     inStock: {
         type: Boolean,
         default: true

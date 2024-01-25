@@ -4,6 +4,7 @@ const { generateToken, verifyToken } = require("../utils/tokenEmailUtils");
 const { SendPassResetMail } = require("../utils/mailUtils");
 
 const UserModel = require("../model/User");
+const DesignerMOdel = require("../model/Designer")
 const Address = require("../model/Address");
 const Image = require("../model/ProfileImages");
 
@@ -22,7 +23,6 @@ module.exports = {
         try {
             // Fetch user data and populate profileImages
             const userData = await UserModel.findOne({ _id: sessionID }).populate("profileImages");
-
             // If user data is not found, return a message
             if (!userData) {
                 return { message: 'User not found!' };
@@ -30,6 +30,7 @@ module.exports = {
 
             // Common data for all users
             const commonData = {
+                id:userData._id,
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 username:userData.username,
@@ -41,9 +42,11 @@ module.exports = {
 
             // If user is a designer, return designer info
             if (userData.role === 'designer') {
+                const designerInfo = await DesignerMOdel.findOne({user:userData._id})
+                console.log(designerInfo)
                 return {
                     ...commonData,
-                    designerInfo: userData.designerInfo
+                   designerInfo
                 };
             }
 
@@ -143,6 +146,10 @@ module.exports = {
     },
 
     googleSignUpUser: async () => {
+
+    },
+
+    editProfile: async ()=>{
 
     },
 

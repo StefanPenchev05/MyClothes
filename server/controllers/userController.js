@@ -99,6 +99,10 @@ module.exports = {
         }
     },
 
+    editProfile:async (req,res)=>{
+
+    },
+
     logout: (req, res) => {
         try {
             // Clear the user session to log them out

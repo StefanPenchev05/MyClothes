@@ -65,3 +65,12 @@ export function validateDateOfBirth(selectedDate: dayjs.Dayjs, setSelectedDate:R
     setSelectedDate({value: selectedDate, error: false, msg: ''});
     return true;
 }
+export function validateProductName(name:string){
+    const re = /^[a-zA-Z0-9_]{3,}$/;
+    return re.test(name)
+}
+
+export function validateCategory(category:string){
+    const Categories =['Men', 'Women','Kids']
+    return (category&& category in Categories) ? true : false
+}

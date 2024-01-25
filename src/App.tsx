@@ -15,6 +15,8 @@ const UserSignup = lazy(() => import('./page/userSignup'));
 const UserSettings = lazy(() => import('./page/UserSettings'));
 const ChatMenu = lazy(() => import('./page/ChatMenu'));
 //const ProfilePage = lazy(() => import('./page/userProfile'));
+const ProfilePage = lazy(() => import('./page/UserProfile'));
+const CreateProductPage = lazy(()=>import('./page/CreateProduct'));
 const socket = io('http://localhost:5500/', {withCredentials: true});
 
 i18next.use(initReactI18next).init({
@@ -49,9 +51,10 @@ function App() {
             <Route path='/' element={<Home/>}></Route>
             <Route path='/user/login' element={<UserLogin/>}></Route>
             <Route path='/user/registration' element={<UserSignup/>}></Route>
-            {/* <Route path='/user/profile/:token' element={<ProfilePage/>}></Route> */}
+             <Route path='/user/profile/:token' element={<ProfilePage/>}></Route> 
             <Route path='/user/settings/' element={<UserSettings/>}></Route>
             <Route path='/user/messages' element={<ChatMenu/>}></Route>
+            <Route path='/product/create' element={<CreateProductPage/>}></Route>
           </Routes>
     </Suspense>
   );
