@@ -17,7 +17,7 @@ export const store = configureStore({
         message: messageReducer,
         otherUsers: otherUserReducer,
         product: productReducer,
-        userProfile: ProfileReducer
+        userProfile: ProfileReducer,
         userSettings: UserSettingsReducer
     },
 });
