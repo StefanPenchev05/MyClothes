@@ -42,7 +42,6 @@ const ProfileSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchProfileInfo.fulfilled, (state, action) => {
-            if(action.payload.message) return state;
             Object.assign(state, action.payload);
         })
         .addCase(fetchProfileInfo.rejected, (state, action) => {
@@ -55,6 +54,7 @@ export const {setUser,clearUser} = ProfileSlice.actions;
 
 export const fetchProfileInfo:any = createAsyncThunk('profile/fetchProfileInfo', async (token: string,thunkAPI)=>{
     try{
+        console.log(token)
         const response = await getData(`/user/profile/${token}`)
         if(Object.keys(response)[0]==='message'){
             thunkAPI.rejectWithValue(initialState);

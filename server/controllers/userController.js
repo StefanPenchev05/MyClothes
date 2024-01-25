@@ -19,10 +19,18 @@ function handleControllerError(err, res) {
 }
 
 module.exports = {
+
+    /**
+     * 
+     * @param {Object} req 
+     * @param {Object} res 
+     * @returns 
+     */
+
     getUsersData: async (req, res) => {
         try {
             // Get the user ID from the session
-            const sessionID = resolveToken(req.session.user);
+            const sessionID = resolveToken(req.params.token);
 
             // Get the user data from the navBarService
             const userData = await userService.getUsersData(sessionID);

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import AspectRatio from '@mui/joy/AspectRatio';
 import Typography from '@mui/joy/Typography';
-import ProfileButtons from '../UserProfilePage/ProfileButtons';
+import ProfileButtons from './ProfileButtons';
 
 interface SocialLinks {
   facebook: string;
@@ -66,7 +66,7 @@ interface UserPanelProps {
 }
 
 const UserPanel: React.FC<UserPanelProps> = ({ userInfo }) => {
-  const [isOwner, setIsOwner] = useState(false);
+  const [isOwner] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
