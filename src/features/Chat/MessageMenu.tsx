@@ -1,7 +1,8 @@
 import { addUser } from './otherUser';
 import { Socket } from 'socket.io-client';
 import { Chat } from '@mui/icons-material'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { moveChatToStart } from './chatListSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { addChat, clearChat, addMessage } from './messageSlice';
 import { Typography, Avatar, Divider, CircularProgress } from '@mui/material'
@@ -44,6 +45,7 @@ interface MessageMenuType{
 function MessageMenu({selectedChat, socketManager}:MessageMenuType) {
     const [message, setMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const messageEndRef = useRef<HTMLDivElement>(null);
 
     const dispatch = useDispatch();
     const socket = socketManager.getSocket as Socket;
@@ -59,6 +61,17 @@ function MessageMenu({selectedChat, socketManager}:MessageMenuType) {
     const user:User = useSelector((state: any) => {
         return state.userNavBar;
     });
+
+    const scrollToBottom = () => {
+        if(messageEndRef.current){
+            const { current } = messageEndRef;
+            current.scrollIntoView({ behavior: "smooth" })
+        }
+    }
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messageList, isLoading])
 
     useEffect(() => {
         if(selectedChat){
@@ -89,11 +102,17 @@ function MessageMenu({selectedChat, socketManager}:MessageMenuType) {
         if(socket){
             socket.on('receive_message', (message: Message) => {
                 dispatch(addMessage(message));
-                dispatch(updateLastMessage({chat_id: message.conversation_id, message: message.message, timestamp: message.timestamp}));
+                if(message.conversation_id){
+                        dispatch(moveChatToStart(message.conversation_id));
+                        dispatch(updateLastMessage({chat_id: message.conversation_id, message: message.message, timestamp: message.timestamp}));
+                }
             });
             socket.on('sended_message', (message: Message) => {
                 dispatch(addMessage(message));
-                dispatch(updateLastMessage({chat_id: message.conversation_id, message: message.message, timestamp: message.timestamp}));
+                if(message.conversation_id){
+                    dispatch(moveChatToStart(message.conversation_id));
+                    dispatch(updateLastMessage({chat_id: message.conversation_id, message: message.message, timestamp: message.timestamp}));
+                }
             });
         }
     
@@ -127,7 +146,6 @@ function MessageMenu({selectedChat, socketManager}:MessageMenuType) {
                     <Divider orientation='horizontal'/>
                     <div className='flex-grow overflow-auto p-4'>
                         {messageList.map((msg, index) => (
-                            console.log(msg),
                             msg.sender === otherUser.id ? (
                                 <div key={index} className='flex flex-row items-center justify-start mb-4 space-x-4'>
                                     <Avatar className='w-30 h-30' src={otherUser.avatar}/>
@@ -147,26 +165,27 @@ function MessageMenu({selectedChat, socketManager}:MessageMenuType) {
                                 </div>
                             )
                         ))}
+                        <div ref={messageEndRef}/>
                     </div>
                     <div className='flex flex-row items-center p-4'>
-                    <form 
-                        className='flex-grow flex flex-row items-center'
-                        onSubmit={handleSendMessage}
-                    >
-                        <input 
-                            type="text" 
-                            className='flex-grow mr-4 border-2 border-gray-300 rounded-2xl p-2' 
-                            placeholder="Type a message" 
-                            value={message ? message : ''} 
-                            onChange={(e) => setMessage(e.target.value)} 
-                        />
-                        <button 
-                            type="submit"
-                            className='px-4 py-2 bg-blue-500 text-white rounded'
+                        <form 
+                            className='flex-grow flex flex-row items-center'
+                            onSubmit={handleSendMessage}
                         >
-                            Send
-                        </button>
-                    </form>
+                            <input 
+                                type="text" 
+                                className='flex-grow mr-4 border-2 border-gray-300 rounded-2xl p-2' 
+                                placeholder="Type a message" 
+                                value={message ? message : ''} 
+                                onChange={(e) => setMessage(e.target.value)} 
+                            />
+                            <button 
+                                type="submit"
+                                className='px-4 py-2 bg-blue-500 text-white rounded'
+                            >
+                                Send
+                            </button>
+                        </form>
                     </div>
                 </div>
              )

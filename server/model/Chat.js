@@ -20,10 +20,6 @@ const MessageSchema = new Schema({
         type: String,
         default: ''
     },
-    seen: {
-        type: Boolean,
-        default: false
-    }
 });
 
 const Message = mongoose.model('Message', MessageSchema);
@@ -37,7 +33,21 @@ const ConversationSchema = new Schema({
     messages: [{
         type: Schema.Types.ObjectId,
         ref: 'Message'
-    }]
+    }],
+    lastUpdated: {
+        type: Date,
+        default: Date.now
+    },
+    lastMessage:{
+        seen: {
+            type: Boolean,
+            default: false
+        },
+        message: {
+            type: Schema.Types.ObjectId,
+            ref: 'Message'
+        }
+    }
 });
 
 ConversationSchema.post('findOneAndDelete', async function(doc, next) {

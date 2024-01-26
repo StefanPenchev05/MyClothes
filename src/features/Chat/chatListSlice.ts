@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { openSnackbar } from "../snackbars/snackbarSlice";
+import dayjs from "dayjs";
 
 interface ChatList {
     chat_id: string,
@@ -11,9 +12,9 @@ interface ChatList {
         timestamp: string,
         reacted: string | null,
         seen: boolean,
-    
     },
     lastMessageTime: string,
+    timesnap: string,
 }
 
 const initialChatListState: ChatList[] = [];
@@ -23,24 +24,78 @@ const chatListSlice = createSlice({
     initialState: initialChatListState,
     reducers: {
         addChat: (state, action: PayloadAction<ChatList[] | ChatList>) => {
-           if(action.payload instanceof Array){
-               return action.payload;
-           }else{
+            if(action.payload instanceof Array){
+                console.log('here')
+                let chats = action.payload.map(chat => {
+                    console.log(chat.timesnap)
+                    let timeAgo;
+                    const now = dayjs();
+                    const messageTime = dayjs(chat.timesnap);
+                    const hours = now.diff(messageTime, 'hour');
+                    const diffDays = now.diff(messageTime, 'day');
+                    const minutes = now.diff(messageTime, 'minute');
+                    const diffWeeks = now.diff(messageTime, 'week');
+                    const diffMonths = now.diff(messageTime, 'month');
+                    
+                    if (minutes < 60) {
+                        timeAgo = minutes + ' minute' + (minutes > 1 ? 's' : '') + ' ago';
+                    } else if (hours < 24) {
+                        timeAgo = hours + ' hour' + (hours > 1 ? 's' : '') + ' ago';
+                    } else if (diffDays < 7) {
+                        timeAgo = diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
+                    } else if (diffWeeks < 4) {
+                        timeAgo = diffWeeks + ' week' + (diffWeeks > 1 ? 's' : '') + ' ago';
+                    } else {
+                        timeAgo = diffMonths + ' month' + (diffMonths > 1 ? 's' : '') + ' ago';
+                    }
+
+                    return {...chat, timesnap: timeAgo};
+                });
+                return chats as ChatList[];
+            }else{
                 return [...state, action.payload];
-              }
+            }
         },
         updateChat: (state, action) => {
             const chatIndex = state.findIndex(chat => chat.chat_id === action.payload.chat_id);
             state[chatIndex] = action.payload;
         },
         updateLastMessage: (state, action) => {
-            console.log(action.payload);
             const chatIndex = state.findIndex(chat => chat.chat_id === action.payload.chat_id);
             if (chatIndex !== -1) {
                 state[chatIndex].lastMessage = action.payload.message;
-                state[chatIndex].lastMessageTime = action.payload.timestamp;
+                const now = dayjs();
+                const messageTime = dayjs(action.payload.timesnap);
+                let timeAgo;
+                const minutes = now.diff(messageTime, 'minute');
+                const hours = now.diff(messageTime, 'hour');
+                const diffDays = now.diff(messageTime, 'day');
+                const diffWeeks = now.diff(messageTime, 'week');
+                const diffMonths = now.diff(messageTime, 'month');
+
+                if (minutes < 60) {
+                    timeAgo = minutes + ' minute' + (minutes > 1 ? 's' : '') + ' ago';
+                } else if (hours < 24) {
+                    timeAgo = hours + ' hour' + (hours > 1 ? 's' : '') + ' ago';
+                } else if (diffDays < 7) {
+                    timeAgo = diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago';
+                } else if (diffWeeks < 4) {
+                    timeAgo = diffWeeks + ' week' + (diffWeeks > 1 ? 's' : '') + ' ago';
+                } else {
+                    timeAgo = diffMonths + ' month' + (diffMonths > 1 ? 's' : '') + ' ago';
+                }
+
+                state[chatIndex].lastMessageTime = '0';
             }
-        }
+        },
+        moveChatToStart: (state, action: PayloadAction<string>) => {
+            const chatIndex = state.findIndex(chat => chat.chat_id === action.payload);
+            if (chatIndex !== -1) {
+                const chat = state[chatIndex];
+                state.splice(chatIndex, 1);
+                state.unshift(chat);
+            }
+        },
     }, 
     extraReducers(builder){
         builder.addCase(deleteChat.fulfilled, (state, action) => {
@@ -49,7 +104,7 @@ const chatListSlice = createSlice({
     }
 });
 
-export const { addChat, updateChat, updateLastMessage } = chatListSlice.actions;
+export const { addChat, updateChat, updateLastMessage, moveChatToStart } = chatListSlice.actions;
 
 export const deleteChat = createAsyncThunk('chatList/deleteChat', async(chatId: string, thunkAPI) => {
     try{

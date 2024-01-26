@@ -37,14 +37,14 @@ module.exports = function (io) {
     messageNamespace.on('connection', (socket) => {
         socket.on('get_chat_list', async () => {
             // Fetch all conversations for the current user and populate the messages for each conversation
-            const list = await Conversation.find({ users: socket.user._id }).populate('messages');
+            const list = await Conversation.find({ users: socket.user._id }).populate('messages').sort({ lastUpdated: -1 }).exec();
 
             // Create a new Map to store user data
             const userMap = new Map();
 
             // Function to create a user object with specific fields
             const createUserObject = (user, userData) => ({
-                id: generateToken(user._id),
+                id: user._id,
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 avatar: userData.avatar || userData.profileImages[0]?.url,
@@ -151,6 +151,8 @@ module.exports = function (io) {
                 await message.save();
                 //add message to conversation
                 socket.conversation.messages.push(message._id);
+                //update the last time updated
+                socket.conversation.lastUpdated = Date.now();
                 socket.conversation.markModified('messages');
                 //save conversation to db
                 await socket.conversation.save();

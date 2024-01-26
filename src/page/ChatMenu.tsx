@@ -20,15 +20,6 @@ interface User {
     socket_id?: string | null,
 }
 
-interface Message{
-    message_id: string,
-    sender: string,
-    message: string,
-    timestamp: string,
-    reacted: string | null,
-    seen: boolean,
-}
-
 const socketManager = new SocketManager(undefined);
 
 function ChatMenu() {
@@ -53,7 +44,6 @@ function ChatMenu() {
                 chatList = data;
             })
             .catch(error => {
-                console.log(error);
                 enqueueSnackbar('Error fetching chat list: ' + error.message, {variant: 'error', autoHideDuration: 5000});
             });
 

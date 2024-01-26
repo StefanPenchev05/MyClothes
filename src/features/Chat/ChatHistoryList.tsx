@@ -34,9 +34,7 @@ function ChatHistoryList({setSelectedChat}:ChatHistoryType) {
     const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
 
-    const list:ChatList[] = useSelector((state:any) => {
-        return state.chatList;
-    });
+    const list:ChatList[] = useSelector((state:any) => state.chatList);
 
     const snackbar = useSelector((state:any) => {
         return state.snackbar;
@@ -83,24 +81,15 @@ function ChatHistoryList({setSelectedChat}:ChatHistoryType) {
                                 className="mr-2 w-16 h-16"
                             />
                         </div>
-                        <div className='flex flex-row'>
-                            <div>
-                                <Typography variant="body1" className='text-lg font-semibold'>{item.user.firstName} {item.user.lastName}</Typography>
-                                <div className='flex flex-row'>
-                                <Typography variant="body2" className='text-md font-semibold mr-2 overflow-hidden overflow-ellipsis whitespace-nowrap w-1/2'> 
-                                    {item.lastMessage.substring(0, 20)}
-                                </Typography>                                    
-                                <Typography variant="body2" className='text-md font-semibold'> 
-                                        { item.timesnap ?
-                                            dayjs(item.timesnap).isSame(dayjs(), 'day') ?  
-                                                dayjs(item.timesnap).format('HH:mm') 
-                                                    : 
-                                                dayjs().diff(dayjs(item.timesnap), 'day') + ' day ago' 
-                                            :
-                                            null
-                                        }
-                                    </Typography>
-                                </div>
+                        <div>
+                            <Typography variant="body1" className='text-lg font-semibold'>{item.user.firstName} {item.user.lastName}</Typography>
+                            <div className='flex flex-row'>
+                            <Typography variant="body2" className='text-md font-semibold mr-2 overflow-hidden overflow-ellipsis whitespace-nowrap w-1/3'> 
+                                {item.lastMessage.substring(0, 20)}
+                            </Typography>                                    
+                            <Typography variant="body2" className='text-md font-semibold w-full'> 
+                                    { item.timesnap ? item.timesnap.toString() : null }
+                                </Typography>
                             </div>
                         </div>
                     </div>
@@ -108,7 +97,7 @@ function ChatHistoryList({setSelectedChat}:ChatHistoryType) {
                         <div>
                             <div>
                                 <IconButton onClick={handleClick}>
-                                    <MoreHorizIcon fontSize='large'></MoreHorizIcon>
+                                    <MoreHorizIcon fontSize='medium'></MoreHorizIcon>
                                 </IconButton>
                             </div>
                                 <Menu
