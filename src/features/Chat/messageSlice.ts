@@ -23,7 +23,7 @@ const messageSlice = createSlice({
         },
         updateMessage: (state, action) => {
             const messageIndex = state.findIndex(message => message.message_id === action.payload.message_id);
-            state[messageIndex] = action.payload;
+            state[messageIndex].seen = true;
         },
         deleteMessage: (state, action) => {
             const messageIndex = state.findIndex(message => message.message_id === action.payload);

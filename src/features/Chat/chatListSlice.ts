@@ -25,9 +25,7 @@ const chatListSlice = createSlice({
     reducers: {
         addChat: (state, action: PayloadAction<ChatList[] | ChatList>) => {
             if(action.payload instanceof Array){
-                console.log('here')
                 let chats = action.payload.map(chat => {
-                    console.log(chat.timesnap)
                     let timeAgo;
                     const now = dayjs();
                     const messageTime = dayjs(chat.timesnap);

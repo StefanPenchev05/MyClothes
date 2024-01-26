@@ -1,12 +1,11 @@
 const MessageService = require('../service/messageService')
-const { resolveToken } = require('../utils/tokenUserIdUtils')
 
 module.exports = {
     // Function to delete a chat
     deleteChat: async(req,res) => {
       try{
         // Resolve the user ID from the session token
-        const userID = resolveToken(req.session.user);
+        const userID = req.session.user;
         // Get the chat ID from the request parameters
         const chatID = req.params.ID
 
@@ -31,9 +30,9 @@ module.exports = {
     createChat: async(req,res) => {
       try{
         // Resolve the user ID from the session token
-        const userID = resolveToken(req.session.user);
+        const userID = req.session.user;
         // Resolve the ID of the person to chat with from the request body
-        const personToChatID = resolveToken(req.body.personToChat);
+        const personToChatID = req.body.personToChat;
 
         // Create a new chat
         const data = await MessageService.createNewChat(userID, personToChatID);

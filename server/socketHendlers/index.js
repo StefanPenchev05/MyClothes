@@ -1,6 +1,5 @@
  const { Conversation, Message } = require('../model/Chat');
  const User  = require('../model/User');
- const { generateToken ,resolveToken } = require('../utils/tokenUserIdUtils');
 
 let userSocketMap = new Map();
 userSocketMap.clear();
@@ -13,7 +12,7 @@ module.exports = function (io) {
             console.log('Not Authenticated'); 
             next(new Error('Not Authenticated'));
         } else {
-            const userID = resolveToken(socket.request.session.user);
+            const userID = socket.request.session.user;
             const user = await User.findById(userID).populate('profileImages');
 
             if(userSocketMap.has(user._id.toString())){
@@ -130,7 +129,7 @@ module.exports = function (io) {
                         sender: message.sender._id,
                         timestamp: message.timestamp,
                         reacted: '',
-                        seen: false
+                        seen: message.seen
                     }))
                 });                
             } catch (err) {
@@ -177,6 +176,28 @@ module.exports = function (io) {
                     seen: false
                 });
             } catch (err) {
+                console.log(err);
+            }
+        });
+
+        // Listen for 'message_seen' event
+        socket.on('message_seen', async (data) => {
+            try {
+                // Find the other user in the conversation
+                const otherUser = socket.conversation.users.find(user => user._id.toString() !== socket.user._id.toString());
+
+                // Update the last message in the conversation to be marked as seen
+                //const updatedMessage = await socket.conversation.messages[socket.conversation.messages.length - 1].updateOne({ seen: true });
+                // update the message into the DataBase
+                const updatedMessage = await Message.findByIdAndUpdate(data, { seen: true });
+                if(updatedMessage){
+                    // Emit 'seen_message' event to the other user
+                    socket.to(userSocketMap.get(otherUser._id.toString())).emit('message_seen', {
+                        message_id: data,
+                    });
+                }
+            } catch (err) {
+                // Log any errors
                 console.log(err);
             }
         });

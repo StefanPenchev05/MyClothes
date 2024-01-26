@@ -36,7 +36,7 @@ function Home() {
        <div className='relative w-full'>
           <img src={homeWallpaper} alt="homeWallpaper" className='w-full h-full' />
           <div className='absolute top-0 left-0 w-full h-1/2 flex justify-center items-center'>
-            <p ref={textRef} className='text-4xl font-bold text-white animate-fade-in'>{t('home.Welcome to DesignerZone')}</p>
+            <Typography ref={textRef} variant='h2' className='text-white animate-fade-in'>{t('home.Welcome to DesignerZone')}</Typography>
           </div>
        </div>
       </div>

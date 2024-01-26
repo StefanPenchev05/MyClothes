@@ -1,5 +1,4 @@
 const userService = require("../service/userService");
-const { generateToken, resolveToken } = require("../utils/tokenUserIdUtils");
 
 function handleControllerError(err, res) {
     if (!(err instanceof Object)) {
@@ -30,7 +29,7 @@ module.exports = {
     getUsersData: async (req, res) => {
         try {
             // Get the user ID from the session
-            const sessionID = resolveToken(req.params.token);
+            const sessionID = req.params.token;
 
             // Get the user data from the navBarService
             const userData = await userService.getUsersData(sessionID);
@@ -58,7 +57,7 @@ module.exports = {
             }
 
             // Store user information in the session
-            req.session.user = generateToken(existingUser._id);
+            req.session.user = existingUser._id;
 
             return res.status(200).json({ success: true, msg: "Successfully loged in user!" });
         } catch (err) {
@@ -78,7 +77,7 @@ module.exports = {
             const setUser = await userService.registerUser(email, password, username, firstName, lastName, selectedDate, gender, country, city, address, phone, picOne, picTwo, picThree, picFour);
 
             // Store user information in the session
-            req.session.user = generateToken(setUser._id);
+            req.session.user = setUser._id;
             return res.status(200).json({ success: true, msg: "Successfully registered user" });
         } catch (err) {
             handleControllerError(err, res);
@@ -131,7 +130,7 @@ module.exports = {
     getUserSettingsData: async (req, res) => {
         try {
             // Get the user ID from the session
-            const sessionID = resolveToken(req.session.user);
+            const sessionID = req.session.user;
 
             // Get the user data from the navBarService
             const userData = await userService.getUserSettingsData(sessionID);

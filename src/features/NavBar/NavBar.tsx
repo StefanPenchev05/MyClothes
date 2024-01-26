@@ -63,7 +63,7 @@ function NavBar() {
     }, [dispatch, snackbar]);
 
   return (
-    <AppBar position="fixed" sx={{backgroundColor: 'white', height:'70px'}} className="justify-center z-50">
+    <AppBar position="fixed" sx={{backgroundColor: 'transparent', height:'70px'}} className="justify-center z-50">
         <Toolbar sx={{color: 'black', padding: '0 1rem'}}>
             <div className="flex flex-row justify-between items-center  w-full">
                {isLoaded ? (

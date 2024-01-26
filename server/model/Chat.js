@@ -20,6 +20,10 @@ const MessageSchema = new Schema({
         type: String,
         default: ''
     },
+    seen: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const Message = mongoose.model('Message', MessageSchema);
@@ -38,16 +42,6 @@ const ConversationSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    lastMessage:{
-        seen: {
-            type: Boolean,
-            default: false
-        },
-        message: {
-            type: Schema.Types.ObjectId,
-            ref: 'Message'
-        }
-    }
 });
 
 ConversationSchema.post('findOneAndDelete', async function(doc, next) {
@@ -59,7 +53,10 @@ ConversationSchema.post('findOneAndDelete', async function(doc, next) {
             { $pull: { conversations: doc._id } }
         );
 
-        await Message.deleteMany({ _id: { $in: doc.messages } });
+        // Extract message IDs from doc.messages
+        const messageIds = doc.messages.map(message => message._id);
+
+        await Message.deleteMany({ _id: { $in: messageIds } });
     }
     next();
 });
