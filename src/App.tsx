@@ -1,10 +1,10 @@
 import { useDispatch } from "react-redux";
 import { initReactI18next } from "react-i18next";
-import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Grid, CircularProgress, CssBaseline } from "@mui/material";
 
-import i18next, { use } from "i18next";
+import i18next from "i18next";
 import bg from "./locals/bg.json";
 import en from "./locals/en.json";
 import NavBar from "./features/NavBar/NavBar";
@@ -39,10 +39,13 @@ function App() {
   const dispatch = useDispatch();
 
   const [selectedChat, setSelectedChat] = useState<string | undefined>();
+  dispatch({ type: "socket/connect", payload: { event: "notify" } });
 
   useEffect(() => {
-    dispatch({ type: "socket/connect", payload: { event: "notify" } });
-  }, [location]);
+    if (!showNotifications) {
+      dispatch({ type: "socket/disconnect", payload: { event: "notify" } });
+    }
+  }, [showNotifications, dispatch]);
 
   return (
     <Suspense
@@ -62,9 +65,7 @@ function App() {
       <CssBaseline />
 
       <div style={{ paddingTop: showNavBar ? "70px" : "0px" }}>
-        {showNotifications && (
-          <Notification setSelectedChatNotification={setSelectedChat} />
-        )}
+        <Notification setSelectedChatNotification={setSelectedChat} />
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/user/login" element={<UserLogin />}></Route>

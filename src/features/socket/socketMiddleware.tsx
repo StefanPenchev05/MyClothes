@@ -150,10 +150,15 @@ const socketMiddleware: Middleware = (storeAPI) => (next) => (action: any) => {
           storeAPI.dispatch(updateMessage(message_id));
         });
         break;
-      case "socket/disconnect":
-        // Disconnect from the socket.io server
-        socket.disconnect();
+      case "socket/disconnect": {
+        if (action.payload) {
+          const { event } = action.payload;
+          if (socket) {
+            socket.off(event);
+          }
+        }
         break;
+      }
       case "socket/emit":
         return new Promise((resolve, reject) => {
           if (action.payload?.event && action.payload?.data) {
