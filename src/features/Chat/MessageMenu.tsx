@@ -1,4 +1,3 @@
-import { Socket } from "socket.io-client";
 import { useEffect, useState, useRef } from "react";
 import { Chat, Settings } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,7 +23,7 @@ interface Message {
 }
 
 interface MessageMenuType {
-  selectedChat: string | undefined;
+  selectedChat: React.MutableRefObject<string | undefined>;
 }
 
 function MessageMenu({ selectedChat }: MessageMenuType) {
@@ -54,28 +53,29 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
   };
 
   useEffect(() => {
-    if (selectedChat) {
+    if (selectedChat.current) {
       setIsLoading(true);
-      dispatch(clearChat());
+      dispatch(clearChat({}));
+      console.log(selectedChat)
 
       dispatch({
         type: "socket/emit",
-        payload: { event: "joinRoom", data: selectedChat },
+        payload: { event: "joinRoom", data: selectedChat.current },
       });
 
-      const response = dispatch({
+      dispatch({
         type: "socket/connect",
         payload: { event: "get_conversation" },
       });
 
       setTimeout(() => {
         setIsLoading(false);
-      }, 2000);
+      }, 1000);
 
       return () => {
         dispatch({
           type: "socket/emit",
-          payload: { event: "leaveRoom", data: selectedChat },
+          payload: { event: "leaveRoom", data: selectedChat.current },
         });
       };
     }
@@ -94,7 +94,7 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
     scrollToBottom();
     if (messageList.length > 0) {
       if (
-        selectedChat &&
+        selectedChat.current &&
         isLoading === false &&
         messageList[messageList.length - 1].sender !== user.id
       ) {
@@ -104,7 +104,7 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
             event: "message_seen",
             data: {
               lastMessage: messageList[messageList.length - 1].message_id,
-              selectedChat,
+              selectedChat: selectedChat.current,
             },
           },
         });

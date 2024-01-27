@@ -8,6 +8,7 @@ import productReducer from "../features/Products/productSlice";
 import UserSettingsReducer from "../features/users/userSettingsSlice";
 import SocketRedcer from "../features/socket/socketSlice";
 import ProfileReducer from "../features/userProfile/userProfileSlice";
+import notificationReducer from "../components/Notification/notificationSlice";
 
 import socketMiddleware from "../features/socket/socketMiddleware";
 
@@ -22,6 +23,7 @@ export const store = configureStore({
     userProfile: ProfileReducer,
     userSettings: UserSettingsReducer,
     socket: SocketRedcer,
+    notifications: notificationReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(socketMiddleware),

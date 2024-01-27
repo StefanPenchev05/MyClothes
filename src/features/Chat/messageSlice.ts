@@ -29,7 +29,7 @@ const messageSlice = createSlice({
             const messageIndex = state.findIndex(message => message.message_id === action.payload);
             state.splice(messageIndex, 1);
         },
-        clearChat: (state) => {
+        clearChat: (state, action) => {
             state.splice(0, state.length);
         }
     }

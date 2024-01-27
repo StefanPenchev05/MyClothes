@@ -1,7 +1,7 @@
 import { useSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
 import { initReactI18next } from "react-i18next";
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Grid, CircularProgress, CssBaseline } from "@mui/material";
 
@@ -9,6 +9,8 @@ import i18next from "i18next";
 import bg from "./locals/bg.json";
 import en from "./locals/en.json";
 import NavBar from "./features/NavBar/NavBar";
+import Notification from "./components/Notification/Notification";
+import useLocalStorage from "./Hook/useLocalStorage";
 
 const Home = lazy(() => import("./page/Home"));
 const ChatMenu = lazy(() => import("./page/ChatMenu"));
@@ -34,8 +36,20 @@ function App() {
     location.pathname !== "/user/login" &&
     location.pathname !== "/user/registration";
 
+  const showNotifications = location.pathname !== "/user/messages";
+
   const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar();
+
+  // const [selectedChat, setSelectedChat] = useLocalStorage(
+  //   "selectedChat",
+  //   undefined
+  // );
+
+  const selectedChat = useRef<string | undefined>('');
+
+  useEffect(() => {
+    dispatch({ type: "socket/connect", payload: { event: "notify" } });
+  }, [location]);
 
   return (
     <Suspense
@@ -55,13 +69,21 @@ function App() {
       <CssBaseline />
 
       <div style={{ paddingTop: showNavBar ? "70px" : "0px" }}>
+        {showNotifications && <Notification selectedChat={selectedChat} />}
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/user/login" element={<UserLogin />}></Route>
           <Route path="/user/registration" element={<UserSignup />}></Route>
           <Route path="/user/profile/:token" element={<ProfilePage />}></Route>
           <Route path="/user/settings/" element={<UserSettings />}></Route>
-          <Route path="/user/messages" element={<ChatMenu />}></Route>
+          <Route
+            path="/user/messages"
+            element={
+              <ChatMenu
+                selectedChat={selectedChat}
+              />
+            }
+          ></Route>
           <Route path="/product/create" element={<CreateProductPage />}></Route>
         </Routes>
       </div>

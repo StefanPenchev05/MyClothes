@@ -8,6 +8,7 @@ import {
 } from "../Chat/chatListSlice";
 import { openSnackbar } from "../snackbars/snackbarSlice";
 import { addChat, addMessage, updateMessage } from "../Chat/messageSlice";
+import { setNotification } from "../../components/Notification/notificationSlice";
 
 let socket: Socket;
 
@@ -20,12 +21,12 @@ interface SocketAction {
 }
 
 interface User {
-    id: string;
-    firstName: string;
-    lastName: string;
-    avatar: string;
-    socket_id: string | null;
-  }
+  id: string;
+  firstName: string;
+  lastName: string;
+  avatar: string;
+  socket_id: string | null;
+}
 
 interface Message {
   conversation_id?: string;
@@ -53,10 +54,16 @@ interface ChatList {
 }
 
 interface ConversationType {
-    conversation_id: string;
-    user: User;
-    messages: Message[];
-  }
+  conversation_id: string;
+  user: User;
+  messages: Message[];
+}
+
+interface Notification {
+  conversation_id: string;
+  message: string;
+  sender: User;
+}
 
 const isSocketAction = (action: any): action is SocketAction => {
   return (action as SocketAction).payload !== undefined;
@@ -73,6 +80,18 @@ const socketMiddleware: Middleware = (storeAPI) => (next) => (action: any) => {
         });
 
         socket.connect();
+
+        //notifications
+        socket.on("notify", (notification: Notification) => {
+          storeAPI.dispatch(
+            setNotification({
+              open: true,
+              conversation_id: notification.conversation_id,
+              message: notification.message,
+              sender: notification.sender,
+            })
+          );
+        });
 
         // get conversations
         socket.on("get_chat_list", (chatList: ChatList[] | ChatList) => {
@@ -107,6 +126,7 @@ const socketMiddleware: Middleware = (storeAPI) => (next) => (action: any) => {
                 timestamp: message.timestamp,
               })
             );
+            return "test";
           }
         });
 
@@ -136,17 +156,20 @@ const socketMiddleware: Middleware = (storeAPI) => (next) => (action: any) => {
         break;
       case "socket/emit":
         return new Promise((resolve, reject) => {
-            if(action.payload?.event && action.payload?.data){
-                socket.emit(action.payload.event, action.payload.data, (response: any) => {
-                    if(response.error){
-                        reject(response.error);
-                    }else{
-                        resolve(response)
-                    }
-                });
-            }
-        })
-        break;
+          if (action.payload?.event && action.payload?.data) {
+            socket.emit(
+              action.payload.event,
+              action.payload.data,
+              (response: any) => {
+                if (response.error) {
+                  reject(response.error);
+                } else {
+                  resolve(response);
+                }
+              }
+            );
+          }
+        });
       default:
         return next(action);
     }

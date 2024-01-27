@@ -180,6 +180,12 @@ module.exports = function (io) {
               },
             });
         }
+
+        if (socket.user === undefined) {
+          socket.user = await User.findById(
+            userSocketMap.get(socket.request.session.user)
+          ).populate("profileImages");
+        }
         //get user from db
         const user = socket.user;
         //create new message
@@ -207,6 +213,20 @@ module.exports = function (io) {
             timestamp: message.timestamp,
             reacted: "",
             seen: false,
+          });
+
+        socket
+          .to(userSocketMap.get(data.otherUser_id.toString()))
+          .emit("notify", {
+            conversation_id: socket.conversation._id.toString(),
+            message: message.message,
+            sender: {
+              id: user._id,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              avatar: user.avatar ? user.avatar : user.profileImages[0].url,
+              socket_id: socket.id,
+            },
           });
 
         socket.emit("sended_message", {
@@ -250,15 +270,24 @@ module.exports = function (io) {
               },
             });
         }
+
+        if (socket.user === undefined) {
+          socket.user = await User.findById(
+            userSocketMap.get(socket.request.session.user)
+          ).populate("profileImages");
+        }
         // Find the other user in the conversation
         const otherUser = socket.conversation.users.find(
           (user) => user._id.toString() !== socket.user._id.toString()
         );
 
         // update the message into the DataBase
-        const updatedMessage = await Message.findByIdAndUpdate(data.lastMessage, {
-          seen: true,
-        });
+        const updatedMessage = await Message.findByIdAndUpdate(
+          data.lastMessage,
+          {
+            seen: true,
+          }
+        );
         if (updatedMessage) {
           // Emit 'seen_message' event to the other user
           socket

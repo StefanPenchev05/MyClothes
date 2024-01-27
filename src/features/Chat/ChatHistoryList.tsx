@@ -22,11 +22,11 @@ interface ChatList{
     timesnap: Date | null,
 }
 
-interface ChatHistoryType{
-    setSelectedChat: React.Dispatch<React.SetStateAction<string | undefined>>,
+interface ChatListListType{
+    selectedChat: React.MutableRefObject<string | undefined>
 }
 
-function ChatHistoryList({setSelectedChat}:ChatHistoryType) {
+function ChatHistoryList({selectedChat}:ChatListListType) {
     const [hoveredUser, setHoveredUser] = useState<string | null>(null);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -71,7 +71,7 @@ function ChatHistoryList({setSelectedChat}:ChatHistoryType) {
                     <div className='flex flex-row items-center space-x-4' 
                             key={item.chat_id} 
                             onClick={() => {
-                                setSelectedChat(item.chat_id)
+                                //selectedChat.current = item.chat_id;
                             }}
                         >
                         <div className='flex flex-row'>

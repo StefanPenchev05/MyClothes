@@ -16,14 +16,15 @@ interface User {
   socket_id?: string | null;
 }
 
-function ChatMenu() {
+interface UseLocalStorage {
+ selectedChat: React.MutableRefObject<string | undefined>;
+}
+
+function ChatMenu({ selectedChat }: UseLocalStorage) {
   const [searchResult, setSearchResult] = useState<User[] | undefined>(
     undefined
   );
   const [searchMenu, setSearchMenu] = useState<boolean>(false);
-  const [selectedChat, setSelectedChat] = useState<string | undefined>(
-    undefined
-  );
 
   const dispatch = useDispatch();
 
@@ -71,7 +72,7 @@ function ChatMenu() {
                 setSearchResult={setSearchResult}
                 onClick={handleOnSearchClick}
               />
-              <ChatHistoryList setSelectedChat={setSelectedChat} />
+              <ChatHistoryList selectedChat={selectedChat} />
             </div>
           )}
         </div>
