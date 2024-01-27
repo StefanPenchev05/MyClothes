@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface Message {
+    conversation_id: string,
     message_id: string,
     sender: string,
     message: string,

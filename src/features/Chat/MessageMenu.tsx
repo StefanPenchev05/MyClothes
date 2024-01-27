@@ -23,7 +23,7 @@ interface Message {
 }
 
 interface MessageMenuType {
-  selectedChat: React.MutableRefObject<string | undefined>;
+  selectedChat: string | undefined;
 }
 
 function MessageMenu({ selectedChat }: MessageMenuType) {
@@ -53,14 +53,14 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
   };
 
   useEffect(() => {
-    if (selectedChat.current) {
+    if (selectedChat) {
       setIsLoading(true);
       dispatch(clearChat({}));
-      console.log(selectedChat)
+      console.log(selectedChat);
 
       dispatch({
         type: "socket/emit",
-        payload: { event: "joinRoom", data: selectedChat.current },
+        payload: { event: "joinRoom", data: selectedChat },
       });
 
       dispatch({
@@ -75,7 +75,7 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
       return () => {
         dispatch({
           type: "socket/emit",
-          payload: { event: "leaveRoom", data: selectedChat.current },
+          payload: { event: "leaveRoom", data: selectedChat },
         });
       };
     }
@@ -92,9 +92,9 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
 
   useEffect(() => {
     scrollToBottom();
-    if (messageList.length > 0) {
+    if (messageList.length > 0 && selectedChat) {
       if (
-        selectedChat.current &&
+        selectedChat &&
         isLoading === false &&
         messageList[messageList.length - 1].sender !== user.id
       ) {
@@ -104,7 +104,7 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
             event: "message_seen",
             data: {
               lastMessage: messageList[messageList.length - 1].message_id,
-              selectedChat: selectedChat.current,
+              selectedChat,
             },
           },
         });
@@ -115,7 +115,7 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
   const handleSendMessage = (event: React.FormEvent) => {
     event.preventDefault();
     if (message) {
-      if (message.trim().length > 0) {
+      if (message.trim().length > 0 && selectedChat) {
         dispatch({
           type: "socket/emit",
           payload: {

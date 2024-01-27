@@ -1,16 +1,14 @@
-import { useSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
 import { initReactI18next } from "react-i18next";
 import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Grid, CircularProgress, CssBaseline } from "@mui/material";
 
-import i18next from "i18next";
+import i18next, { use } from "i18next";
 import bg from "./locals/bg.json";
 import en from "./locals/en.json";
 import NavBar from "./features/NavBar/NavBar";
 import Notification from "./components/Notification/Notification";
-import useLocalStorage from "./Hook/useLocalStorage";
 
 const Home = lazy(() => import("./page/Home"));
 const ChatMenu = lazy(() => import("./page/ChatMenu"));
@@ -40,12 +38,7 @@ function App() {
 
   const dispatch = useDispatch();
 
-  // const [selectedChat, setSelectedChat] = useLocalStorage(
-  //   "selectedChat",
-  //   undefined
-  // );
-
-  const selectedChat = useRef<string | undefined>('');
+  const [selectedChat, setSelectedChat] = useState<string | undefined>();
 
   useEffect(() => {
     dispatch({ type: "socket/connect", payload: { event: "notify" } });
@@ -69,7 +62,9 @@ function App() {
       <CssBaseline />
 
       <div style={{ paddingTop: showNavBar ? "70px" : "0px" }}>
-        {showNotifications && <Notification selectedChat={selectedChat} />}
+        {showNotifications && (
+          <Notification setSelectedChatNotification={setSelectedChat} />
+        )}
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/user/login" element={<UserLogin />}></Route>
@@ -81,6 +76,7 @@ function App() {
             element={
               <ChatMenu
                 selectedChat={selectedChat}
+                setSelectedChat={setSelectedChat}
               />
             }
           ></Route>

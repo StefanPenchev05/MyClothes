@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Snackbar, Avatar, Typography } from "@mui/material";
 import { closeNotification } from "./notificationSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,10 +19,13 @@ interface NotificationType {
 }
 
 interface NotificationProps {
-  selectedChat: React.MutableRefObject<string | undefined>
+  setSelectedChatNotification: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
 }
 
-function Notification({ selectedChat }: NotificationProps) {
+function Notification({ setSelectedChatNotification }: NotificationProps) {
+  const navigate = useNavigate();
   const notification: NotificationType = useSelector(
     (state: any) => state.notifications
   );
@@ -34,8 +38,9 @@ function Notification({ selectedChat }: NotificationProps) {
 
   const handleOpenChat = () => {
     if (notification.conversation_id) {
-      selectedChat.current = notification.conversation_id;
-      window.location.href = "/user/messages";
+      console.log(notification.conversation_id);
+      setSelectedChatNotification(notification.conversation_id);
+      navigate("/user/messages"); // Navigate without a page reload
     }
   };
 
