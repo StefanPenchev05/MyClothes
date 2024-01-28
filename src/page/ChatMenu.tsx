@@ -33,13 +33,6 @@ function ChatMenu({ selectedChat, setSelectedChat }: ChatMenuType) {
     setSearchMenu(true);
   };
 
-  useEffect(() => {
-    dispatch({
-      type: "socket/emit",
-      payload: { event: "get_chat_list", data: {} },
-    });
-  }, []);
-
   return (
     <div
       className="w-full flex flex-row p-4"

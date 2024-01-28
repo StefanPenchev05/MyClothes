@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Chat, Settings } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { clearChat } from "./messageSlice";
+import { updaateLastMessageSeen } from "./chatListSlice";
 import { Typography, Avatar, Divider, CircularProgress } from "@mui/material";
 
 interface User {
@@ -91,10 +92,10 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
 
       setIsLoadingPage(false);
 
-      dispatch({
-        type: "socket/connect",
-        payload: { event: "get_conversation" },
-      });
+      // dispatch({
+      //   type: "socket/connect",
+      //   payload: { event: "get_conversation" },
+      // });
 
       setTimeout(() => {
         setIsLoading(false);
@@ -136,6 +137,7 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
             },
           },
         });
+        dispatch(updaateLastMessageSeen({seen: true, id: selectedChat}))
       }
     }
   }, [messageList, isLoading]);

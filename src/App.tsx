@@ -34,18 +34,17 @@ function App() {
     location.pathname !== "/user/login" &&
     location.pathname !== "/user/registration";
 
-  const showNotifications = location.pathname !== "/user/messages";
-
   const dispatch = useDispatch();
 
   const [selectedChat, setSelectedChat] = useState<string | undefined>();
   dispatch({ type: "socket/connect", payload: { event: "notify" } });
 
   useEffect(() => {
-    if (!showNotifications) {
-      dispatch({ type: "socket/disconnect", payload: { event: "notify" } });
-    }
-  }, [showNotifications, dispatch]);
+    dispatch({
+      type: "socket/emit",
+      payload: { event: "get_chat_list", data: {} },
+    });
+  }, []);
 
   return (
     <Suspense
@@ -65,9 +64,7 @@ function App() {
       <CssBaseline />
 
       <div style={{ paddingTop: showNavBar ? "70px" : "0px" }}>
-        {showNotifications && (
-          <Notification setSelectedChatNotification={setSelectedChat} />
-        )}
+        <Notification setSelectedChatNotification={setSelectedChat} />
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/user/login" element={<UserLogin />}></Route>

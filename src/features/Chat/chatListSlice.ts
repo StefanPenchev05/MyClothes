@@ -5,14 +5,8 @@ import dayjs from "dayjs";
 interface ChatList {
   chat_id: string;
   user_id: string;
-  lastMessage: {
-    message_id: string;
-    sender: string;
-    message: string;
-    timestamp: string;
-    reacted: string | null;
-    seen: boolean;
-  };
+  lastMessage: string;
+  seen: boolean;
   lastMessageTime: string;
   timesnap: string;
   totalMessages: number;
@@ -93,6 +87,13 @@ const chatListSlice = createSlice({
         state[chatIndex].lastMessageTime = "0";
       }
     },
+    updaateLastMessageSeen: (state, action: PayloadAction<{seen: boolean, id:string}>) => {
+      state.map((chat) => {
+        if (chat.chat_id === action.payload.id) {
+          chat.seen = action.payload.seen;
+        }
+      });
+    },
     moveChatToStart: (state, action: PayloadAction<string>) => {
       const chatIndex = state.findIndex(
         (chat) => chat.chat_id === action.payload
@@ -111,8 +112,13 @@ const chatListSlice = createSlice({
   },
 });
 
-export const { addChat, updateChat, updateLastMessage, moveChatToStart } =
-  chatListSlice.actions;
+export const {
+  addChat,
+  updateChat,
+  updateLastMessage,
+  moveChatToStart,
+  updaateLastMessageSeen,
+} = chatListSlice.actions;
 
 export const deleteChat = createAsyncThunk(
   "chatList/deleteChat",

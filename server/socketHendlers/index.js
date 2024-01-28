@@ -85,6 +85,7 @@ module.exports = function (io) {
             ? chat.messages[chat.messages.length - 1].timestamp
             : "",
           totalMessages: chat.messages.length,
+          seen: chat.messages.length ? chat.messages[chat.messages.length -1].seen : true
         };
 
         // Return the chat object
@@ -147,6 +148,7 @@ module.exports = function (io) {
             socket_id: userSocketMap.get(otherUser._id.toString()) || null,
           },
           messages: conversation.messages.reverse().map((message) => ({
+            conversation_id:conversation._id,
             message_id: message._id,
             message: message.message,
             sender: message.sender._id,

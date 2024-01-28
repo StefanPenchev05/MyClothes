@@ -1,10 +1,12 @@
 import { addUser } from "../Chat/otherUser";
 import { Middleware } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
 import io, { Socket } from "socket.io-client";
 import {
   moveChatToStart,
   updateLastMessage,
   addChat as addChatListChat,
+  updaateLastMessageSeen,
 } from "../Chat/chatListSlice";
 import { openSnackbar } from "../snackbars/snackbarSlice";
 import {
@@ -46,14 +48,8 @@ interface Message {
 interface ChatList {
   chat_id: string;
   user_id: string;
-  lastMessage: {
-    message_id: string;
-    sender: string;
-    message: string;
-    timestamp: string;
-    reacted: string | null;
-    seen: boolean;
-  };
+  lastMessage: string;
+  seen: boolean;
   lastMessageTime: string;
   timesnap: string;
   totalMessages: number;
@@ -90,14 +86,22 @@ const socketMiddleware: Middleware = (storeAPI) => (next) => (action: any) => {
 
         //notifications
         socket.on("notify", (notification: Notification) => {
-          storeAPI.dispatch(
-            setNotification({
-              open: true,
-              conversation_id: notification.conversation_id,
-              message: notification.message,
-              sender: notification.sender,
-            })
-          );
+          if (window.location.pathname !== "/user/messages") {
+            storeAPI.dispatch(
+              setNotification({
+                open: true,
+                conversation_id: notification.conversation_id,
+                message: notification.message,
+                sender: notification.sender,
+              })
+            );
+            storeAPI.dispatch(
+              updaateLastMessageSeen({
+                seen: false,
+                id: notification.conversation_id,
+              })
+            );
+          }
         });
 
         // get conversations
@@ -127,7 +131,14 @@ const socketMiddleware: Middleware = (storeAPI) => (next) => (action: any) => {
 
         // recieve message
         socket.on("receive_message", (message: Message) => {
-          storeAPI.dispatch(addMessage(message));
+          let useState = storeAPI.getState();
+          if (useState.message.length > 0) {
+            if (
+              message.conversation_id === useState.message[0].conversation_id
+            ) {
+              storeAPI.dispatch(addMessage(message));
+            }
+          }
           if (message.conversation_id) {
             storeAPI.dispatch(moveChatToStart(message.conversation_id));
             storeAPI.dispatch(
@@ -137,7 +148,12 @@ const socketMiddleware: Middleware = (storeAPI) => (next) => (action: any) => {
                 timestamp: message.timestamp,
               })
             );
-            return "test";
+            storeAPI.dispatch(
+              updaateLastMessageSeen({
+                seen: false,
+                id: message.conversation_id,
+              })
+            );
           }
         });
 
