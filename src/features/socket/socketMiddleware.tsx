@@ -7,7 +7,12 @@ import {
   addChat as addChatListChat,
 } from "../Chat/chatListSlice";
 import { openSnackbar } from "../snackbars/snackbarSlice";
-import { addChat, addMessage, updateMessage } from "../Chat/messageSlice";
+import {
+  addChat,
+  addMessage,
+  updateMessage,
+  addMessageToTop,
+} from "../Chat/messageSlice";
 import { setNotification } from "../../components/Notification/notificationSlice";
 
 let socket: Socket;
@@ -29,7 +34,7 @@ interface User {
 }
 
 interface Message {
-  conversation_id?: string;
+  conversation_id: string;
   message_id: string;
   sender: string;
   message: string;
@@ -51,12 +56,14 @@ interface ChatList {
   };
   lastMessageTime: string;
   timesnap: string;
+  totalMessages: number;
 }
 
 interface ConversationType {
   conversation_id: string;
   user: User;
   messages: Message[];
+  page: number;
 }
 
 interface Notification {
@@ -110,8 +117,12 @@ const socketMiddleware: Middleware = (storeAPI) => (next) => (action: any) => {
 
         // get conversation
         socket.on("get_conversation", (conversation: ConversationType) => {
-          storeAPI.dispatch(addUser(conversation.user));
-          storeAPI.dispatch(addChat(conversation.messages));
+          if (conversation.page === 1) {
+            storeAPI.dispatch(addUser(conversation.user));
+            storeAPI.dispatch(addChat(conversation.messages));
+            return;
+          }
+          storeAPI.dispatch(addMessageToTop(conversation.messages));
         });
 
         // recieve message

@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { initReactI18next } from "react-i18next";
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Grid, CircularProgress, CssBaseline } from "@mui/material";
 
@@ -65,7 +65,9 @@ function App() {
       <CssBaseline />
 
       <div style={{ paddingTop: showNavBar ? "70px" : "0px" }}>
-        <Notification setSelectedChatNotification={setSelectedChat} />
+        {showNotifications && (
+          <Notification setSelectedChatNotification={setSelectedChat} />
+        )}
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/user/login" element={<UserLogin />}></Route>

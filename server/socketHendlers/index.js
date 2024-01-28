@@ -84,6 +84,7 @@ module.exports = function (io) {
           timesnap: chat.messages.length
             ? chat.messages[chat.messages.length - 1].timestamp
             : "",
+          totalMessages: chat.messages.length,
         };
 
         // Return the chat object
@@ -98,11 +99,16 @@ module.exports = function (io) {
     });
 
     socket.on("joinRoom", async (data) => {
+      console.log(data);
       try {
-        //get conversation from db
-        const conversation = await Conversation.findById(data)
+        const PAGE_SIZE = 15;
+        const skip = (data.page - 1) * PAGE_SIZE;
+
+        // Get conversation from db
+        const conversation = await Conversation.findById(data.selectedChat)
           .populate({
             path: "messages",
+            options: { sort: { timestamp: -1 }, skip, limit: PAGE_SIZE },
             populate: {
               path: "sender",
               model: "users",
@@ -140,7 +146,7 @@ module.exports = function (io) {
               : otherUser.profileImages[0].url,
             socket_id: userSocketMap.get(otherUser._id.toString()) || null,
           },
-          messages: conversation.messages.map((message) => ({
+          messages: conversation.messages.reverse().map((message) => ({
             message_id: message._id,
             message: message.message,
             sender: message.sender._id,
@@ -148,6 +154,7 @@ module.exports = function (io) {
             reacted: "",
             seen: message.seen,
           })),
+          page: data.page,
         });
       } catch (err) {
         console.log(err);

@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { Chat, Settings } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { Typography, Avatar, Divider, CircularProgress } from "@mui/material";
 import { clearChat } from "./messageSlice";
+import { Typography, Avatar, Divider, CircularProgress } from "@mui/material";
 
 interface User {
   id: string;
@@ -29,7 +29,10 @@ interface MessageMenuType {
 function MessageMenu({ selectedChat }: MessageMenuType) {
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingPage, setIsLoadingPage] = useState<boolean>(false);
   const messageEndRef = useRef<HTMLDivElement>(null);
+
+  const [page, setPage] = useState(1);
 
   const dispatch = useDispatch();
 
@@ -45,23 +48,48 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
     return state.userNavBar;
   });
 
+  const totalMessages: number = useSelector((state: any) => {
+    const chatList: [] = state.chatList;
+    if (selectedChat && chatList) {
+      const chat: any = chatList.find(
+        (item: any) => item.chat_id === selectedChat
+      );
+      return chat ? chat.totalMessages : 0;
+    }
+    return;
+  });
+
   const scrollToBottom = () => {
-    if (messageEndRef.current) {
+    if (messageEndRef.current && page === 1) {
       const { current } = messageEndRef;
       current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop } = e.currentTarget;
+    const loadedMessages = page * 15;
+    if (scrollTop === 0 && loadedMessages < totalMessages) {
+      setTimeout(() => {
+        setPage((prevPage) => prevPage + 1);
+      },2000)
+      setIsLoadingPage(true);
+    }
+  };
+
   useEffect(() => {
     if (selectedChat) {
-      setIsLoading(true);
-      dispatch(clearChat({}));
-      console.log(selectedChat);
+      if (page === 1) {
+        setIsLoading(true);
+        dispatch(clearChat({}));
+      }
 
       dispatch({
         type: "socket/emit",
-        payload: { event: "joinRoom", data: selectedChat },
+        payload: { event: "joinRoom", data: { selectedChat, page } },
       });
+
+      setIsLoadingPage(false);
 
       dispatch({
         type: "socket/connect",
@@ -79,7 +107,7 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
         });
       };
     }
-  }, [selectedChat]);
+  }, [selectedChat, page, dispatch]);
 
   useEffect(() => {
     dispatch({ type: "socket/connect", payload: { event: "sended_message" } });
@@ -153,7 +181,15 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
               </div>
             </div>
             <Divider orientation="horizontal" />
-            <div className="flex-grow overflow-auto p-4">
+            {isLoadingPage && (
+              <div className="flex justify-center w-full">
+                <CircularProgress />
+              </div>
+            )}
+            <div
+              className="flex-grow overflow-auto p-4"
+              onScroll={handleScroll}
+            >
               {messageList.map((msg, index) =>
                 msg.sender === otherUser.id ? (
                   <div
