@@ -2,9 +2,17 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { openSnackbar } from "../snackbars/snackbarSlice";
 import dayjs from "dayjs";
 
+interface Data {
+  id: string;
+  firstName: string;
+  lastName: string;
+  avatar: string;
+}
+
 interface ChatList {
   chat_id: string;
   user_id: string;
+  user?: Data;
   lastMessage: string;
   seen: boolean;
   lastMessageTime: string;
@@ -87,7 +95,10 @@ const chatListSlice = createSlice({
         state[chatIndex].lastMessageTime = "0";
       }
     },
-    updaateLastMessageSeen: (state, action: PayloadAction<{seen: boolean, id:string}>) => {
+    updaateLastMessageSeen: (
+      state,
+      action: PayloadAction<{ seen: boolean; id: string }>
+    ) => {
       state.map((chat) => {
         if (chat.chat_id === action.payload.id) {
           chat.seen = action.payload.seen;
@@ -104,6 +115,20 @@ const chatListSlice = createSlice({
         state.unshift(chat);
       }
     },
+    removeChat: (state, action: PayloadAction<string>) => {
+      console.log(action.payload);
+      const chatIndex = state.findIndex((chat) => {
+        console.log(chat.user?.id);
+        console.log(action.payload);
+        console.log(chat.user_id === action.payload);
+        return chat.user?.id === action.payload;
+        //chat.user_id === action.payload
+      });
+      console.log(chatIndex);
+      if (chatIndex !== -1) {
+        state.splice(chatIndex, 1);
+      }
+    },
   },
   extraReducers(builder) {
     builder.addCase(deleteChat.fulfilled, (state, action) => {
@@ -118,6 +143,7 @@ export const {
   updateLastMessage,
   moveChatToStart,
   updaateLastMessageSeen,
+  removeChat,
 } = chatListSlice.actions;
 
 export const deleteChat = createAsyncThunk(

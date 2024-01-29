@@ -7,6 +7,7 @@ import {
   updateLastMessage,
   addChat as addChatListChat,
   updaateLastMessageSeen,
+  removeChat,
 } from "../Chat/chatListSlice";
 import { openSnackbar } from "../snackbars/snackbarSlice";
 import {
@@ -106,8 +107,20 @@ const socketMiddleware: Middleware = (storeAPI) => (next) => (action: any) => {
 
         //notify for deletedChat
         socket.on("notify_deleted_chat", (data: any) => {
-          console.log(data)
-        })
+          storeAPI.dispatch(removeChat(data.user_id));
+          storeAPI.dispatch(
+            setNotification({
+              open: true,
+              conversation_id: "-1",
+              message: `${data.userName} has deleted the chat`,
+              sender: null,
+            })
+          );
+        });
+
+        socket.on("created_chat", (data: ChatList) => {
+          storeAPI.dispatch(addChatListChat(data))
+        });
 
         // get conversations
         socket.on("get_chat_list", (chatList: ChatList[] | ChatList) => {

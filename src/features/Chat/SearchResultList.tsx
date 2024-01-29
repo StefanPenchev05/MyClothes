@@ -1,4 +1,3 @@
-import { Socket } from "socket.io-client";
 import { useDispatch } from "react-redux";
 import { addChat } from "./chatListSlice";
 import { Avatar, Typography } from "@mui/material";
@@ -16,6 +15,7 @@ interface Data {
 interface ChatList {
   chat_id: string;
   user_id: string;
+  user?:Data;
   lastMessage: string;
   timesnap: Date | null;
   lastMessageTime: string;
@@ -41,6 +41,13 @@ function SearchResultList({
     if (data) {
       dispatch(addChat(data as any));
       setSelectedChat(data.chat_id);
+      dispatch({
+        type: "socket/emit",
+        payload: {
+          event: "created_chat",
+          data: { chat_id: data.chat_id, otherUser_id: data.user_id },
+        },
+      });
     }
     setSearchMenu(false);
     setPersonNewChat(undefined);
@@ -55,6 +62,7 @@ function SearchResultList({
       if (response.status === 200) {
         const data = response.data;
         data.user = personNewChat;
+        data.user_id = personNewChat?.id;
         handleNewChat(data);
       }
     };

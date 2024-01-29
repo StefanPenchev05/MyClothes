@@ -39,6 +39,7 @@ function App() {
   const [selectedChat, setSelectedChat] = useState<string | undefined>();
   dispatch({ type: "socket/connect", payload: { event: "notify" } });
   dispatch({ type: "socket/connect", payload: { event: "notify_deleted_chat" } });
+  dispatch({ type: "socket/connect", payload: { event: "created_chat" } });
 
 
   useEffect(() => {

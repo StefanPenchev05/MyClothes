@@ -16,6 +16,7 @@ interface Data {
 
 interface ChatList {
   chat_id: string;
+  user_id:string;
   user: Data;
   lastMessage: string;
   timesnap: Date | null;
@@ -49,8 +50,8 @@ function ChatHistoryList({ selectedChat, setSelectedChat }: ChatListListType) {
   };
 
   const handleDeleteChat = async (chat_id: string, otherUser_id:string) => {
+    console.log()
     dispatch(deleteChat(chat_id) as any);
-    console.log('here')
     dispatch({
       type: "socket/emit",
       payload: { event: "notify_deleted_chat", data: { chat_id, otherUser_id }},
@@ -138,7 +139,7 @@ function ChatHistoryList({ selectedChat, setSelectedChat }: ChatListListType) {
                   <MenuItem
                     onClick={() => {
                       handleClose();
-                      handleDeleteChat(item.chat_id, item.user.id);
+                      handleDeleteChat(item.chat_id, item.user.id ? item.user.id : item.user_id);
                       setSelectedChat(undefined);
                     }}
                   >

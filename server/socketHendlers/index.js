@@ -101,8 +101,35 @@ module.exports = function (io) {
       return socket.emit("get_chat_list", finalDataList);
     });
 
+    socket.on("created_chat", async (data) => {
+      if (socket.user === undefined) {
+        socket.user = await User.findById(
+          userSocketMap.get(socket.request.session.user)
+        ).populate("profileImages");
+      }
+      //get user from db
+      const user = socket.user;
+
+      console.log(user._id, data.otherUser_id);
+
+      socket.to(userSocketMap.get(data.otherUser_id)).emit("created_chat", {
+        chat_id: data.chat_id,
+        user_id: user._id,
+        user: {
+          id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          avatar: user.avatar ? user.avatar : user.profileImages[0].url,
+        },
+        lastMessage: "No messages yet",
+        timesnap: new Date(),
+        seen: true,
+      });
+    });
+
     socket.on("joinRoom", async (data) => {
       try {
+        console.log(data)
         const PAGE_SIZE = 15;
         const skip = (data.page - 1) * PAGE_SIZE;
 
@@ -313,14 +340,22 @@ module.exports = function (io) {
       }
     });
 
-    socket.on("notify_deleted_chat", async(data) => {
-      console.log('here in notify')
-      console.log(data);
-      console.log(userSocketMap.get(data.otherUser_id))
-      socket.to(userSocketMap.get(data.otherUser_id)).emit("nofity_deleted_chat", {
-        data: data.otherUser_id
-      });
-    })
+    socket.on("notify_deleted_chat", async (data) => {
+      if (socket.user === undefined) {
+        socket.user = await User.findById(
+          userSocketMap.get(socket.request.session.user)
+        ).populate("profileImages");
+      }
+
+      const user = socket.user;
+
+      socket
+        .to(userSocketMap.get(data.otherUser_id))
+        .emit("notify_deleted_chat", {
+          userName: user.firstName + " " + user.lastName,
+          user_id: user._id,
+        });
+    });
 
     socket.on("leaveRoom", (data) => {
       socket.leave(data);
