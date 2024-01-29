@@ -104,6 +104,11 @@ const socketMiddleware: Middleware = (storeAPI) => (next) => (action: any) => {
           }
         });
 
+        //notify for deletedChat
+        socket.on("notify_deleted_chat", (data: any) => {
+          console.log(data)
+        })
+
         // get conversations
         socket.on("get_chat_list", (chatList: ChatList[] | ChatList) => {
           if (!chatList) {

@@ -1,6 +1,5 @@
-import { useDispatch } from "react-redux";
 import { IconButton } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ArrowBack } from "@mui/icons-material";
 
 import MessageMenu from "../features/Chat/MessageMenu";
@@ -17,8 +16,8 @@ interface User {
 }
 
 interface ChatMenuType {
-    selectedChat: string | undefined;
-    setSelectedChat: React.Dispatch<React.SetStateAction<string | undefined>>
+  selectedChat: string | undefined;
+  setSelectedChat: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 function ChatMenu({ selectedChat, setSelectedChat }: ChatMenuType) {
@@ -26,8 +25,6 @@ function ChatMenu({ selectedChat, setSelectedChat }: ChatMenuType) {
     undefined
   );
   const [searchMenu, setSearchMenu] = useState<boolean>(false);
-
-  const dispatch = useDispatch();
 
   const handleOnSearchClick = () => {
     setSearchMenu(true);
@@ -58,6 +55,7 @@ function ChatMenu({ selectedChat, setSelectedChat }: ChatMenuType) {
               <SearchResultList
                 searchResult={searchResult}
                 setSearchMenu={setSearchMenu}
+                setSelectedChat={setSelectedChat}
               />
             </div>
           ) : (
@@ -66,7 +64,10 @@ function ChatMenu({ selectedChat, setSelectedChat }: ChatMenuType) {
                 setSearchResult={setSearchResult}
                 onClick={handleOnSearchClick}
               />
-              <ChatHistoryList setSelectedChat={setSelectedChat} />
+              <ChatHistoryList
+                selectedChat={selectedChat}
+                setSelectedChat={setSelectedChat}
+              />
             </div>
           )}
         </div>

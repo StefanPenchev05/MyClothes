@@ -85,7 +85,9 @@ module.exports = function (io) {
             ? chat.messages[chat.messages.length - 1].timestamp
             : "",
           totalMessages: chat.messages.length,
-          seen: chat.messages.length ? chat.messages[chat.messages.length -1].seen : true
+          seen: chat.messages.length
+            ? chat.messages[chat.messages.length - 1].seen
+            : true,
         };
 
         // Return the chat object
@@ -100,7 +102,6 @@ module.exports = function (io) {
     });
 
     socket.on("joinRoom", async (data) => {
-      console.log(data);
       try {
         const PAGE_SIZE = 15;
         const skip = (data.page - 1) * PAGE_SIZE;
@@ -148,7 +149,7 @@ module.exports = function (io) {
             socket_id: userSocketMap.get(otherUser._id.toString()) || null,
           },
           messages: conversation.messages.reverse().map((message) => ({
-            conversation_id:conversation._id,
+            conversation_id: conversation._id,
             message_id: message._id,
             message: message.message,
             sender: message.sender._id,
@@ -204,13 +205,14 @@ module.exports = function (io) {
         });
         //save message to db
         await message.save();
-        //add message to conversation
-        socket.conversation.messages.push(message._id);
-        //update the last time updated
-        socket.conversation.lastUpdated = Date.now();
-        socket.conversation.markModified("messages");
-        //save conversation to db
-        await socket.conversation.save();
+        //add message to conversation and update the last time updated
+        await Conversation.updateOne(
+          { _id: socket.conversation._id },
+          {
+            $push: { messages: message._id },
+            $set: { lastUpdated: Date.now() },
+          }
+        );
         //emit message to all users in conversation
         socket
           .to(userSocketMap.get(data.otherUser_id.toString()))
@@ -310,6 +312,15 @@ module.exports = function (io) {
         console.log(err);
       }
     });
+
+    socket.on("notify_deleted_chat", async(data) => {
+      console.log('here in notify')
+      console.log(data);
+      console.log(userSocketMap.get(data.otherUser_id))
+      socket.to(userSocketMap.get(data.otherUser_id)).emit("nofity_deleted_chat", {
+        data: data.otherUser_id
+      });
+    })
 
     socket.on("leaveRoom", (data) => {
       socket.leave(data);

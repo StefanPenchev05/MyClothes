@@ -22,10 +22,11 @@ interface ChatList {
 }
 
 interface ChatListListType {
+  selectedChat: string | undefined;
   setSelectedChat: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-function ChatHistoryList({ setSelectedChat }: ChatListListType) {
+function ChatHistoryList({ selectedChat, setSelectedChat }: ChatListListType) {
   const [hoveredUser, setHoveredUser] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -47,8 +48,13 @@ function ChatHistoryList({ setSelectedChat }: ChatListListType) {
     setAnchorEl(null);
   };
 
-  const handleDeleteChat = async (chat_id: string) => {
+  const handleDeleteChat = async (chat_id: string, otherUser_id:string) => {
     dispatch(deleteChat(chat_id) as any);
+    console.log('here')
+    dispatch({
+      type: "socket/emit",
+      payload: { event: "notify_deleted_chat", data: { chat_id, otherUser_id }},
+    });
     handleClose();
   };
 
@@ -132,7 +138,8 @@ function ChatHistoryList({ setSelectedChat }: ChatListListType) {
                   <MenuItem
                     onClick={() => {
                       handleClose();
-                      handleDeleteChat(item.chat_id);
+                      handleDeleteChat(item.chat_id, item.user.id);
+                      setSelectedChat(undefined);
                     }}
                   >
                     Delete Chat
