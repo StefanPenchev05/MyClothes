@@ -4,7 +4,7 @@ const avatarSchema = new mongo.Schema({
     avatar: Buffer,
     fileType: String,
     uploadedBy: {
-        type: Schema.Types.ObjectId,
+        type: mongo.Schema.Types.ObjectId,
         ref: 'users'
     },
     uploadedAt: {
@@ -13,6 +13,6 @@ const avatarSchema = new mongo.Schema({
     }
 });
 
-const avatar = mongo.model("avatars", avatarSchema);
+const avatar = mongo.model("avatar", avatarSchema);
 
 module.exports = avatar;

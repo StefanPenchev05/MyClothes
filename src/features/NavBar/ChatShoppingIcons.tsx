@@ -24,8 +24,6 @@ function ChatShoppingIcons() {
     setUnseenChatsCount(unseenCount);
   }, [chats]);
 
-  console.log(unseenChatsCount);
-
   return (
     <>
       <Tooltip title="Chat">

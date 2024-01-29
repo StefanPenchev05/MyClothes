@@ -10,6 +10,7 @@ export async function sendData(URL: string, data?: any) {
             body: JSON.stringify(data),
             credentials: 'include',
         });
+        console.log(data);
 
         // Parse the response data as JSON
         const responseData = await response.json();

@@ -52,7 +52,7 @@ function NavBar() {
   
     useEffect(() => {
         //@ts-ignore
-        dispatch(fetchUserInfo());
+        dispatch(fetchUserInfo() as any);
         if(snackbar.open) {
             enqueueSnackbar(snackbar.message, {variant: snackbar.variant, autoDuration:snackbar.duration});
         }

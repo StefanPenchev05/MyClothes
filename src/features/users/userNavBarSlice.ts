@@ -68,7 +68,6 @@ export const fetchUserInfo:any = createAsyncThunk('user/fetchUserInfo', async (_
                 })
             );
         }
-        console.log(response)
         return response;
     } catch (err) {
         thunkAPI.dispatch(

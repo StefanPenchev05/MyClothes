@@ -18,6 +18,8 @@ router.get('/reset-password/:token', userController.resetPassword);
 //get information of the selected user
 router.get('/profile/:token', userController.getUsersData);
 //get the user data for the user settings page
-router.get('/generalSettings/', userController.getUserSettingsData);
+router.get('/settings/general/', userController.getUserGeneralSettingsData);
+//change avatar
+router.post('/settings/general/change/avatar', userController.changeAvatar);
 
 module.exports = router;

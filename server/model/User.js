@@ -1,6 +1,5 @@
 const mongo = require('mongoose');
 const Schema = mongo.Schema;
-const Designer = require('./Designer.js');
 
 const userSchema = new Schema({
     username: {

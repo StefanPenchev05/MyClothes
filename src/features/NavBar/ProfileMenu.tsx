@@ -1,16 +1,16 @@
-import React, { useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip, Avatar } from '@mui/material';
 import { Settings, Logout, Person } from '@mui/icons-material';
 
-
 import { getData } from '../../service/api';
 import { clearUser } from '../users/userNavBarSlice';
 
 function ProfileMenu() {
-    const [anchorElProfile, setAnchorElProfile] = React.useState<null | HTMLElement>(null);
+    const [anchorElProfile, setAnchorElProfile] = useState<null | HTMLElement>(null);
+    const [navigateTo, setNavigateTo] = useState<string | null>(null);
     const navigate = useNavigate();
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -21,9 +21,17 @@ function ProfileMenu() {
         setAnchorElProfile(event.currentTarget);
     }, []);
 
-    const handleCloseProfile = useCallback(() => {
+    const handleCloseProfile = useCallback((path: string | null = null) => {
         setAnchorElProfile(null);
+        setNavigateTo(path);
     }, []);
+
+    useEffect(() => {
+        if (anchorElProfile === null && navigateTo) {
+            navigate(navigateTo);
+            setNavigateTo(null);
+        }
+    }, [anchorElProfile, navigateTo, navigate]);
 
     const handleLogOut = useCallback(async(event:React.MouseEvent) => {
         event.preventDefault();
@@ -51,22 +59,22 @@ function ProfileMenu() {
             <Menu
                 anchorEl={anchorElProfile}
                 open={Boolean(anchorElProfile)}
-                onClose={handleCloseProfile}
+                onClose={() => handleCloseProfile()}
             >
-                <MenuItem onClick={() => { handleCloseProfile(); navigate(`/user/profile/${id}`); }}>
+                <MenuItem onClick={() => handleCloseProfile(`/user/profile/${id}`)}>
                     <ListItemIcon>
                         <Person fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>
-                            {t('navbar.MyProfile')}
+                        {t('navbar.MyProfile')}
                     </ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => { handleCloseProfile(); navigate('/user/settings'); }}>
+                <MenuItem onClick={() => handleCloseProfile('/user/settings')}>
                     <ListItemIcon>
                         <Settings fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>
-                            {t('navbar.Settings')}
+                        {t('navbar.Settings')}
                     </ListItemText>
                 </MenuItem>
                 <MenuItem onClick={(e) => {handleLogOut(e)}}>
