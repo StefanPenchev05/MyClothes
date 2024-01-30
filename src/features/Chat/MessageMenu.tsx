@@ -73,7 +73,7 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
     if (scrollTop === 0 && loadedMessages < totalMessages) {
       setTimeout(() => {
         setPage((prevPage) => prevPage + 1);
-      },2000)
+      }, 2000);
       setIsLoadingPage(true);
     }
   };
@@ -92,10 +92,25 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
 
       setIsLoadingPage(false);
 
-      // dispatch({
-      //   type: "socket/connect",
-      //   payload: { event: "get_conversation" },
-      // });
+      dispatch({
+        type: "socket/connect",
+        payload: { event: "get_conversation" },
+      });
+
+      dispatch({
+        type: "socket/connect",
+        payload: { event: "receive_message" },
+      });
+
+      dispatch({
+        type: "socket/connect",
+        payload: { event: "sended_message" },
+      });
+
+      dispatch({
+        type: "socket/connect",
+        payload: { event: "message_seen" },
+      });
 
       setTimeout(() => {
         setIsLoading(false);
@@ -137,7 +152,7 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
             },
           },
         });
-        dispatch(updaateLastMessageSeen({seen: true, id: selectedChat}))
+        dispatch(updaateLastMessageSeen({ seen: true, id: selectedChat }));
       }
     }
   }, [messageList, isLoading]);

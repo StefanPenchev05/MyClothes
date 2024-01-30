@@ -5,17 +5,11 @@ import { Add, ChangeCircle } from "@mui/icons-material";
 import { Avatar, Badge, IconButton } from "@mui/material";
 import { changedAvatar } from "../../../features/users/userGeneralSettings";
 
-interface Adress {
-  street: String;
-  city: String;
-  state: String;
-  zip: String;
-  country: String;
-}
+interface Adress extends Record<string, string> {}
 
 interface Avatar {
   avatar: string;
-  fileType: String;
+  fileName: string;
   uploadedAt: Date;
 }
 
@@ -49,33 +43,38 @@ function UserAvatar({ settings }: UserAvatarType) {
   const dispatch = useDispatch();
 
   const handleIconButtonClick = () => {
-    console.log("clicked");
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      uploadImage(file);
-    }
+  const handleSendAvatar = (e: any) => {
+    handleFileChange(e, async (avatar: string, fileName: string) => {
+      const response = await sendData("/user/settings/general/change/avatar/", {
+        avatar,
+        fileName,
+      });
+
+      window.location.reload();
+    });
   };
 
-  const uploadImage = async (file: File) => {
-    const formData = new FormData();
-    formData.append("image", file);
-
-    // Replace with your API endpoint
-    const response = await sendData("/settings/general/change/avatar", formData);
-
-    if (response.success) {
-        console.log(response.data)
-        dispatch(changedAvatar(response.data));
-    }
-
-    if (!response.ok) {
-      console.error("Upload failed");
+  const handleFileChange = (
+    e: any,
+    callback: (result: string, fileName: string) => void
+  ) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const maxSize = 3 * (1024 * 1024); // 3MB
+      if (file.size > maxSize) {
+        alert("File is too large. Please upload a file less than 3MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.addEventListener("load", () => {
+        callback(reader.result as string, file.name);
+      });
     }
   };
 
@@ -85,7 +84,7 @@ function UserAvatar({ settings }: UserAvatarType) {
         type="file"
         accept="image/*"
         ref={fileInputRef}
-        onChange={handleFileChange}
+        onChange={handleSendAvatar}
         style={{ display: "none" }}
       />
       {settings.avatar ? (
@@ -98,8 +97,8 @@ function UserAvatar({ settings }: UserAvatarType) {
         >
           <Avatar
             alt="User Avatar"
-            src={`data:${settings.avatar.fileType};base64,${settings.avatar.avatar}`}
-            sx={{ width: 150, height: 150, borderRadius: "20%" }}
+            src={settings.avatar.avatar}
+            style={{ width: 200, height: 200 }}
           />
         </Badge>
       ) : (
@@ -110,11 +109,7 @@ function UserAvatar({ settings }: UserAvatarType) {
             </IconButton>
           }
         >
-          <Avatar
-            sx={{ width: 150, height: 150, borderRadius: "20%" }}
-            alt="User Avatar"
-            src=""
-          />
+          <Avatar sx={{ width: 200, height: 200 }} alt="User Avatar" src="" />
         </Badge>
       )}
     </div>

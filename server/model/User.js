@@ -51,38 +51,38 @@ const userSchema = new Schema({
         default: Date.now
     },
     designerInfo: {
-        type: Schema.Types.ObjectId,
+        type: mongo.Schema.Types.ObjectId,
         ref: 'Designer'
     },
     address: [{
-        type: Schema.Types.ObjectId,
+        type: mongo.Schema.Types.ObjectId,
         ref: 'Address'
     }],
     phone: {
         type: String,
     },
     purchasedProducts: [{
-        type: Schema.Types.ObjectId,
+        type: mongo.Schema.Types.ObjectId,
         ref: 'Product'
     }],
     cart: [{
-        type: Schema.Types.ObjectId,
+        type: mongo.Schema.Types.ObjectId,
         ref: 'Product'
     }],
     comments: [{
-        type: Schema.Types.ObjectId,
+        type: mongo.Schema.Types.ObjectId,
         ref: 'Comment'
     }],
     avatar: {
-        type: Schema.Types.ObjectId,
-        ref: 'Avatar'
+        type: mongo.Schema.Types.ObjectId,
+        ref: 'avatar'
     },
     conversations: [{
-        type: Schema.Types.ObjectId,
+        type: mongo.Schema.Types.ObjectId,
         ref: 'Conversation'
     }],
     profileImages: [{
-        type: Schema.Types.ObjectId,
+        type: mongo.Schema.Types.ObjectId,
         ref: 'images'
     }],
     tokenResetPass: {

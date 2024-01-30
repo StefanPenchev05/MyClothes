@@ -11,7 +11,7 @@ interface Adress {
 
 interface Avatar {
   avatar: string;
-  fileType: String;
+  fileName: string;
   uploadedAt: Date;
 }
 
@@ -35,14 +35,6 @@ interface GeneralSettings {
   profileImages: ProfileImages[] | ProfileImages | null;
 }
 
-export const fetchGeneralSettings = createAsyncThunk(
-  "generalSettings/fetchGeneralSettings",
-  async (_, thunkAPI) => {
-    const response = await getData(`/user/settings/general`);
-    return response;
-  }
-);
-
 const initialState: GeneralSettings = {
   username: "",
   firstName: "",
@@ -61,8 +53,8 @@ const initialState: GeneralSettings = {
     country: "",
   },
   avatar: {
-    avatar: '',
-    fileType: "",
+    avatar: "",
+    fileName: "",
     uploadedAt: new Date(),
   },
   profileImages: [
@@ -73,13 +65,21 @@ const initialState: GeneralSettings = {
   ],
 };
 
+export const fetchGeneralSettings = createAsyncThunk(
+  "generalSettings/fetchGeneralSettings",
+  async (_, thunkAPI) => {
+    const response = await getData(`/user/settings/general`);
+    return response;
+  }
+);
+
 const generalSettingsSlice = createSlice({
   name: "generalSettings",
   initialState,
   reducers: {
     changedAvatar: (state, action: PayloadAction<Avatar>) => {
       state.avatar = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -91,5 +91,5 @@ const generalSettingsSlice = createSlice({
   },
 });
 
-export const {changedAvatar} = generalSettingsSlice.actions;
+export const { changedAvatar } = generalSettingsSlice.actions;
 export default generalSettingsSlice.reducer;

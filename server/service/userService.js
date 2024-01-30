@@ -311,8 +311,7 @@ module.exports = {
     return userData;
   },
 
-  changeAvatar: async (sessionID, avatar) => {
-    console.log("changeAvatar");
+  changeAvatar: async (sessionID, avatar, fileName) => {
     // Validate input
     if (!sessionID) {
       throw new CustomError("No session ID provided!", "NoSessionID");
@@ -326,14 +325,18 @@ module.exports = {
       throw new CustomError("User not found!", "UserNotFound");
     }
 
+    if(avatar === null) {
+      throw new CustomError("Avatar is null!", "AvatarIsNull");
+    }
+
     const newAvatar = new Avatar({
-      url: avatar,
-      uploadedBy: userData._id,
+      avatar: avatar,
+      fileName: avatar,
       uploadedAt: Date.now(),
     });
 
     // Update user data
-    userData.avatar = avatar;
+    userData.avatar = newAvatar._id;
     await newAvatar.save();
     await userData.save();
 

@@ -1,11 +1,13 @@
 const mongo = require("mongoose")
 
 const avatarSchema = new mongo.Schema({
-    avatar: Buffer,
-    fileType: String,
-    uploadedBy: {
-        type: mongo.Schema.Types.ObjectId,
-        ref: 'users'
+    avatar: {
+        type: String,
+        default: null
+    },
+    fileName: {
+        type: String,
+        default: null
     },
     uploadedAt: {
         type: Date,

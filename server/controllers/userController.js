@@ -183,9 +183,9 @@ module.exports = {
 
   changeAvatar: async (req, res) => {
     try {
-      const { avatar } = req.body;
+      const { avatar, fileName } = req.body;
       const sessionID = req.session.user;
-      const response = await userService.changeAvatar(sessionID, avatar);
+      const response = await userService.changeAvatar(sessionID, avatar, fileName);
       return res.status(200).json({ success: true, data: response });
     } catch (err) {
       handleControllerError(err, res);
