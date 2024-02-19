@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { sendData } from "../../../service/api";
 import { Add, ChangeCircle } from "@mui/icons-material";
 import { Avatar, Badge, IconButton } from "@mui/material";
-import { changedAvatar } from "../../../features/users/userGeneralSettings";
 
 interface Adress extends Record<string, string> {}
 
@@ -24,7 +23,7 @@ interface GeneralSettings {
   lastName: string;
   email: string;
   password: string;
-  dateOfBirth: Date;
+  dateOfBirth: string;
   gender: "male" | "female" | "Don't want to state";
   role: "standardUser" | "designer" | "admin";
   phone: string;
@@ -50,7 +49,7 @@ function UserAvatar({ settings }: UserAvatarType) {
 
   const handleSendAvatar = (e: any) => {
     handleFileChange(e, async (avatar: string, fileName: string) => {
-      const response = await sendData("/user/settings/general/change/avatar/", {
+      await sendData("/user/settings/general/change/avatar/", {
         avatar,
         fileName,
       });
@@ -91,7 +90,7 @@ function UserAvatar({ settings }: UserAvatarType) {
         <Badge
           badgeContent={
             <IconButton onClick={handleIconButtonClick}>
-              <ChangeCircle />
+              <ChangeCircle fontSize="large" />
             </IconButton>
           }
         >
@@ -105,7 +104,7 @@ function UserAvatar({ settings }: UserAvatarType) {
         <Badge
           badgeContent={
             <IconButton onClick={handleIconButtonClick}>
-              <Add />
+              <Add fontSize="large" />
             </IconButton>
           }
         >

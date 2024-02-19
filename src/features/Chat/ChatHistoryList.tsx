@@ -7,6 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteChat } from "./chatListSlice";
 
+
+interface Avatar {
+  avatar: string;
+  fileName: string;
+  uploadedAt: Date;
+}
+
 interface Data {
   id: string;
   firstName: string;
@@ -88,7 +95,7 @@ function ChatHistoryList({ selectedChat, setSelectedChat }: ChatListListType) {
               <div className="flex flex-row">
                 <Avatar
                   src={
-                    item.user.avatar ? item.user.avatar : "/broken-image.jpg"
+                    item.user.avatar ? item.user.avatar : undefined
                   }
                   alt={`Avatar of ${item.user.firstName} ${item.user.lastName}`}
                   className="mr-2 w-16 h-16"

@@ -1,0 +1,29 @@
+@media (max-width: 1441px){
+    .userName{
+        @apply text-base;
+    }
+
+    .products{
+        @apply text-base;
+    }
+}
+
+@media (max-width: 1349px){
+    .userName{
+        @apply text-sm;
+    }
+
+    .products{
+        @apply text-sm;
+    }
+}
+
+@media (max-width: 1195px){
+    .userName{
+        @apply text-xs;
+    }
+
+    .products{
+        @apply text-xs;
+    }
+}

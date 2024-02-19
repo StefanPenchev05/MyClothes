@@ -1,6 +1,5 @@
 import { addUser } from "../Chat/otherUser";
 import { Middleware } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
 import io, { Socket } from "socket.io-client";
 import {
   moveChatToStart,
@@ -20,6 +19,13 @@ import { setNotification } from "../../components/Notification/notificationSlice
 
 let socket: Socket;
 
+
+interface Avatar {
+  avatar: string;
+  fileName: string;
+  uploadedAt: Date;
+}
+
 interface SocketAction {
   type: string;
   payload?: {
@@ -32,7 +38,7 @@ interface User {
   id: string;
   firstName: string;
   lastName: string;
-  avatar: string;
+  avatar: Avatar | undefined;
   socket_id: string | null;
 }
 

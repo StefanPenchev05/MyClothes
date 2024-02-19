@@ -62,9 +62,9 @@ module.exports = function (io) {
 
         // If the other user's data is not in the userMap, fetch it and add it to the userMap
         if (!userMap.has(otherUser._id.toString())) {
-          const userData = await User.findById(otherUser._id).populate(
-            "profileImages"
-          );
+          const userData = await User.findById(otherUser._id)
+            .populate("profileImages")
+            .populate("avatar");
           userMap.set(otherUser._id.toString(), userData);
         }
 
@@ -129,7 +129,7 @@ module.exports = function (io) {
 
     socket.on("joinRoom", async (data) => {
       try {
-        console.log(data)
+        console.log(data);
         const PAGE_SIZE = 15;
         const skip = (data.page - 1) * PAGE_SIZE;
 

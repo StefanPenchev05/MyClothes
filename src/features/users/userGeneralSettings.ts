@@ -26,7 +26,7 @@ interface GeneralSettings {
   lastName: string;
   email: string;
   password: string;
-  dateOfBirth: Date;
+  dateOfBirth: string;
   gender: "male" | "female" | "Don't want to state";
   role: "standardUser" | "designer" | "admin";
   phone: string;
@@ -41,7 +41,7 @@ const initialState: GeneralSettings = {
   lastName: "",
   email: "",
   password: "",
-  dateOfBirth: new Date(),
+  dateOfBirth: "",
   gender: "male",
   role: "standardUser",
   phone: "",

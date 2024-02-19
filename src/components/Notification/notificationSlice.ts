@@ -1,10 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+
+interface Avatar {
+  avatar: string;
+  fileName: string;
+  uploadedAt: Date;
+}
+
 interface User {
   id: string;
   firstName: string;
   lastName: string;
-  avatar: string;
+  avatar: Avatar | undefined;
   socket_id: string | null;
 }
 

@@ -25,6 +25,8 @@
     "dayjs": "^1.11.10",
     "eslint-plugin-import": "^2.29.1",
     "gapi-script": "^1.2.0",
+    "hamburger-react": "^2.5.0",
+    "hamburgers": "^1.2.1",
     "i18next": "^23.7.7",
     "make-dir": "^4.0.0",
     "notistack": "^3.0.1",

@@ -25,7 +25,7 @@ function ChatShoppingIcons() {
   }, [chats]);
 
   return (
-    <>
+    <div className="w-full space-x-4 sm:space-x-8 md:space-x-20">
       <Tooltip title="Chat">
         <Badge
           badgeContent={unseenChatsCount}
@@ -47,7 +47,7 @@ function ChatShoppingIcons() {
           <ShoppingCart fontSize="large" />
         </IconButton>
       </Tooltip>
-    </>
+    </div>
   );
 }
 
