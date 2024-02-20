@@ -5,14 +5,6 @@ import { clearChat } from "./messageSlice";
 import { updaateLastMessageSeen } from "./chatListSlice";
 import { Typography, Avatar, Divider, CircularProgress } from "@mui/material";
 
-interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  avatar: string;
-  socket_id: string | null;
-}
-
 interface Message {
   conversation_id?: string;
   message_id: string;
@@ -41,11 +33,11 @@ function MessageMenu({ selectedChat }: MessageMenuType) {
     return state.message;
   });
 
-  const otherUser: User = useSelector((state: any) => {
+  const otherUser: SocketUser = useSelector((state: any) => {
     return state.otherUsers;
   });
 
-  const user: User = useSelector((state: any) => {
+  const user: SocketUser = useSelector((state: any) => {
     return state.userNavBar;
   });
 

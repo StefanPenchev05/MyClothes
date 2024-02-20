@@ -7,21 +7,13 @@ import SearchBar from "../components/GlobalUI/SearchBar";
 import ChatHistoryList from "../features/Chat/ChatHistoryList";
 import SearchResultList from "../features/Chat/SearchResultList";
 
-interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  avatar: string;
-  socket_id?: string | null;
-}
-
 interface ChatMenuType {
   selectedChat: string | undefined;
   setSelectedChat: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 function ChatMenu({ selectedChat, setSelectedChat }: ChatMenuType) {
-  const [searchResult, setSearchResult] = useState<User[] | undefined>(
+  const [searchResult, setSearchResult] = useState<SocketUser[] | undefined>(
     undefined
   );
   const [searchMenu, setSearchMenu] = useState<boolean>(false);
@@ -32,8 +24,8 @@ function ChatMenu({ selectedChat, setSelectedChat }: ChatMenuType) {
 
   return (
     <div
-      className="w-full flex flex-row p-4"
-      style={{ height: "calc(100vh - 70px)" }}
+      className="w-full flex flex-row px-4"
+      style={{ height: "calc(100vh - 74px)" }}
     >
       <div className="flex justify-center w-1/4 bg-gray-200 rounded-lg p-4">
         <div className="relative w-full">

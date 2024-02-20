@@ -9,6 +9,7 @@ const UserProfile = () => {
 
   const location = useLocation();
   const avatar = location.state.avatar;
+  console.log(avatar)
 
   return (
     <div className="bg-white">

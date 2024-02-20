@@ -22,6 +22,7 @@ module.exports = {
         lastName: userData.lastName,
         avatar: userData.avatar.avatar || userData.profileImages[0]?.url,
         role: userData.role,
+        purchasedProducts: userData.purchasedProducts.length,
       };
 
       // If user is a designer, return designer info
@@ -35,7 +36,6 @@ module.exports = {
       // If user is not a designer, return purchased products count
       return {
         ...commonData,
-        purchasedProducts: userData.purchasedProducts.length,
       };
     } catch (err) {
       throw new Error(err.message);

@@ -22,7 +22,7 @@ interface ChatList {
 }
 
 interface SearchResultType {
-  searchResult: Data[] | undefined;
+  searchResult: SocketUser[] | undefined;
   setSearchMenu: Dispatch<SetStateAction<boolean>>;
   setSelectedChat: Dispatch<SetStateAction<string | undefined>>;
 }
@@ -32,7 +32,7 @@ function SearchResultList({
   setSearchMenu,
   setSelectedChat,
 }: SearchResultType) {
-  const [personNewChat, setPersonNewChat] = useState<Data | undefined>(
+  const [personNewChat, setPersonNewChat] = useState<SocketUser | undefined>(
     undefined
   );
   const dispatch = useDispatch();

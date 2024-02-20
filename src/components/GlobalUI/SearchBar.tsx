@@ -1,34 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getData } from "../../service/api";
-import { Search } from "@mui/icons-material";
 import useDebounce from "../../utils/useDebounce";
 
-interface Data {
-  id: string;
-  firstName: string;
-  lastName: string;
-  avatar: string;
-}
-
 interface SearchBarType {
-  setSearchResult: React.Dispatch<React.SetStateAction<Data[] | undefined>>;
-  autoFocus?: boolean;
+  setSearchResult: React.Dispatch<React.SetStateAction<UserType[] | undefined>>;
   onClick?: () => void;
+  autoFocus?: boolean;
 }
 
 function SearchBar({ setSearchResult, onClick, autoFocus }: SearchBarType) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const [search, setSearch] = useState("");
   const debouncedSearchTerm = useDebounce(search, 300);
 
-  const handleInputChange = (evet: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(evet.target.value);
-  };
-
-  const handleOnClick = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
   };
 
   const [prevSearchTerm, setPrevSearchTerm] = useState<string | null>(null);
@@ -60,24 +45,33 @@ function SearchBar({ setSearchResult, onClick, autoFocus }: SearchBarType) {
   }, [debouncedSearchTerm, prevSearchTerm]);
 
   return (
-    <div
-      className="flex flex-nowrap items-center p-2 border-2 border-gray-300 rounded-2xl w-full"
-      onClick={onClick}
-    >
-      <div className="mr-4 cursor-pointer hover:text-gray-500 transition-colors duration-200">
-        <Search fontSize="medium" onClick={handleOnClick} />
-      </div>
-      <div className="w-full border-none">
-        <label htmlFor="search" className="sr-only">
-          Search
-        </label>
+    <div className="flex-1">
+      <label htmlFor="search" className="sr-only">
+        Search
+      </label>
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 text-gray-500"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </div>
         <input
+          type="search"
           id="search"
-          placeholder="Search..."
+          className="pl-10 pr-3 py-2 block w-full outline-none rounded-md border border-gray-300"
+          placeholder="Search items, collections, and accounts"
+          onChange={handleInputChange}
+          onClick={onClick}
           autoFocus={autoFocus}
-          className="w-full outline-none py-1 bg-transparent"
-          onChange={(e) => handleInputChange(e)}
-          ref={inputRef}
         />
       </div>
     </div>

@@ -66,7 +66,7 @@ function App() {
       {showNavBar && <NavBar />}
       <CssBaseline />
 
-      <div style={{ paddingTop: showNavBar ? "70px" : "0px" }}>
+      <div style={{ paddingTop: showNavBar ? "10px" : "0px" }}>
         <Notification setSelectedChatNotification={setSelectedChat} />
         <Routes>
           <Route path="/" element={<Home />}></Route>

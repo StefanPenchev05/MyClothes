@@ -1,8 +1,10 @@
 import { useSnackbar } from "notistack";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserInfo } from "../users/userNavBarSlice";
+import SearchBar from "../../components/GlobalUI/SearchBar";
+import SearchResultMenu from "../../components/GlobalUI/SearchResultMenu";
 
 interface Avatar {
   _id: string;
@@ -18,6 +20,10 @@ interface Data {
 }
 
 const Navbar = () => {
+  const [searchResult, setSearchResult] = useState<UserType[] | undefined>(
+    undefined
+  );
+
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -26,12 +32,10 @@ const Navbar = () => {
   const userInfo: Data = useSelector((state: any) =>
     state.userNavBar.id ? state.userNavBar : null
   );
-  console.log(userInfo);
   const snackbar = useSelector((state: any) => state.snackbar);
 
   useEffect(() => {
-    //@ts-ignore
-    dispatch(fetchUserInfo() as any);
+    dispatch(fetchUserInfo());
     if (snackbar.open) {
       enqueueSnackbar(snackbar.message, {
         variant: snackbar.variant,
@@ -42,33 +46,13 @@ const Navbar = () => {
 
   return (
     <div className="bg-white shadow p-4 flex justify-between items-center">
-      <div className="flex-1">
-        <label htmlFor="search" className="sr-only">
-          Search
-        </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                className="h-5 w-5 text-gray-500"
-                fillRule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clipRule="evenodd"
-              />
-            </svg>
+      <div className="relative flex-grow">
+        <SearchBar setSearchResult={setSearchResult} />
+        {searchResult && (
+          <div className="absolute w-full mt-1 z-10">
+            <SearchResultMenu searchResult={searchResult} />
           </div>
-          <input
-            type="search"
-            id="search"
-            className="pl-10 pr-3 py-2 block w-full rounded-md border border-gray-300"
-            placeholder="Search items, collections, and accounts"
-          />
-        </div>
+        )}
       </div>
       <div className="hidden sm:flex space-x-4 items-center">
         <a

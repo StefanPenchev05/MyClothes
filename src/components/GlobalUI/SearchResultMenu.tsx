@@ -1,31 +1,27 @@
-import { Card, CardContent, Avatar, Typography } from "@mui/material";
+import { Avatar, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-interface Data {
-  id: string;
-  firstName: string;
-  lastName: string;
-  avatar: string;
+interface SearchResultMenuType {
+  searchResult: UserType[] | undefined;
 }
 
-interface SearchBarType {
-  searchResult: Data[] | undefined;
-}
-
-function SearchResultMenu({ searchResult }: SearchBarType) {
-  const visitProfilePage = (userID: string) => {
-    window.location.href = `/user/profile/${userID}`;
-  };
+function SearchResultMenu({ searchResult }: SearchResultMenuType) {
+  const navigate = useNavigate();
 
   return (
-    <div className="absolute border-2 border-gray-300 w-full rounded-xl p-4 bg-gray-50">
-      {Array.isArray(searchResult) ? (
-        searchResult.map((item, index) => (
-          <Card
-            key={index}
-            className="mb-4"
-            onClick={() => visitProfilePage(item.id)}
-          >
-            <CardContent className="flex flex-row items-center">
+    <div className="flex-1 bg-white shadow-lg rounded-lg overflow-hidden">
+      <div className="p-4">
+        {Array.isArray(searchResult) ? (
+          searchResult.map((item, index) => (
+            <div
+              key={index}
+              className="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded"
+              onClick={() =>
+                navigate(`user/profile/${item.id}`, {
+                  state: { avatar: item.avatar },
+                })
+              }
+            >
               <Avatar
                 src={item.avatar}
                 alt={`Avatar of ${item.firstName} ${item.lastName}`}
@@ -34,14 +30,14 @@ function SearchResultMenu({ searchResult }: SearchBarType) {
               <Typography variant="body1">
                 {item.firstName} {item.lastName}
               </Typography>
-            </CardContent>
-          </Card>
-        ))
-      ) : (
-        <div className="flex flex-row justify-center items-center">
-          <Typography variant="body1">No results</Typography>
-        </div>
-      )}
+            </div>
+          ))
+        ) : (
+          <div className="flex flex-row justify-center items-center">
+            <Typography variant="body1">No results</Typography>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
