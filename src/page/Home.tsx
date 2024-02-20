@@ -1,16 +1,8 @@
-import Sidebar from "../components/Home/SideBar"
-import "../components/Home/index.css"
-import Navbar from "../features/NavBar/NavBar"
+import React from 'react'
 
 function Home() {
-
   return (
-    <div className='grid h-screen'>
-      <Sidebar/>
-      <div>
-        <Navbar/>
-      </div>
-    </div>
+    <div>Home</div>
   )
 }
 

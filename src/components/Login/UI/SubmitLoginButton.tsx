@@ -5,9 +5,12 @@ import { sendData } from '../../../service/api';
 import { useTheme } from '../ThemeContext';
 import { useSnackbar } from 'notistack';
 
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../../features/users/userBaseInfo';
+
 
 function SubmitLogin() {
-
+  const dispatch = useDispatch();
     const {
       emailOrUsername, 
       password, 
@@ -49,6 +52,7 @@ function SubmitLogin() {
           }
     
           navigate("/");
+          dispatch(setUser(data.data));
           enqueueSnackbar('Login successful', {variant: 'success', autoHideDuration: 3000});
           return true;
         }

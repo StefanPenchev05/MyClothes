@@ -1,7 +1,10 @@
 interface DesignerInfo{
-    [key:stirng]: number | undefined;
+    [key:string]: number | undefined;
 }
 
+/**
+ * Represents the user type.
+ */
 interface UserType {
   [key:string]: string | undefined;
   purchasedProducts?: number;

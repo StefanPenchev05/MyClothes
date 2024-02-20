@@ -1,6 +1,7 @@
-import { useDispatch } from "react-redux";
+import { useSnackbar } from "notistack";
+import { useDispatch, useSelector } from "react-redux";
 import { initReactI18next } from "react-i18next";
-import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Grid, CircularProgress, CssBaseline } from "@mui/material";
 
@@ -9,8 +10,11 @@ import bg from "./locals/bg.json";
 import en from "./locals/en.json";
 import NavBar from "./features/NavBar/NavBar";
 import Notification from "./components/Notification/Notification";
+import { sendData } from "./service/api";
+import { setUser } from "./features/users/userBaseInfo";
 
 const Home = lazy(() => import("./page/Home"));
+const UserStats = lazy(() => import("./page/UserStats"));
 const ChatMenu = lazy(() => import("./page/ChatMenu"));
 const UserLogin = lazy(() => import("./page/UserLogin"));
 const UserSignup = lazy(() => import("./page/userSignup"));
@@ -36,6 +40,28 @@ function App() {
     location.pathname !== "/user/registration";
 
   const dispatch = useDispatch();
+  const userInfo = useSelector((state: any) => state.userReducer)
+  console.log(userInfo)
+  const { enqueueSnackbar } = useSnackbar();
+  const [renderers, setRenderers] = useState(0);
+
+  useEffect(() => {
+    setRenderers(renderers + 1);
+    const fetchBaseInfo = async () => {
+      try {
+        const data = await sendData("/user/checkSession");
+        if (data.data) {
+          console.log(data.data)
+          dispatch(setUser(data.data as UserType));
+        }
+      } catch (error) {
+        console.error('Failed to fetch user session data', error);
+      }
+    };
+
+    fetchBaseInfo();
+    console.log(renderers)
+  }, []); // Empty array ensures this runs once on mount and not on updates
 
   const [selectedChat, setSelectedChat] = useState<string | undefined>();
   dispatch({ type: "socket/connect", payload: { event: "notify" } });
@@ -65,7 +91,7 @@ function App() {
       <div style={{ paddingTop: showNavBar ? "10px" : "0px" }}>
         <Notification setSelectedChatNotification={setSelectedChat} />
         <Routes>
-          <Route path="/" element={<Home />}></Route>
+          <Route path="/" element={<UserStats />}></Route>
           <Route path="/user/login" element={<UserLogin />}></Route>
           <Route path="/user/registration" element={<UserSignup />}></Route>
           <Route path="/user/profile/:token" element={<ProfilePage />}></Route>

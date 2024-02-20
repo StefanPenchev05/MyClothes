@@ -13,8 +13,6 @@ module.exports = {
         return { message: "User not found!" };
       }
 
-      console.log(userData)
-
       // Common data for all users
       const commonData = {
         id: userData._id,

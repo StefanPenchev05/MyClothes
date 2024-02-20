@@ -1,25 +1,22 @@
 const express = require("express");
 const router = express.Router();
 
-//controllers
+// Import user controller
 const userController = require("../controllers/userController");
 
-//login user
-router.post('/login', userController.login);
-//router.post('/google-login', userController.googleLogin)
-//register
-router.post('/registration', userController.register);
-//logout
-router.get('/logout', userController.logout);
-//sent reset password mail
-router.post('/reset-password', userController.requestPasswordReset);
-//reset password
-router.get('/reset-password/:token', userController.resetPassword);
-//get information of the selected user
-router.get('/profile/:token', userController.getUsersData);
-//get the user data for the user settings page
-router.get('/settings/general/', userController.getUserGeneralSettingsData);
-//change avatar
-router.post('/settings/general/change/avatar', userController.changeAvatar);
+// User authentication routes
+router.post('/login', userController.login); // Login user
+router.post('/registration', userController.register); // Register new user
+router.post('/checkSession', userController.checkSession) // Checking Session
+router.get('/logout', userController.logout); // Logout user
+
+// Password reset routes
+router.post('/reset-password', userController.requestPasswordReset); // Send password reset email
+router.get('/reset-password/:token', userController.resetPassword); // Reset password
+
+// User profile routes
+router.get('/profile/:token', userController.getUsersData); // Get user data
+router.get('/settings/general/', userController.getUserGeneralSettingsData); // Get user settings data
+router.post('/settings/general/change/avatar', userController.changeAvatar); // Change user avatar
 
 module.exports = router;

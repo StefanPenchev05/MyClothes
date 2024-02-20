@@ -10,11 +10,9 @@ export async function sendData(URL: string, data?: any) {
             body: JSON.stringify(data),
             credentials: 'include',
         });
-        console.log(data);
 
         // Parse the response data as JSON
         const responseData = await response.json();
-        console.log(responseData);
 
         // Making sure that the server returns data
         if(responseData === null || responseData === undefined){
@@ -50,7 +48,6 @@ export async function getData(URL: string, query? : {[key:string]:string}){
 
         // Parse the response data as JSON
         const data = await response.json();
-        console.log(data);
         
         // If the request is successful or returns a 400 status, return the response data
         if(response.ok || response.status === 400){

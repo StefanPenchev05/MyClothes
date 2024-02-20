@@ -50,7 +50,7 @@ app.use(sessionMiddleware);
 io.engine.use(sessionMiddleware);
 
 //Checks for session
-//app.use(checkSession.checkSession);
+app.use(checkSession.checkSession);
 
 //Running the React HTML
 app.use(express.static("build"));

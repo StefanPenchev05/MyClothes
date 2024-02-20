@@ -110,8 +110,6 @@ module.exports = function (io) {
       //get user from db
       const user = socket.user;
 
-      console.log(user._id, data.otherUser_id);
-
       socket.to(userSocketMap.get(data.otherUser_id)).emit("created_chat", {
         chat_id: data.chat_id,
         user_id: user._id,
@@ -129,7 +127,6 @@ module.exports = function (io) {
 
     socket.on("joinRoom", async (data) => {
       try {
-        console.log(data);
         const PAGE_SIZE = 15;
         const skip = (data.page - 1) * PAGE_SIZE;
 

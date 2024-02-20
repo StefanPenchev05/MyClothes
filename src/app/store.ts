@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "../features/users/userNavBarSlice";
+import userReducer from "../features/users/userBaseInfo";
 import snackbarReducer from "../features/snackbars/snackbarSlice";
 import chatListReducer from "../features/Chat/chatListSlice";
 import messageReducer from "../features/Chat/messageSlice";
@@ -14,7 +14,7 @@ import socketMiddleware from "../features/socket/socketMiddleware";
 
 export const store = configureStore({
   reducer: {
-    userNavBar: userReducer,
+    userReducer: userReducer,
     snackbar: snackbarReducer,
     chatList: chatListReducer,
     message: messageReducer,

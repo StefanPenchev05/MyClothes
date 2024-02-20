@@ -24,7 +24,7 @@ module.exports = {
       // Fetch user data and populate profileImages
       const userData = await UserModel.findOne({ _id: sessionID }).populate(
         "profileImages"
-      );
+      ).populate("avatar");
 
       // If user data is not found, return a message
       if (!userData) {
@@ -33,11 +33,12 @@ module.exports = {
 
       // Common data for all users
       const commonData = {
+        id: userData._id,
         firstName: userData.firstName,
         lastName: userData.lastName,
         username: userData.username,
         gender: userData.gender,
-        avatar: userData.avatar || userData.profileImages[0]?.url,
+        avatar: userData.avatar.avatar || userData.profileImages[0]?.url,
         profileImages: userData.profileImages,
         role: userData.role,
       };
@@ -83,10 +84,8 @@ module.exports = {
       );
     }
 
-    return existingUser;
+    return true;
   },
-
-  googleLoginUser: async (tokenID) => {},
 
   registerUser: async (
     email,
@@ -163,10 +162,6 @@ module.exports = {
     }
   },
 
-  googleSignUpUser: async () => {},
-
-  editProfile: async () => {},
-
   // Function for requesting a password reset
   requestPasswordReset: async (email) => {
     // Find the user based on the provided email
@@ -224,48 +219,7 @@ module.exports = {
     }
     return { msg: "Password successfully changed!" };
   },
-
-  getUsersData: async (sessionID) => {
-    try {
-      // Fetch user data and populate profileImages
-      const userData = await UserModel.findOne({ _id: sessionID }).populate(
-        "profileImages"
-      );
-
-      // If user data is not found, return a message
-      if (!userData) {
-        return { message: "User not found!" };
-      }
-
-      // Common data for all users
-      const commonData = {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        username: userData.username,
-        gender: userData.gender,
-        avatar: userData.avatar || userData.profileImages[0]?.url,
-        profileImages: userData.profileImages,
-        role: userData.role,
-      };
-
-      // If user is a designer, return designer info
-      if (userData.role === "designer") {
-        return {
-          ...commonData,
-          designerInfo: userData.designerInfo,
-        };
-      }
-
-      // If user is not a designer, return purchased products count
-      return {
-        ...commonData,
-        purchasedProducts: userData.purchasedProducts.length,
-      };
-    } catch (err) {
-      throw new Error(err.message);
-    }
-  },
-
+  
   getUserSettingsData: async (sessionID) => {
     if (!sessionID) {
       throw new CustomError("No session ID provided!", "NoSessionID");
