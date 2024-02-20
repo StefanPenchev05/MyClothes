@@ -79,6 +79,14 @@ const Navbar = () => {
         >
           Activity
         </a>
+        {userInfo && (
+           <a
+           href="#"
+           className="text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-white dark:hover:text-opacity-80 px-3 py-2 rounded-md text-sm font-medium"
+         >
+           Chat
+         </a>
+        )}
         <button className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium">
           Create
         </button>

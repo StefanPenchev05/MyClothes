@@ -3,6 +3,7 @@ import { getData } from "../../service/api";
 import useDebounce from "../../utils/useDebounce";
 import SelectSearchOption from "./SelectSearchOption";
 import { Typography } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
 interface SearchBarType {
   setSearchResult: React.Dispatch<React.SetStateAction<UserType[] | undefined>>;
@@ -27,6 +28,7 @@ function SearchBar({
   const [prevSearchTerm, setPrevSearchTerm] = useState<string | null>(null);
   const [option, setOption] = useState<string | undefined>(undefined);
   const [openOption, setOpenOption] = useState<boolean>(false);
+  const location = useLocation();
   const ref = useRef(null);
 
   useEffect(() => {
@@ -59,7 +61,13 @@ function SearchBar({
     if (ref.current) {
       (ref.current as HTMLInputElement).focus();
     }
-  }, [option])
+  }, [option]);
+
+  useEffect(() => {
+    if(location.pathname === "/user/messages"){
+      setOpenOption(false);
+    }
+  },[])
 
   return (
     <div className="flex-1" onClick={() => setOpenOption(true)}>
@@ -116,7 +124,7 @@ function SearchBar({
           }}
           autoFocus={autoFocus}
         />
-        {!option && openOption && <SelectSearchOption setOption={setOption} />}
+        {!option && openOption && <SelectSearchOption setOption={setOption} setOptionOpen={setOpenOption}/>}
       </div>
     </div>
   );
