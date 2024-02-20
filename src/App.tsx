@@ -31,6 +31,7 @@ i18next.use(initReactI18next).init({
 function App() {
   const location = useLocation();
   const showNavBar =
+    location.pathname !== "/" &&
     location.pathname !== "/user/login" &&
     location.pathname !== "/user/registration";
 
@@ -38,16 +39,11 @@ function App() {
 
   const [selectedChat, setSelectedChat] = useState<string | undefined>();
   dispatch({ type: "socket/connect", payload: { event: "notify" } });
-  dispatch({ type: "socket/connect", payload: { event: "notify_deleted_chat" } });
+  dispatch({
+    type: "socket/connect",
+    payload: { event: "notify_deleted_chat" },
+  });
   dispatch({ type: "socket/connect", payload: { event: "created_chat" } });
-
-
-  useEffect(() => {
-    dispatch({
-      type: "socket/emit",
-      payload: { event: "get_chat_list", data: {} },
-    });
-  }, []);
 
   return (
     <Suspense
