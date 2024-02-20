@@ -9,7 +9,7 @@ function Header() {
   const firstName = useSelector((state: any) => state.userReducer.firstName)
 
   return (
-    <div className="bg-white grid-rows-2 dark:bg-black shadow-lg p-4 flex justify-between items-center">
+    <div className="bg-white grid-rows-2 dark:bg-black boder border-b-2 mb-4 p-4 flex justify-between items-center">
       <div className="relative">
         <div className="flex-1">
           <label htmlFor="search" className="sr-only">
