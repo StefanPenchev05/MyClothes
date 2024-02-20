@@ -34,7 +34,7 @@ interface ChatListListType {
   setSelectedChat: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-function ChatHistoryList({ selectedChat, setSelectedChat }: ChatListListType) {
+function ChatHistoryList({ setSelectedChat }: ChatListListType) {
   const [hoveredUser, setHoveredUser] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 

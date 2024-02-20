@@ -20,7 +20,7 @@ module.exports = {
         id: userData._id,
         firstName: userData.firstName,
         lastName: userData.lastName,
-        avatar: userData.avatar || userData.profileImages[0]?.url,
+        avatar: userData.avatar.avatar || userData.profileImages[0]?.url,
         role: userData.role,
       };
 

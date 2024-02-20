@@ -12,7 +12,7 @@ import Notification from "./components/Notification/Notification";
 
 const Home = lazy(() => import("./page/Home"));
 const ChatMenu = lazy(() => import("./page/ChatMenu"));
-const UserLogin = lazy(() => import("./page/userLogin"));
+const UserLogin = lazy(() => import("./page/UserLogin"));
 const UserSignup = lazy(() => import("./page/userSignup"));
 const ProfilePage = lazy(() => import("./page/UserProfile"));
 const UserSettings = lazy(() => import("./page/UserSettings"));
