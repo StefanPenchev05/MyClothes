@@ -42,6 +42,7 @@ function ChatMenu({ selectedChat, setSelectedChat }: ChatMenuType) {
                   setSearchResult={setSearchResult}
                   onClick={handleOnSearchClick}
                   autoFocus={true}
+                  isTransperant={false}
                 />
               </div>
               <SearchResultList

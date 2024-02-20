@@ -45,7 +45,7 @@ const Navbar = () => {
   }, [dispatch, snackbar]);
 
   return (
-    <div className="bg-white shadow p-4 flex justify-between items-center">
+    <div className="bg-white dark:bg-black shadow p-4 flex justify-between items-center">
       <div className="relative flex-grow">
         <SearchBar setSearchResult={setSearchResult} />
         {searchResult && (
@@ -57,25 +57,25 @@ const Navbar = () => {
       <div className="hidden sm:flex space-x-4 items-center">
         <a
           href="#"
-          className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-        >
+          className="text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-white dark:hover:text-opacity-80 px-3 py-2 rounded-md text-sm font-medium"
+          >
           Explore
         </a>
         <a
           href="#"
-          className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+          className="text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-white dark:hover:text-opacity-80 px-3 py-2 rounded-md text-sm font-medium"
         >
           Stats
         </a>
         <a
           href="#"
-          className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+          className="text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-white dark:hover:text-opacity-80 px-3 py-2 rounded-md text-sm font-medium"
         >
           Drops
         </a>
         <a
           href="#"
-          className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+          className="text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-white dark:hover:text-opacity-80 px-3 py-2 rounded-md text-sm font-medium"
         >
           Activity
         </a>
@@ -94,7 +94,7 @@ const Navbar = () => {
           />
         ) : (
           <button
-            className="p-2 rounded-full text-gray-700 hover:text-gray-900"
+            className="p-2 rounded-full text-gray-700 dark:text-white hover:text-gray-900 dark:hover:text-white dark:hover:text-opacity-80"
             onClick={() => navigate("/user/login")}
           >
             <svg
