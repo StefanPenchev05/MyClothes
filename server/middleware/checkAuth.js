@@ -14,8 +14,10 @@ module.exports = {
     }
 
     const sessionID = req.session.user;
+    console.log(sessionID)
 
     if (!mongoose.Types.ObjectId.isValid(sessionID)) {
+      console.log(sessionID)
       return res.status(400).json({ message: "Invalid session ID" });
     } else {
         next();

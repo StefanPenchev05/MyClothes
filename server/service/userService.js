@@ -38,7 +38,7 @@ module.exports = {
         lastName: userData.lastName,
         username: userData.username,
         gender: userData.gender,
-        avatar: userData.avatar.avatar || userData.profileImages[0]?.url,
+        avatar: userData.avatar ? userData.avatar.avatar : userData.profileImages[0]?.url,
         profileImages: userData.profileImages,
         role: userData.role,
       };

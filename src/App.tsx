@@ -40,8 +40,8 @@ function App() {
     location.pathname !== "/user/registration";
 
   const dispatch = useDispatch();
-  const userInfo = useSelector((state: any) => state.userReducer)
-  console.log(userInfo)
+  const userInfo = useSelector((state: any) => state.userReducer);
+  console.log(userInfo);
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
@@ -49,17 +49,15 @@ function App() {
       try {
         const data = await sendData("/user/checkSession");
         if (data.data) {
-          console.log(data.data)
+          console.log(data.data);
           dispatch(setUser(data.data as UserType));
         }
       } catch (error) {
-        console.error('Failed to fetch user session data', error);
+        console.error("Failed to fetch user session data", error);
       }
     };
 
-    if(location.pathname !== "/user/login"){
-      fetchBaseInfo();
-    }
+    fetchBaseInfo();
   }, []);
 
   const [selectedChat, setSelectedChat] = useState<string | undefined>();
