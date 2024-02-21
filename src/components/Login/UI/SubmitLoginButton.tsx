@@ -6,7 +6,7 @@ import { useTheme } from '../ThemeContext';
 import { useSnackbar } from 'notistack';
 
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../../features/users/userBaseInfo';
+import { setUser } from '../../../features/users/User';
 
 
 function SubmitLogin() {

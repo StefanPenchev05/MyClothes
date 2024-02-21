@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../../app/store";
 
 const initialState: UserType = {
   id: undefined,
@@ -11,7 +12,7 @@ const initialState: UserType = {
   sales: undefined,
 };
 
-const userBaseInfo = createSlice({
+const User = createSlice({
   name: "user",
   initialState,
   reducers: {
@@ -27,5 +28,8 @@ const userBaseInfo = createSlice({
   },
 });
 
-export const { setUser, clearUser } = userBaseInfo.actions;
-export default userBaseInfo.reducer;
+export const selectFirstName = (state: RootState) => state.userReducer.firstName;
+export const selectAvatar = (state: RootState) => state.userReducer.avatar;
+
+export const { setUser, clearUser } = User.actions;
+export default User.reducer;

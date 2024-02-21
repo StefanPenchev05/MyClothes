@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "../features/users/userBaseInfo";
+import userReducer from "../features/users/User";
 import snackbarReducer from "../features/snackbars/snackbarSlice";
 import chatListReducer from "../features/Chat/chatListSlice";
 import messageReducer from "../features/Chat/messageSlice";
@@ -30,3 +30,6 @@ export const store = configureStore({
 });
 
 export default store;
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

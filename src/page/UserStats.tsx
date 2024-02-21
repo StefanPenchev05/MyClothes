@@ -1,39 +1,31 @@
-import React from "react";
-import "../components/Home/index.css";
-import { useSelector } from "react-redux";
-import Sidebar from "../components/Home/SideBar";
-import Header from "../components/UserStats/Header";
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { selectFirstName, selectAvatar } from '../features/users/User';
+import Sidebar from '../components/Home/SideBar';
+import Header from '../components/UserStats/Header';
+import EventCard from '../components/UserStats/EventCard';
+import WelcomeBanner from '../components/UserStats/WelcomeBanner';
 
 function UserStats() {
-  const firstName = useSelector((state: any) => state.userReducer.firstName);
 
-  const WelcomeBanner = () => {
-    return (
-      <React.Fragment>
-        <p className="font-bold text-2xl mb-2">Welcome, {firstName}</p>
-        <p className="font-thin text-base mb-2">
-          Explore and discover amazing designs from talanted <br />
-          designers. Open the panel to view your progress and growth in
-        </p>
-      </React.Fragment>
-    );
-  };
+  const firstName = useSelector(selectFirstName);
+  const avatar = useSelector(selectAvatar);
 
   return (
     <div className="grid h-screen">
       <Sidebar />
-      <div className="pl-4">
+      <main className="pl-12 pr-4">
         <Header />
-        <div>
-          <WelcomeBanner />
-          <button className="bg-black text-white px-4 py-4 text-sm font-medium">
+        <section>
+          <WelcomeBanner firstName={firstName} />
+          <button className="bg-black text-white px-4 py-2 text-sm font-medium mt-4">
             Profile Settings
           </button>
-          <div className="grid grid-cols-2">
-
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <EventCard id={1} title="Testing" week={12} teamMembers={[{ name: firstName, avatar }]} />
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 }

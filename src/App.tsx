@@ -11,7 +11,7 @@ import en from "./locals/en.json";
 import NavBar from "./features/NavBar/NavBar";
 import Notification from "./components/Notification/Notification";
 import { sendData } from "./service/api";
-import { setUser } from "./features/users/userBaseInfo";
+import { setUser } from "./features/users/User";
 
 const Home = lazy(() => import("./page/Home"));
 const UserStats = lazy(() => import("./page/UserStats"));
@@ -43,10 +43,8 @@ function App() {
   const userInfo = useSelector((state: any) => state.userReducer)
   console.log(userInfo)
   const { enqueueSnackbar } = useSnackbar();
-  const [renderers, setRenderers] = useState(0);
 
   useEffect(() => {
-    setRenderers(renderers + 1);
     const fetchBaseInfo = async () => {
       try {
         const data = await sendData("/user/checkSession");
@@ -59,9 +57,10 @@ function App() {
       }
     };
 
-    fetchBaseInfo();
-    console.log(renderers)
-  }, []); // Empty array ensures this runs once on mount and not on updates
+    if(location.pathname !== "/user/login"){
+      fetchBaseInfo();
+    }
+  }, []);
 
   const [selectedChat, setSelectedChat] = useState<string | undefined>();
   dispatch({ type: "socket/connect", payload: { event: "notify" } });

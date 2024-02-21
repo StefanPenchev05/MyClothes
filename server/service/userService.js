@@ -84,7 +84,7 @@ module.exports = {
       );
     }
 
-    return true;
+    return existingUser;
   },
 
   registerUser: async (
