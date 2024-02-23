@@ -2,7 +2,7 @@ import React from "react";
 
 const EventCard: React.FC<Events> = ({ title, week, teamMembers }) => {
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-4 flex flex-col flex-nowrap justify-between">
+    <div className="bg-white rounded-2xl shadow-right p-4 flex flex-col flex-wrap w-1/3 justify-between">
       <div>
         <div className="text-base font-semibold">{title}</div>
         <div className="text-sm text-gray-500">Week {week}</div>

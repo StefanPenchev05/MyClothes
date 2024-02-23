@@ -4,6 +4,13 @@ interface GenericObject<T> {
 
 interface DesignerInfo extends GenericObject<number> {}
 
+interface Task {
+  avatar:string; 
+  name:string;
+  details:string;
+  taskName: string;
+}
+
 interface SocketUser extends UserType {
   socket_id?: string | undefined;
 }
