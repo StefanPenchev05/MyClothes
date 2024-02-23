@@ -4,7 +4,7 @@
 
 ## Overview
 
-Welcome to FreeClaser Clothes Design, where creativity meets fashion! This application provides a platform for designers to showcase their clothing products, receive feedback through comments and likes, engage in real-time chat, and even get hired by clients who love their work.
+Welcome to MyClothes, where creativity meets fashion! This application provides a platform for designers to showcase their clothing products, receive feedback through comments and likes, engage in real-time chat, and even get hired by clients who love their work.
 
 ## Key Features
 
