@@ -18,7 +18,3 @@
     width: 100%;
   }
 }
-
-.grid{
-  grid-template-columns: 1fr 7fr;
-}

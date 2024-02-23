@@ -3,7 +3,7 @@ import "./index.css";
 
 const Sidebar = () => {
   return (
-    <aside className="container w-64 h-screen" aria-label="Sidebar">
+    <aside className="container w-64 h-screen col-span-1" aria-label="Sidebar">
       <div className="flex item-center flex-col overflow-y-auto h-full py-4 px-3 bg-white shadow-lg rounded dark:bg-gray-800 text-center">
         <Typography variant="h6" className="mb-6">
           Profile settings
