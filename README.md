@@ -1,6 +1,6 @@
 # MyClothes Design
 
-![App Logo](link-to-your-log.png)
+<img width=250 src="https://github.com/StefanPenchev05/MyClothesV2/blob/main/Logo%20for%20MyClothes-Transparent.png"/>
 
 # Outdated Version, The new one is being in production. You can find MyClothesV2 [HERE](https://github.com/StefanPenchev05/MyClothesV2.git)
 
