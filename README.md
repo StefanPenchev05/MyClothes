@@ -2,7 +2,7 @@
 
 ![App Logo](link-to-your-log.png)
 
-# Outdated Version, The new one is being in production. You can find [MyClothesV2 HERE](https://github.com/StefanPenchev05/MyClothesV2.git)
+# Outdated Version, The new one is being in production. You can find MyClothesV2 [HERE](https://github.com/StefanPenchev05/MyClothesV2.git)
 
 ## Overview
 
